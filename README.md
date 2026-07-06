@@ -5,11 +5,15 @@ knowledge graph intended for r-GCN and Dempster-Shafer fusion experiments.
 
 The generated graph includes:
 
-- aircraft family and variant nodes for MiG-29, Su-27/Su-30/Su-35, MiG-31,
-  Eurofighter Typhoon, F-16, and F-15 variants;
+- aircraft family and variant nodes for Russian, Chinese, Indian, US, and
+  Western European combat aircraft, including MiG-29, Su-27/Su-30/Su-35,
+  MiG-31, J-7/J-8/J-10/J-11/J-15/J-16/J-20, JF-17, Tejas, Rafale,
+  Mirage, Gripen, Tornado, Harrier, Typhoon, F-16, F-15, F/A-18, F-22,
+  F-35, and bomber/attack-helicopter examples;
 - radar nodes known to be associated with those aircraft variants;
-- radar-mode nodes with representative pulse repetition frequency classes,
-  centre frequencies, bandwidths, waveforms, scan types, detection ranges, and
+- radar-mode nodes with representative numeric pulse repetition frequency lower/upper bounds, centre frequencies,
+  bandwidths, pulse widths, duty cycles, dwell times, coverage angles, resolution
+  estimates, power/noise figures, detection probabilities, false-alarm rates, and
   track capacities;
 - kinematic aircraft properties including maximum Mach number, service ceiling,
   combat radius, ferry range, and hardpoints;
