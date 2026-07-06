@@ -1,0 +1,3236 @@
+{
+  "edges": [
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n019_rubin",
+      "target": "radar_mode:n019_rubin:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n019_rubin",
+      "target": "radar_mode:n019_rubin:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n019_rubin",
+      "target": "radar_mode:n019_rubin:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n019_rubin",
+      "target": "radar_mode:n019_rubin:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n019_rubin",
+      "target": "radar_mode:n019_rubin:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n010_zhuk",
+      "target": "radar_mode:n010_zhuk:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n010_zhuk",
+      "target": "radar_mode:n010_zhuk:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n010_zhuk",
+      "target": "radar_mode:n010_zhuk:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n010_zhuk",
+      "target": "radar_mode:n010_zhuk:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n010_zhuk",
+      "target": "radar_mode:n010_zhuk:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_me",
+      "target": "radar_mode:zhuk_me:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_me",
+      "target": "radar_mode:zhuk_me:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_me",
+      "target": "radar_mode:zhuk_me:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_me",
+      "target": "radar_mode:zhuk_me:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_me",
+      "target": "radar_mode:zhuk_me:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_ae",
+      "target": "radar_mode:zhuk_ae:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_ae",
+      "target": "radar_mode:zhuk_ae:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_ae",
+      "target": "radar_mode:zhuk_ae:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_ae",
+      "target": "radar_mode:zhuk_ae:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_ae",
+      "target": "radar_mode:zhuk_ae:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n001_myech",
+      "target": "radar_mode:n001_myech:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n001_myech",
+      "target": "radar_mode:n001_myech:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n001_myech",
+      "target": "radar_mode:n001_myech:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n001_myech",
+      "target": "radar_mode:n001_myech:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n001_myech",
+      "target": "radar_mode:n001_myech:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n011m_bars",
+      "target": "radar_mode:n011m_bars:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n011m_bars",
+      "target": "radar_mode:n011m_bars:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n011m_bars",
+      "target": "radar_mode:n011m_bars:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n011m_bars",
+      "target": "radar_mode:n011m_bars:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n011m_bars",
+      "target": "radar_mode:n011m_bars:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:irbis_e",
+      "target": "radar_mode:irbis_e:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:irbis_e",
+      "target": "radar_mode:irbis_e:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:irbis_e",
+      "target": "radar_mode:irbis_e:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:irbis_e",
+      "target": "radar_mode:irbis_e:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:irbis_e",
+      "target": "radar_mode:irbis_e:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon",
+      "target": "radar_mode:zaslon:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon",
+      "target": "radar_mode:zaslon:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon",
+      "target": "radar_mode:zaslon:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon",
+      "target": "radar_mode:zaslon:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon",
+      "target": "radar_mode:zaslon:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon_m",
+      "target": "radar_mode:zaslon_m:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon_m",
+      "target": "radar_mode:zaslon_m:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon_m",
+      "target": "radar_mode:zaslon_m:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon_m",
+      "target": "radar_mode:zaslon_m:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zaslon_m",
+      "target": "radar_mode:zaslon_m:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_m",
+      "target": "radar_mode:captor_m:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_m",
+      "target": "radar_mode:captor_m:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_m",
+      "target": "radar_mode:captor_m:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_m",
+      "target": "radar_mode:captor_m:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_m",
+      "target": "radar_mode:captor_m:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_e",
+      "target": "radar_mode:captor_e:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_e",
+      "target": "radar_mode:captor_e:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_e",
+      "target": "radar_mode:captor_e:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_e",
+      "target": "radar_mode:captor_e:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_e",
+      "target": "radar_mode:captor_e:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_66",
+      "target": "radar_mode:an_apg_66:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_66",
+      "target": "radar_mode:an_apg_66:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_66",
+      "target": "radar_mode:an_apg_66:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_66",
+      "target": "radar_mode:an_apg_66:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_66",
+      "target": "radar_mode:an_apg_66:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_68",
+      "target": "radar_mode:an_apg_68:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_68",
+      "target": "radar_mode:an_apg_68:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_68",
+      "target": "radar_mode:an_apg_68:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_68",
+      "target": "radar_mode:an_apg_68:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_68",
+      "target": "radar_mode:an_apg_68:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_80",
+      "target": "radar_mode:an_apg_80:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_80",
+      "target": "radar_mode:an_apg_80:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_80",
+      "target": "radar_mode:an_apg_80:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_80",
+      "target": "radar_mode:an_apg_80:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_80",
+      "target": "radar_mode:an_apg_80:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_83_sabr",
+      "target": "radar_mode:an_apg_83_sabr:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_83_sabr",
+      "target": "radar_mode:an_apg_83_sabr:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_83_sabr",
+      "target": "radar_mode:an_apg_83_sabr:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_83_sabr",
+      "target": "radar_mode:an_apg_83_sabr:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_83_sabr",
+      "target": "radar_mode:an_apg_83_sabr:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63",
+      "target": "radar_mode:an_apg_63:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63",
+      "target": "radar_mode:an_apg_63:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63",
+      "target": "radar_mode:an_apg_63:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63",
+      "target": "radar_mode:an_apg_63:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63",
+      "target": "radar_mode:an_apg_63:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63_v_3",
+      "target": "radar_mode:an_apg_63_v_3:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63_v_3",
+      "target": "radar_mode:an_apg_63_v_3:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63_v_3",
+      "target": "radar_mode:an_apg_63_v_3:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63_v_3",
+      "target": "radar_mode:an_apg_63_v_3:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63_v_3",
+      "target": "radar_mode:an_apg_63_v_3:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_70",
+      "target": "radar_mode:an_apg_70:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_70",
+      "target": "radar_mode:an_apg_70:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_70",
+      "target": "radar_mode:an_apg_70:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_70",
+      "target": "radar_mode:an_apg_70:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_70",
+      "target": "radar_mode:an_apg_70:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_82_v_1",
+      "target": "radar_mode:an_apg_82_v_1:range_while_search"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_82_v_1",
+      "target": "radar_mode:an_apg_82_v_1:track_while_scan"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_82_v_1",
+      "target": "radar_mode:an_apg_82_v_1:single_target_track"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_82_v_1",
+      "target": "radar_mode:an_apg_82_v_1:look_down_shoot_down"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_82_v_1",
+      "target": "radar_mode:an_apg_82_v_1:air_to_ground_mapping"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:mig_29a",
+      "target": "aircraft_family:mig_29"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:mig_29a",
+      "target": "radar:n019_rubin"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:mig_29a"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:ukraine",
+      "target": "aircraft:mig_29a"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:india",
+      "target": "aircraft:mig_29a"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:poland",
+      "target": "aircraft:mig_29a"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:germany",
+      "target": "aircraft:mig_29a"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:mig_29s",
+      "target": "aircraft_family:mig_29"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:mig_29s",
+      "target": "radar:n019_rubin"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:mig_29s"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:ukraine",
+      "target": "aircraft:mig_29s"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:belarus",
+      "target": "aircraft:mig_29s"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:mig_29smt",
+      "target": "aircraft_family:mig_29"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:mig_29smt",
+      "target": "radar:zhuk_me"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:mig_29smt"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:algeria",
+      "target": "aircraft:mig_29smt"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:mig_29k",
+      "target": "aircraft_family:mig_29"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:mig_29k",
+      "target": "radar:zhuk_me"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:mig_29k"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:india",
+      "target": "aircraft:mig_29k"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:mig_35",
+      "target": "aircraft_family:mig_29"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:mig_35",
+      "target": "radar:zhuk_ae"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:mig_35"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:su_27s",
+      "target": "aircraft_family:su_27"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:su_27s",
+      "target": "radar:n001_myech"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:su_27s"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:ukraine",
+      "target": "aircraft:su_27s"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:china",
+      "target": "aircraft:su_27s"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:kazakhstan",
+      "target": "aircraft:su_27s"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:su_30mki",
+      "target": "aircraft_family:su_27"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:su_30mki",
+      "target": "radar:n011m_bars"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:india",
+      "target": "aircraft:su_30mki"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:su_30sm",
+      "target": "aircraft_family:su_27"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:su_30sm",
+      "target": "radar:n011m_bars"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:su_30sm"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:kazakhstan",
+      "target": "aircraft:su_30sm"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:belarus",
+      "target": "aircraft:su_30sm"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:su_35s",
+      "target": "aircraft_family:su_27"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:su_35s",
+      "target": "radar:irbis_e"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:su_35s"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:china",
+      "target": "aircraft:su_35s"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:egypt",
+      "target": "aircraft:su_35s"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:mig_31b",
+      "target": "aircraft_family:mig_31"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:mig_31b",
+      "target": "radar:zaslon"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:mig_31b"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:kazakhstan",
+      "target": "aircraft:mig_31b"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:mig_31bm",
+      "target": "aircraft_family:mig_31"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:mig_31bm",
+      "target": "radar:zaslon_m"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:russia",
+      "target": "aircraft:mig_31bm"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:kazakhstan",
+      "target": "aircraft:mig_31bm"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:typhoon_tranche_1",
+      "target": "aircraft_family:typhoon"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:typhoon_tranche_1",
+      "target": "radar:captor_m"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_kingdom",
+      "target": "aircraft:typhoon_tranche_1"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:germany",
+      "target": "aircraft:typhoon_tranche_1"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:italy",
+      "target": "aircraft:typhoon_tranche_1"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:spain",
+      "target": "aircraft:typhoon_tranche_1"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:austria",
+      "target": "aircraft:typhoon_tranche_1"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:typhoon_tranche_3",
+      "target": "aircraft_family:typhoon"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:typhoon_tranche_3",
+      "target": "radar:captor_e"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_kingdom",
+      "target": "aircraft:typhoon_tranche_3"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:germany",
+      "target": "aircraft:typhoon_tranche_3"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:italy",
+      "target": "aircraft:typhoon_tranche_3"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:spain",
+      "target": "aircraft:typhoon_tranche_3"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:kuwait",
+      "target": "aircraft:typhoon_tranche_3"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:qatar",
+      "target": "aircraft:typhoon_tranche_3"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:saudi_arabia",
+      "target": "aircraft:typhoon_tranche_3"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_16a_b",
+      "target": "aircraft_family:f_16"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_16a_b",
+      "target": "radar:an_apg_66"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_states",
+      "target": "aircraft:f_16a_b"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:belgium",
+      "target": "aircraft:f_16a_b"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:netherlands",
+      "target": "aircraft:f_16a_b"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:norway",
+      "target": "aircraft:f_16a_b"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:denmark",
+      "target": "aircraft:f_16a_b"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:israel",
+      "target": "aircraft:f_16a_b"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_16c_d_block_50",
+      "target": "aircraft_family:f_16"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_16c_d_block_50",
+      "target": "radar:an_apg_68"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_states",
+      "target": "aircraft:f_16c_d_block_50"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:turkey",
+      "target": "aircraft:f_16c_d_block_50"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:greece",
+      "target": "aircraft:f_16c_d_block_50"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:poland",
+      "target": "aircraft:f_16c_d_block_50"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:south_korea",
+      "target": "aircraft:f_16c_d_block_50"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_16e_f_block_60",
+      "target": "aircraft_family:f_16"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_16e_f_block_60",
+      "target": "radar:an_apg_80"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_arab_emirates",
+      "target": "aircraft:f_16e_f_block_60"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_16v_block_70_72",
+      "target": "aircraft_family:f_16"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_16v_block_70_72",
+      "target": "radar:an_apg_83_sabr"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:bahrain",
+      "target": "aircraft:f_16v_block_70_72"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:slovakia",
+      "target": "aircraft:f_16v_block_70_72"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:bulgaria",
+      "target": "aircraft:f_16v_block_70_72"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:taiwan",
+      "target": "aircraft:f_16v_block_70_72"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:greece",
+      "target": "aircraft:f_16v_block_70_72"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_15c",
+      "target": "aircraft_family:f_15"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_15c",
+      "target": "radar:an_apg_63"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_states",
+      "target": "aircraft:f_15c"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:japan",
+      "target": "aircraft:f_15c"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:saudi_arabia",
+      "target": "aircraft:f_15c"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:israel",
+      "target": "aircraft:f_15c"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_15sa",
+      "target": "aircraft_family:f_15"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_15sa",
+      "target": "radar:an_apg_63_v_3"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:saudi_arabia",
+      "target": "aircraft:f_15sa"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_15e_strike_eagle",
+      "target": "aircraft_family:f_15"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_15e_strike_eagle",
+      "target": "radar:an_apg_70"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_states",
+      "target": "aircraft:f_15e_strike_eagle"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:south_korea",
+      "target": "aircraft:f_15e_strike_eagle"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:singapore",
+      "target": "aircraft:f_15e_strike_eagle"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:qatar",
+      "target": "aircraft:f_15e_strike_eagle"
+    },
+    {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:f_15ex_eagle_ii",
+      "target": "aircraft_family:f_15"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:f_15ex_eagle_ii",
+      "target": "radar:an_apg_82_v_1"
+    },
+    {
+      "relation": "OPERATES",
+      "source": "operator:united_states",
+      "target": "aircraft:f_15ex_eagle_ii"
+    }
+  ],
+  "metadata": {
+    "edge_count": 204,
+    "node_count": 174,
+    "schema_version": "1.0"
+  },
+  "nodes": [
+    {
+      "id": "radar:n019_rubin",
+      "label": "Radar",
+      "properties": {
+        "antenna": "slotted planar array",
+        "band": "I/J (X)",
+        "name": "N019 Rubin"
+      }
+    },
+    {
+      "id": "radar_mode:n019_rubin:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.3,
+        "detection_range_km": 80,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n019_rubin:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.38,
+        "detection_range_km": 68,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n019_rubin:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.42,
+        "detection_range_km": 76,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n019_rubin:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.25,
+        "detection_range_km": 52,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 5,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:n019_rubin:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.200000000000001,
+        "detection_range_km": 36,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:n010_zhuk",
+      "label": "Radar",
+      "properties": {
+        "antenna": "slotted planar array",
+        "band": "X",
+        "name": "N010 Zhuk"
+      }
+    },
+    {
+      "id": "radar_mode:n010_zhuk:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.5,
+        "detection_range_km": 100,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n010_zhuk:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.58,
+        "detection_range_km": 85,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n010_zhuk:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.62,
+        "detection_range_km": 95,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n010_zhuk:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.45,
+        "detection_range_km": 65,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 5,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:n010_zhuk:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.4,
+        "detection_range_km": 45,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:zhuk_me",
+      "label": "Radar",
+      "properties": {
+        "antenna": "slotted planar array",
+        "band": "X",
+        "name": "Zhuk-ME"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_me:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.6,
+        "detection_range_km": 120,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_me:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.68,
+        "detection_range_km": 102,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_me:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.719999999999999,
+        "detection_range_km": 114,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_me:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.549999999999999,
+        "detection_range_km": 78,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 5,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_me:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.5,
+        "detection_range_km": 54,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:zhuk_ae",
+      "label": "Radar",
+      "properties": {
+        "antenna": "AESA",
+        "band": "X",
+        "name": "Zhuk-AE"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_ae:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.7,
+        "detection_range_km": 160,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 30,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_ae:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.78,
+        "detection_range_km": 136,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 30,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_ae:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.819999999999999,
+        "detection_range_km": 152,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_ae:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.649999999999999,
+        "detection_range_km": 104,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 15,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_ae:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.6,
+        "detection_range_km": 72,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:n001_myech",
+      "label": "Radar",
+      "properties": {
+        "antenna": "cassegrain",
+        "band": "X",
+        "name": "N001 Myech"
+      }
+    },
+    {
+      "id": "radar_mode:n001_myech:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.4,
+        "detection_range_km": 100,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n001_myech:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.48,
+        "detection_range_km": 85,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n001_myech:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.52,
+        "detection_range_km": 95,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n001_myech:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.35,
+        "detection_range_km": 65,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 5,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:n001_myech:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.3,
+        "detection_range_km": 45,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:n011m_bars",
+      "label": "Radar",
+      "properties": {
+        "antenna": "PESA",
+        "band": "X",
+        "name": "N011M Bars"
+      }
+    },
+    {
+      "id": "radar_mode:n011m_bars:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.6,
+        "detection_range_km": 180,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 15,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n011m_bars:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.68,
+        "detection_range_km": 153,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 15,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n011m_bars:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.719999999999999,
+        "detection_range_km": 171,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:n011m_bars:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.549999999999999,
+        "detection_range_km": 117,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 7,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:n011m_bars:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.5,
+        "detection_range_km": 81,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:irbis_e",
+      "label": "Radar",
+      "properties": {
+        "antenna": "PESA",
+        "band": "X",
+        "name": "Irbis-E"
+      }
+    },
+    {
+      "id": "radar_mode:irbis_e:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.8,
+        "detection_range_km": 300,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 30,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:irbis_e:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.88,
+        "detection_range_km": 255,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 30,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:irbis_e:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.92,
+        "detection_range_km": 285,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:irbis_e:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.75,
+        "detection_range_km": 195,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 15,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:irbis_e:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.700000000000001,
+        "detection_range_km": 135,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:zaslon",
+      "label": "Radar",
+      "properties": {
+        "antenna": "PESA",
+        "band": "X",
+        "name": "Zaslon"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.2,
+        "detection_range_km": 200,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.28,
+        "detection_range_km": 170,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.319999999999999,
+        "detection_range_km": 190,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.149999999999999,
+        "detection_range_km": 130,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 5,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.1,
+        "detection_range_km": 90,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:zaslon_m",
+      "label": "Radar",
+      "properties": {
+        "antenna": "PESA",
+        "band": "X",
+        "name": "Zaslon-M"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon_m:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.25,
+        "detection_range_km": 320,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 24,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon_m:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.33,
+        "detection_range_km": 272,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 24,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon_m:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.37,
+        "detection_range_km": 304,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon_m:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.2,
+        "detection_range_km": 208,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 12,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon_m:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.15,
+        "detection_range_km": 144,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:captor_m",
+      "label": "Radar",
+      "properties": {
+        "antenna": "mechanically scanned array",
+        "band": "X",
+        "name": "CAPTOR-M"
+      }
+    },
+    {
+      "id": "radar_mode:captor_m:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.7,
+        "detection_range_km": 185,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:captor_m:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.78,
+        "detection_range_km": 157,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:captor_m:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.819999999999999,
+        "detection_range_km": 175,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:captor_m:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.649999999999999,
+        "detection_range_km": 120,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:captor_m:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.6,
+        "detection_range_km": 83,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:captor_e",
+      "label": "Radar",
+      "properties": {
+        "antenna": "AESA",
+        "band": "X",
+        "name": "CAPTOR-E"
+      }
+    },
+    {
+      "id": "radar_mode:captor_e:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.9,
+        "detection_range_km": 220,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 40,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:captor_e:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.98,
+        "detection_range_km": 187,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 40,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:captor_e:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 10.02,
+        "detection_range_km": 209,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:captor_e:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.85,
+        "detection_range_km": 143,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 20,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:captor_e:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.8,
+        "detection_range_km": 99,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_66",
+      "label": "Radar",
+      "properties": {
+        "antenna": "planar array",
+        "band": "X",
+        "name": "AN/APG-66"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_66:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.5,
+        "detection_range_km": 75,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_66:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.58,
+        "detection_range_km": 63,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_66:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.62,
+        "detection_range_km": 71,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_66:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.45,
+        "detection_range_km": 48,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 5,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_66:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.4,
+        "detection_range_km": 33,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_68",
+      "label": "Radar",
+      "properties": {
+        "antenna": "planar array",
+        "band": "X",
+        "name": "AN/APG-68"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_68:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.6,
+        "detection_range_km": 160,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_68:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.68,
+        "detection_range_km": 136,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_68:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.719999999999999,
+        "detection_range_km": 152,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_68:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.549999999999999,
+        "detection_range_km": 104,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 5,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_68:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.5,
+        "detection_range_km": 72,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_80",
+      "label": "Radar",
+      "properties": {
+        "antenna": "AESA",
+        "band": "X",
+        "name": "AN/APG-80"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_80:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.8,
+        "detection_range_km": 180,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_80:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.88,
+        "detection_range_km": 153,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_80:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.92,
+        "detection_range_km": 171,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_80:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.75,
+        "detection_range_km": 117,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_80:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.700000000000001,
+        "detection_range_km": 81,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_83_sabr",
+      "label": "Radar",
+      "properties": {
+        "antenna": "AESA",
+        "band": "X",
+        "name": "AN/APG-83 SABR"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_83_sabr:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 10.0,
+        "detection_range_km": 200,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_83_sabr:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 10.08,
+        "detection_range_km": 170,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_83_sabr:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 10.12,
+        "detection_range_km": 190,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_83_sabr:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.95,
+        "detection_range_km": 130,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_83_sabr:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.9,
+        "detection_range_km": 90,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_63",
+      "label": "Radar",
+      "properties": {
+        "antenna": "mechanically scanned array",
+        "band": "X",
+        "name": "AN/APG-63"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.5,
+        "detection_range_km": 160,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 14,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.58,
+        "detection_range_km": 136,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 14,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.62,
+        "detection_range_km": 152,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.45,
+        "detection_range_km": 104,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 7,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.4,
+        "detection_range_km": 72,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_63_v_3",
+      "label": "Radar",
+      "properties": {
+        "antenna": "AESA",
+        "band": "X",
+        "name": "AN/APG-63(V)3"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63_v_3:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.9,
+        "detection_range_km": 220,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63_v_3:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.98,
+        "detection_range_km": 187,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63_v_3:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 10.02,
+        "detection_range_km": 209,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63_v_3:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.85,
+        "detection_range_km": 143,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63_v_3:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.8,
+        "detection_range_km": 99,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_70",
+      "label": "Radar",
+      "properties": {
+        "antenna": "mechanically scanned array",
+        "band": "X",
+        "name": "AN/APG-70"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_70:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 9.6,
+        "detection_range_km": 180,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 14,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_70:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 9.68,
+        "detection_range_km": 153,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 14,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_70:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 9.719999999999999,
+        "detection_range_km": 171,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_70:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.549999999999999,
+        "detection_range_km": 117,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 7,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_70:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.5,
+        "detection_range_km": 81,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar:an_apg_82_v_1",
+      "label": "Radar",
+      "properties": {
+        "antenna": "AESA",
+        "band": "X",
+        "name": "AN/APG-82(V)1"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_82_v_1:range_while_search",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 80.0,
+        "centre_frequency_ghz": 10.0,
+        "detection_range_km": 240,
+        "name": "range_while_search",
+        "notes": "",
+        "pulse_repetition_frequency": "medium",
+        "scan_type": "mechanical_or_electronic",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_82_v_1:track_while_scan",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 120.0,
+        "centre_frequency_ghz": 10.08,
+        "detection_range_km": 204,
+        "name": "track_while_scan",
+        "notes": "",
+        "pulse_repetition_frequency": "medium/high",
+        "scan_type": "sector",
+        "track_capacity": 20,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_82_v_1:single_target_track",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 60.0,
+        "centre_frequency_ghz": 10.12,
+        "detection_range_km": 228,
+        "name": "single_target_track",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "focused",
+        "track_capacity": 1,
+        "waveform": "pulse_doppler"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_82_v_1:look_down_shoot_down",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 100.0,
+        "centre_frequency_ghz": 9.95,
+        "detection_range_km": 156,
+        "name": "look_down_shoot_down",
+        "notes": "",
+        "pulse_repetition_frequency": "high",
+        "scan_type": "sector",
+        "track_capacity": 10,
+        "waveform": "doppler_filtering"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_82_v_1:air_to_ground_mapping",
+      "label": "RadarMode",
+      "properties": {
+        "bandwidth_mhz": 160.0,
+        "centre_frequency_ghz": 9.9,
+        "detection_range_km": 108,
+        "name": "air_to_ground_mapping",
+        "notes": "",
+        "pulse_repetition_frequency": "low/medium",
+        "scan_type": "ground",
+        "track_capacity": null,
+        "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "aircraft_family:mig_29",
+      "label": "AircraftFamily",
+      "properties": {
+        "name": "MiG-29"
+      }
+    },
+    {
+      "id": "aircraft:mig_29a",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 700,
+        "family": "MiG-29",
+        "ferry_range_km": 2100,
+        "generation": "4",
+        "hardpoints": 6,
+        "max_speed_mach": 2.25,
+        "role": "multirole fighter",
+        "service_ceiling_m": 18000,
+        "tags": [],
+        "variant": "MiG-29A"
+      }
+    },
+    {
+      "id": "operator:russia",
+      "label": "Operator",
+      "properties": {
+        "name": "Russia"
+      }
+    },
+    {
+      "id": "operator:ukraine",
+      "label": "Operator",
+      "properties": {
+        "name": "Ukraine"
+      }
+    },
+    {
+      "id": "operator:india",
+      "label": "Operator",
+      "properties": {
+        "name": "India"
+      }
+    },
+    {
+      "id": "operator:poland",
+      "label": "Operator",
+      "properties": {
+        "name": "Poland"
+      }
+    },
+    {
+      "id": "operator:germany",
+      "label": "Operator",
+      "properties": {
+        "name": "Germany"
+      }
+    },
+    {
+      "id": "aircraft:mig_29s",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 700,
+        "family": "MiG-29",
+        "ferry_range_km": 2100,
+        "generation": "4",
+        "hardpoints": 6,
+        "max_speed_mach": 2.25,
+        "role": "multirole fighter",
+        "service_ceiling_m": 18000,
+        "tags": [],
+        "variant": "MiG-29S"
+      }
+    },
+    {
+      "id": "operator:belarus",
+      "label": "Operator",
+      "properties": {
+        "name": "Belarus"
+      }
+    },
+    {
+      "id": "aircraft:mig_29smt",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1000,
+        "family": "MiG-29",
+        "ferry_range_km": 2400,
+        "generation": "4+",
+        "hardpoints": 6,
+        "max_speed_mach": 2.25,
+        "role": "multirole fighter",
+        "service_ceiling_m": 18000,
+        "tags": [],
+        "variant": "MiG-29SMT"
+      }
+    },
+    {
+      "id": "operator:algeria",
+      "label": "Operator",
+      "properties": {
+        "name": "Algeria"
+      }
+    },
+    {
+      "id": "aircraft:mig_29k",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 850,
+        "family": "MiG-29",
+        "ferry_range_km": 2000,
+        "generation": "4+",
+        "hardpoints": 8,
+        "max_speed_mach": 2.0,
+        "role": "carrier multirole fighter",
+        "service_ceiling_m": 17500,
+        "tags": [],
+        "variant": "MiG-29K"
+      }
+    },
+    {
+      "id": "aircraft:mig_35",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1000,
+        "family": "MiG-29",
+        "ferry_range_km": 3100,
+        "generation": "4++",
+        "hardpoints": 9,
+        "max_speed_mach": 2.25,
+        "role": "multirole fighter",
+        "service_ceiling_m": 17500,
+        "tags": [],
+        "variant": "MiG-35"
+      }
+    },
+    {
+      "id": "aircraft_family:su_27",
+      "label": "AircraftFamily",
+      "properties": {
+        "name": "Su-27"
+      }
+    },
+    {
+      "id": "aircraft:su_27s",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1340,
+        "family": "Su-27",
+        "ferry_range_km": 3530,
+        "generation": "4",
+        "hardpoints": 10,
+        "max_speed_mach": 2.35,
+        "role": "air superiority fighter",
+        "service_ceiling_m": 19000,
+        "tags": [],
+        "variant": "Su-27S"
+      }
+    },
+    {
+      "id": "operator:china",
+      "label": "Operator",
+      "properties": {
+        "name": "China"
+      }
+    },
+    {
+      "id": "operator:kazakhstan",
+      "label": "Operator",
+      "properties": {
+        "name": "Kazakhstan"
+      }
+    },
+    {
+      "id": "aircraft:su_30mki",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1500,
+        "family": "Su-27",
+        "ferry_range_km": 3000,
+        "generation": "4+",
+        "hardpoints": 12,
+        "max_speed_mach": 2.0,
+        "role": "multirole fighter",
+        "service_ceiling_m": 17300,
+        "tags": [],
+        "variant": "Su-30MKI"
+      }
+    },
+    {
+      "id": "aircraft:su_30sm",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1500,
+        "family": "Su-27",
+        "ferry_range_km": 3000,
+        "generation": "4+",
+        "hardpoints": 12,
+        "max_speed_mach": 2.0,
+        "role": "multirole fighter",
+        "service_ceiling_m": 17300,
+        "tags": [],
+        "variant": "Su-30SM"
+      }
+    },
+    {
+      "id": "aircraft:su_35s",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1600,
+        "family": "Su-27",
+        "ferry_range_km": 3600,
+        "generation": "4++",
+        "hardpoints": 12,
+        "max_speed_mach": 2.25,
+        "role": "air superiority fighter",
+        "service_ceiling_m": 18000,
+        "tags": [],
+        "variant": "Su-35S"
+      }
+    },
+    {
+      "id": "operator:egypt",
+      "label": "Operator",
+      "properties": {
+        "name": "Egypt"
+      }
+    },
+    {
+      "id": "aircraft_family:mig_31",
+      "label": "AircraftFamily",
+      "properties": {
+        "name": "MiG-31"
+      }
+    },
+    {
+      "id": "aircraft:mig_31b",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 720,
+        "family": "MiG-31",
+        "ferry_range_km": 3000,
+        "generation": "4",
+        "hardpoints": 6,
+        "max_speed_mach": 2.83,
+        "role": "interceptor",
+        "service_ceiling_m": 20600,
+        "tags": [],
+        "variant": "MiG-31B"
+      }
+    },
+    {
+      "id": "aircraft:mig_31bm",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 720,
+        "family": "MiG-31",
+        "ferry_range_km": 3000,
+        "generation": "4+",
+        "hardpoints": 8,
+        "max_speed_mach": 2.83,
+        "role": "interceptor",
+        "service_ceiling_m": 20600,
+        "tags": [],
+        "variant": "MiG-31BM"
+      }
+    },
+    {
+      "id": "aircraft_family:typhoon",
+      "label": "AircraftFamily",
+      "properties": {
+        "name": "Typhoon"
+      }
+    },
+    {
+      "id": "aircraft:typhoon_tranche_1",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1389,
+        "family": "Typhoon",
+        "ferry_range_km": 2900,
+        "generation": "4+",
+        "hardpoints": 13,
+        "max_speed_mach": 2.0,
+        "role": "multirole fighter",
+        "service_ceiling_m": 19800,
+        "tags": [],
+        "variant": "Typhoon Tranche 1"
+      }
+    },
+    {
+      "id": "operator:united_kingdom",
+      "label": "Operator",
+      "properties": {
+        "name": "United Kingdom"
+      }
+    },
+    {
+      "id": "operator:italy",
+      "label": "Operator",
+      "properties": {
+        "name": "Italy"
+      }
+    },
+    {
+      "id": "operator:spain",
+      "label": "Operator",
+      "properties": {
+        "name": "Spain"
+      }
+    },
+    {
+      "id": "operator:austria",
+      "label": "Operator",
+      "properties": {
+        "name": "Austria"
+      }
+    },
+    {
+      "id": "aircraft:typhoon_tranche_3",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1389,
+        "family": "Typhoon",
+        "ferry_range_km": 2900,
+        "generation": "4+",
+        "hardpoints": 13,
+        "max_speed_mach": 2.0,
+        "role": "multirole fighter",
+        "service_ceiling_m": 19800,
+        "tags": [],
+        "variant": "Typhoon Tranche 3"
+      }
+    },
+    {
+      "id": "operator:kuwait",
+      "label": "Operator",
+      "properties": {
+        "name": "Kuwait"
+      }
+    },
+    {
+      "id": "operator:qatar",
+      "label": "Operator",
+      "properties": {
+        "name": "Qatar"
+      }
+    },
+    {
+      "id": "operator:saudi_arabia",
+      "label": "Operator",
+      "properties": {
+        "name": "Saudi Arabia"
+      }
+    },
+    {
+      "id": "aircraft_family:f_16",
+      "label": "AircraftFamily",
+      "properties": {
+        "name": "F-16"
+      }
+    },
+    {
+      "id": "aircraft:f_16a_b",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 550,
+        "family": "F-16",
+        "ferry_range_km": 4220,
+        "generation": "4",
+        "hardpoints": 9,
+        "max_speed_mach": 2.05,
+        "role": "multirole fighter",
+        "service_ceiling_m": 15240,
+        "tags": [],
+        "variant": "F-16A/B"
+      }
+    },
+    {
+      "id": "operator:united_states",
+      "label": "Operator",
+      "properties": {
+        "name": "United States"
+      }
+    },
+    {
+      "id": "operator:belgium",
+      "label": "Operator",
+      "properties": {
+        "name": "Belgium"
+      }
+    },
+    {
+      "id": "operator:netherlands",
+      "label": "Operator",
+      "properties": {
+        "name": "Netherlands"
+      }
+    },
+    {
+      "id": "operator:norway",
+      "label": "Operator",
+      "properties": {
+        "name": "Norway"
+      }
+    },
+    {
+      "id": "operator:denmark",
+      "label": "Operator",
+      "properties": {
+        "name": "Denmark"
+      }
+    },
+    {
+      "id": "operator:israel",
+      "label": "Operator",
+      "properties": {
+        "name": "Israel"
+      }
+    },
+    {
+      "id": "aircraft:f_16c_d_block_50",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 550,
+        "family": "F-16",
+        "ferry_range_km": 4220,
+        "generation": "4",
+        "hardpoints": 9,
+        "max_speed_mach": 2.05,
+        "role": "multirole fighter",
+        "service_ceiling_m": 15240,
+        "tags": [],
+        "variant": "F-16C/D Block 50"
+      }
+    },
+    {
+      "id": "operator:turkey",
+      "label": "Operator",
+      "properties": {
+        "name": "Turkey"
+      }
+    },
+    {
+      "id": "operator:greece",
+      "label": "Operator",
+      "properties": {
+        "name": "Greece"
+      }
+    },
+    {
+      "id": "operator:south_korea",
+      "label": "Operator",
+      "properties": {
+        "name": "South Korea"
+      }
+    },
+    {
+      "id": "aircraft:f_16e_f_block_60",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 550,
+        "family": "F-16",
+        "ferry_range_km": 4220,
+        "generation": "4+",
+        "hardpoints": 11,
+        "max_speed_mach": 2.0,
+        "role": "multirole fighter",
+        "service_ceiling_m": 15240,
+        "tags": [],
+        "variant": "F-16E/F Block 60"
+      }
+    },
+    {
+      "id": "operator:united_arab_emirates",
+      "label": "Operator",
+      "properties": {
+        "name": "United Arab Emirates"
+      }
+    },
+    {
+      "id": "aircraft:f_16v_block_70_72",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 550,
+        "family": "F-16",
+        "ferry_range_km": 4220,
+        "generation": "4+",
+        "hardpoints": 9,
+        "max_speed_mach": 2.0,
+        "role": "multirole fighter",
+        "service_ceiling_m": 15240,
+        "tags": [],
+        "variant": "F-16V Block 70/72"
+      }
+    },
+    {
+      "id": "operator:bahrain",
+      "label": "Operator",
+      "properties": {
+        "name": "Bahrain"
+      }
+    },
+    {
+      "id": "operator:slovakia",
+      "label": "Operator",
+      "properties": {
+        "name": "Slovakia"
+      }
+    },
+    {
+      "id": "operator:bulgaria",
+      "label": "Operator",
+      "properties": {
+        "name": "Bulgaria"
+      }
+    },
+    {
+      "id": "operator:taiwan",
+      "label": "Operator",
+      "properties": {
+        "name": "Taiwan"
+      }
+    },
+    {
+      "id": "aircraft_family:f_15",
+      "label": "AircraftFamily",
+      "properties": {
+        "name": "F-15"
+      }
+    },
+    {
+      "id": "aircraft:f_15c",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1061,
+        "family": "F-15",
+        "ferry_range_km": 5550,
+        "generation": "4",
+        "hardpoints": 9,
+        "max_speed_mach": 2.5,
+        "role": "air superiority fighter",
+        "service_ceiling_m": 20000,
+        "tags": [],
+        "variant": "F-15C"
+      }
+    },
+    {
+      "id": "operator:japan",
+      "label": "Operator",
+      "properties": {
+        "name": "Japan"
+      }
+    },
+    {
+      "id": "aircraft:f_15sa",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1270,
+        "family": "F-15",
+        "ferry_range_km": 3900,
+        "generation": "4+",
+        "hardpoints": 11,
+        "max_speed_mach": 2.5,
+        "role": "strike fighter",
+        "service_ceiling_m": 20000,
+        "tags": [],
+        "variant": "F-15SA"
+      }
+    },
+    {
+      "id": "aircraft:f_15e_strike_eagle",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1270,
+        "family": "F-15",
+        "ferry_range_km": 3900,
+        "generation": "4",
+        "hardpoints": 11,
+        "max_speed_mach": 2.5,
+        "role": "strike fighter",
+        "service_ceiling_m": 18200,
+        "tags": [],
+        "variant": "F-15E Strike Eagle"
+      }
+    },
+    {
+      "id": "operator:singapore",
+      "label": "Operator",
+      "properties": {
+        "name": "Singapore"
+      }
+    },
+    {
+      "id": "aircraft:f_15ex_eagle_ii",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1270,
+        "family": "F-15",
+        "ferry_range_km": 3900,
+        "generation": "4++",
+        "hardpoints": 12,
+        "max_speed_mach": 2.5,
+        "role": "strike fighter",
+        "service_ceiling_m": 18200,
+        "tags": [],
+        "variant": "F-15EX Eagle II"
+      }
+    }
+  ]
+}
