@@ -1,0 +1,33 @@
+neo4j:
+  uri: bolt://localhost:7687
+  user: neo4j
+  password: password
+  database: neo4j
+
+data:
+  hypotheses: [benign, suspicious]
+  feature_properties: [degree_score, text_score, recency_score]
+  # Each training node should contain a list of length 2**len(hypotheses)-1.
+  # For two hypotheses, order is: {benign}, {suspicious}, {benign,suspicious}.
+  label_property: ds_masses
+  node_query: |
+    MATCH (n:EvidenceEntity)
+    RETURN elementId(n) AS id, properties(n) AS props
+    ORDER BY id
+  edge_query: |
+    MATCH (s:EvidenceEntity)-[r]->(t:EvidenceEntity)
+    RETURN elementId(s) AS source, elementId(t) AS target, type(r) AS type
+    ORDER BY source, target, type
+
+model:
+  hidden_features: 64
+  dropout: 0.1
+
+training:
+  epochs: 200
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  device: cpu
+
+output:
+  directory: artifacts
