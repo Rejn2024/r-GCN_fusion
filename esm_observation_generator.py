@@ -51,40 +51,15 @@ TRAINING_AREAS = (
     ("Western Pacific", 24.00, 145.00),
 )
 
-INTERCEPTABLE_MODE_FIELDS = {
-    "prf_min_hz",
-    "prf_max_hz",
-    "centre_frequency_min_ghz",
-    "centre_frequency_max_ghz",
-    "bandwidth_min_mhz",
-    "bandwidth_max_mhz",
-    "waveform",
-    "scan_type",
-    "pulse_width_min_us",
-    "pulse_width_max_us",
-    "duty_cycle_min",
-    "duty_cycle_max",
-    "coherent_processing_interval_min_ms",
-    "coherent_processing_interval_max_ms",
-    "dwell_time_min_ms",
-    "dwell_time_max_ms",
-    "azimuth_coverage_min_deg",
-    "azimuth_coverage_max_deg",
-    "elevation_coverage_min_deg",
-    "elevation_coverage_max_deg",
-    "range_resolution_min_m",
-    "range_resolution_max_m",
-    "velocity_resolution_min_mps",
-    "velocity_resolution_max_mps",
-    "peak_power_min_kw",
-    "peak_power_max_kw",
-    "average_power_min_kw",
-    "average_power_max_kw",
-    "noise_figure_min_db",
-    "noise_figure_max_db",
-    "track_capacity_min",
-    "track_capacity_max",
-}
+DIRECTLY_MEASURABLE_MODE_FIELDS = (
+    ("measured_centre_frequency_ghz", "centre_frequency", "ghz", 0.006),
+    ("measured_bandwidth_mhz", "bandwidth", "mhz", 0.08),
+    ("measured_prf_hz", "prf", "hz", 0.025),
+    ("measured_pulse_width_us", "pulse_width", "us", 0.08),
+    ("measured_duty_cycle", "duty_cycle", "", 0.08),
+    ("measured_coherent_processing_interval_ms", "coherent_processing_interval", "ms", 0.08),
+    ("measured_dwell_time_ms", "dwell_time", "ms", 0.08),
+)
 
 
 def _uniform_error(value: float, relative: float, absolute_floor: float = 0.0) -> ErrorValue:
@@ -105,12 +80,12 @@ def _sample_between(rng: random.Random, low: float, high: float) -> float:
     return rng.uniform(float(low), float(high))
 
 
-def _observed_interval(rng: random.Random, props: dict[str, Any], prefix: str, units: str, rel_error: float) -> dict[str, Any]:
+def _measured_from_mode_range(rng: random.Random, props: dict[str, Any], prefix: str, units: str, rel_error: float) -> dict[str, Any]:
     low = float(props[f"{prefix}_min_{units}"] if units else props[f"{prefix}_min"])
     high = float(props[f"{prefix}_max_{units}"] if units else props[f"{prefix}_max"])
     value = _sample_between(rng, low, high)
-    ev = _uniform_error(value, rel_error, max((high - low) * 0.03, 1e-9))
-    return {"value": ev.value, "error": ev.error, "min": max(low, ev.min), "max": min(high, ev.max)}
+    ev = _uniform_error(value, rel_error, 1e-9)
+    return {"value": ev.value, "error": ev.error, "min": ev.min, "max": ev.max}
 
 
 def _location(rng: random.Random) -> dict[str, Any]:
@@ -184,11 +159,15 @@ def generate_observation(index: int, rng: random.Random, start: datetime, end: d
     ts = start + timedelta(seconds=rng.randrange(max(1, span)))
     label = ObservationLabel(aircraft.family, aircraft.variant, f"aircraft:{slug(aircraft.variant)}", operator, radar.name, f"radar:{slug(radar.name)}", mode.name, f"radar_mode:{slug(radar.name)}:{slug(mode.name)}")
 
-    esm = {k: props[k] for k in INTERCEPTABLE_MODE_FIELDS if k in props and props[k] is not None and not isinstance(props[k], str)}
-    esm.update({"waveform": props["waveform"], "scan_type": props["scan_type"], "radar_band": radar.band, "antenna_hint": radar.antenna})
-    esm["measured_centre_frequency_ghz"] = _observed_interval(rng, props, "centre_frequency", "ghz", 0.006)
-    esm["measured_bandwidth_mhz"] = _observed_interval(rng, props, "bandwidth", "mhz", 0.08)
-    esm["measured_pulse_width_us"] = _observed_interval(rng, props, "pulse_width", "us", 0.08)
+    esm = {
+        "observed_waveform": props["waveform"],
+        "observed_scan_type": props["scan_type"],
+    }
+    for field_name, prefix, units, rel_error in DIRECTLY_MEASURABLE_MODE_FIELDS:
+        esm[field_name] = _measured_from_mode_range(rng, props, prefix, units, rel_error)
+    prf_hz = esm["measured_prf_hz"]["value"]
+    pri = _uniform_error(1_000_000.0 / prf_hz, 0.025)
+    esm["measured_pulse_repetition_interval_us"] = {"value": pri.value, "error": pri.error, "min": pri.min, "max": pri.max}
 
     return {
         "observation_id": f"esm_obs_{index:05d}",
