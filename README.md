@@ -11,10 +11,10 @@ The generated graph includes:
   Mirage, Gripen, Tornado, Harrier, Typhoon, F-16, F-15, F/A-18, F-22,
   F-35, and bomber/attack-helicopter examples;
 - radar nodes known to be associated with those aircraft variants;
-- radar-mode nodes with representative numeric pulse repetition frequency lower/upper bounds, centre frequencies,
-  bandwidths, pulse widths, duty cycles, dwell times, coverage angles, resolution
-  estimates, power/noise figures, detection probabilities, false-alarm rates, and
-  track capacities;
+- radar-mode nodes with representative numeric lower/upper bounds for pulse repetition frequency,
+  centre frequency, bandwidth, detection/instrumented range, pulse width, duty cycle,
+  dwell time, coverage angles, resolution estimates, power/noise figures, detection
+  probabilities, false-alarm rates, and track capacities;
 - kinematic aircraft properties including maximum Mach number, service ceiling,
   combat radius, ferry range, and hardpoints;
 - operator nation/organisation nodes and `OPERATES` relationships.

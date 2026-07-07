@@ -72,12 +72,23 @@ def slug(value: str) -> str:
     return "".join(ch.lower() if ch.isalnum() else "_" for ch in value).strip("_")
 
 
+def numeric_range(value: int | float, spread: float = 0.1, *, floor: float = 0.0, ceiling: float | None = None) -> tuple[int | float, int | float]:
+    """Return representative minimum/maximum bounds around a nominal value."""
+    lower = max(floor, value * (1.0 - spread))
+    upper = value * (1.0 + spread)
+    if ceiling is not None:
+        upper = min(ceiling, upper)
+    if isinstance(value, int):
+        return int(round(lower)), int(round(upper))
+    return round(lower, 6), round(upper, 6)
+
+
 def radar_modes(base_freq: float, long_range: int, track_capacity: int) -> tuple[RadarMode, ...]:
     """Generate a reusable mode suite around a radar's nominal X-band frequency.
 
-    Values are representative experiment features. PRF bounds are expressed in hertz
-    for every mode so downstream models can reason over numeric intervals rather
-    than string-only PRF categories.
+    Values are representative experiment features. Numeric mode parameters are
+    emitted as lower/upper bounds so downstream models can reason over numeric
+    intervals rather than single-point estimates or string-only categories.
     """
     instrumented_range = int(long_range * 1.2)
     return (
@@ -247,26 +258,44 @@ def generate_graph() -> dict[str, Any]:
                 name=mode.name,
                 prf_min_hz=mode.prf_min_hz,
                 prf_max_hz=mode.prf_max_hz,
-                centre_frequency_ghz=mode.centre_frequency_ghz,
-                bandwidth_mhz=mode.bandwidth_mhz,
+                centre_frequency_min_ghz=numeric_range(mode.centre_frequency_ghz, 0.02)[0],
+                centre_frequency_max_ghz=numeric_range(mode.centre_frequency_ghz, 0.02)[1],
+                bandwidth_min_mhz=numeric_range(mode.bandwidth_mhz)[0],
+                bandwidth_max_mhz=numeric_range(mode.bandwidth_mhz)[1],
                 waveform=mode.waveform,
                 scan_type=mode.scan_type,
-                detection_range_km=mode.detection_range_km,
-                pulse_width_us=mode.pulse_width_us,
-                duty_cycle=mode.duty_cycle,
-                coherent_processing_interval_ms=mode.coherent_processing_interval_ms,
-                dwell_time_ms=mode.dwell_time_ms,
-                azimuth_coverage_deg=mode.azimuth_coverage_deg,
-                elevation_coverage_deg=mode.elevation_coverage_deg,
-                range_resolution_m=mode.range_resolution_m,
-                velocity_resolution_mps=mode.velocity_resolution_mps,
-                instrumented_range_km=mode.instrumented_range_km,
-                peak_power_kw=mode.peak_power_kw,
-                average_power_kw=mode.average_power_kw,
-                noise_figure_db=mode.noise_figure_db,
-                probability_of_detection=mode.probability_of_detection,
-                false_alarm_rate=mode.false_alarm_rate,
-                track_capacity=mode.track_capacity,
+                detection_range_min_km=numeric_range(mode.detection_range_km, 0.25)[0],
+                detection_range_max_km=numeric_range(mode.detection_range_km, 0.25)[1],
+                pulse_width_min_us=numeric_range(mode.pulse_width_us)[0],
+                pulse_width_max_us=numeric_range(mode.pulse_width_us)[1],
+                duty_cycle_min=numeric_range(mode.duty_cycle)[0],
+                duty_cycle_max=numeric_range(mode.duty_cycle)[1],
+                coherent_processing_interval_min_ms=numeric_range(mode.coherent_processing_interval_ms)[0],
+                coherent_processing_interval_max_ms=numeric_range(mode.coherent_processing_interval_ms)[1],
+                dwell_time_min_ms=numeric_range(mode.dwell_time_ms)[0],
+                dwell_time_max_ms=numeric_range(mode.dwell_time_ms)[1],
+                azimuth_coverage_min_deg=numeric_range(mode.azimuth_coverage_deg)[0],
+                azimuth_coverage_max_deg=numeric_range(mode.azimuth_coverage_deg)[1],
+                elevation_coverage_min_deg=numeric_range(mode.elevation_coverage_deg)[0],
+                elevation_coverage_max_deg=numeric_range(mode.elevation_coverage_deg)[1],
+                range_resolution_min_m=numeric_range(mode.range_resolution_m)[0],
+                range_resolution_max_m=numeric_range(mode.range_resolution_m)[1],
+                velocity_resolution_min_mps=numeric_range(mode.velocity_resolution_mps)[0],
+                velocity_resolution_max_mps=numeric_range(mode.velocity_resolution_mps)[1],
+                instrumented_range_min_km=numeric_range(mode.instrumented_range_km, 0.25)[0],
+                instrumented_range_max_km=numeric_range(mode.instrumented_range_km, 0.25)[1],
+                peak_power_min_kw=numeric_range(mode.peak_power_kw)[0],
+                peak_power_max_kw=numeric_range(mode.peak_power_kw)[1],
+                average_power_min_kw=numeric_range(mode.average_power_kw)[0],
+                average_power_max_kw=numeric_range(mode.average_power_kw)[1],
+                noise_figure_min_db=numeric_range(mode.noise_figure_db)[0],
+                noise_figure_max_db=numeric_range(mode.noise_figure_db)[1],
+                probability_of_detection_min=numeric_range(mode.probability_of_detection, ceiling=1.0)[0],
+                probability_of_detection_max=numeric_range(mode.probability_of_detection, ceiling=1.0)[1],
+                false_alarm_rate_min=numeric_range(mode.false_alarm_rate, 0.5)[0],
+                false_alarm_rate_max=numeric_range(mode.false_alarm_rate, 0.5)[1],
+                track_capacity_min=mode.track_capacity,
+                track_capacity_max=mode.track_capacity,
                 notes=mode.notes,
             )
             add_edge(edges, radar_id, "HAS_MODE", mode_id)
