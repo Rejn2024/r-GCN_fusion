@@ -1,23 +1,23 @@
 {
   "metadata": {
     "count": 25,
-    "generated_at": "2026-07-07T14:09:45.076888Z",
+    "generated_at": "2026-07-07T17:11:22.396935Z",
     "schema_version": "1.0",
     "seed": 11
   },
   "observations": [
     {
       "approximate_kinematics": {
-        "altitude_error_m": 133.5,
-        "altitude_m": 11390.6,
-        "altitude_max_m": 11524.1,
-        "altitude_min_m": 11257.1,
-        "ground_speed_error_kph": 104.7,
-        "ground_speed_kph": 540.7,
-        "ground_speed_max_kph": 645.4,
-        "ground_speed_min_kph": 435.9,
-        "heading_deg": 353.6,
-        "heading_error_deg": 19.4
+        "altitude_error_m": 691.1,
+        "altitude_m": 6339.5,
+        "altitude_max_m": 7030.6,
+        "altitude_min_m": 5648.4,
+        "ground_speed_error_kph": 77.1,
+        "ground_speed_kph": 1045.4,
+        "ground_speed_max_kph": 1122.5,
+        "ground_speed_min_kph": 968.3,
+        "heading_deg": 234.0,
+        "heading_error_deg": 13.2
       },
       "candidate_labels_from_shared_kg_features": [
         {
@@ -36,23 +36,6 @@
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "mechanically scanned array",
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 110.0,
-        "bandwidth_min_mhz": 90.0,
-        "centre_frequency_max_ghz": 9.741,
-        "centre_frequency_min_ghz": 9.359,
-        "coherent_processing_interval_max_ms": 30.8,
-        "coherent_processing_interval_min_ms": 25.2,
-        "duty_cycle_max": 0.0495,
-        "duty_cycle_min": 0.0405,
-        "dwell_time_max_ms": 154.0,
-        "dwell_time_min_ms": 126.0,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
         "measured_bandwidth_mhz": {
           "error": 8.139816,
           "max": 109.887512,
@@ -65,40 +48,55 @@
           "min": 9.495677,
           "value": 9.552995
         },
-        "measured_pulse_width_us": {
-          "error": 0.074955,
-          "max": 1.011887,
-          "min": 0.9,
-          "value": 0.936932
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.371254,
+          "max": 32.011924,
+          "min": 27.269417,
+          "value": 29.64067
         },
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "prf_max_hz": 45000,
-        "prf_min_hz": 15000,
-        "pulse_width_max_us": 1.1,
-        "pulse_width_min_us": 0.9,
-        "radar_band": "X",
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_type": "sector",
-        "track_capacity_max": 5,
-        "track_capacity_min": 5,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
+        "measured_duty_cycle": {
+          "error": 0.003694,
+          "max": 0.049862,
+          "min": 0.042475,
+          "value": 0.046169
+        },
+        "measured_dwell_time_ms": {
+          "error": 10.290837,
+          "max": 138.926293,
+          "min": 118.34462,
+          "value": 128.635457
+        },
+        "measured_prf_hz": {
+          "error": 513.495258,
+          "max": 21053.305574,
+          "min": 20026.315058,
+          "value": 20539.810316
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.217149,
+          "max": 49.90309,
+          "min": 47.468793,
+          "value": 48.685941
+        },
+        "measured_pulse_width_us": {
+          "error": 0.080191,
+          "max": 1.082572,
+          "min": 0.922191,
+          "value": 1.002382
+        },
+        "observed_scan_type": "sector",
+        "observed_waveform": "doppler_filtering"
       },
       "estimated_emitter_location": {
-        "area": "Western Pacific",
+        "area": "South China Sea",
         "error_box": {
-          "max_latitude_deg": 24.449768,
-          "max_longitude_deg": 146.006019,
-          "min_latitude_deg": 24.329529,
-          "min_longitude_deg": 145.751842
+          "max_latitude_deg": 15.740307,
+          "max_longitude_deg": 114.349105,
+          "min_latitude_deg": 15.110464,
+          "min_longitude_deg": 113.883056
         },
-        "estimated_latitude_deg": 24.389648,
-        "estimated_longitude_deg": 145.878931
+        "estimated_latitude_deg": 15.425385,
+        "estimated_longitude_deg": 114.116081
       },
       "ground_truth_label": {
         "aircraft_family": "Gripen",
@@ -120,950 +118,416 @@
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 168.0,
-        "altitude_m": 5877.0,
-        "altitude_max_m": 6045.0,
-        "altitude_min_m": 5709.0,
-        "ground_speed_error_kph": 25.5,
-        "ground_speed_kph": 683.6,
-        "ground_speed_max_kph": 709.2,
-        "ground_speed_min_kph": 658.1,
-        "heading_deg": 235.7,
-        "heading_error_deg": 9.3
+        "altitude_error_m": 666.2,
+        "altitude_m": 16136.7,
+        "altitude_max_m": 16802.9,
+        "altitude_min_m": 15470.4,
+        "ground_speed_error_kph": 121.6,
+        "ground_speed_kph": 1447.7,
+        "ground_speed_max_kph": 1569.3,
+        "ground_speed_min_kph": 1326.0,
+        "heading_deg": 113.5,
+        "heading_error_deg": 6.1
       },
       "candidate_labels_from_shared_kg_features": [
         {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15c",
-          "aircraft_variant": "F-15C",
-          "operator": "United States",
-          "radar": "AN/APG-63"
+          "aircraft_family": "Su-27",
+          "aircraft_id": "aircraft:su_27s",
+          "aircraft_variant": "Su-27S",
+          "operator": "Russia",
+          "radar": "N001 Myech"
         },
         {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15sa",
-          "aircraft_variant": "F-15SA",
-          "operator": "Saudi Arabia",
-          "radar": "AN/APG-63(V)3"
+          "aircraft_family": "Su-27",
+          "aircraft_id": "aircraft:su_30mki",
+          "aircraft_variant": "Su-30MKI",
+          "operator": "India",
+          "radar": "N011M Bars"
         },
         {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15e_strike_eagle",
-          "aircraft_variant": "F-15E Strike Eagle",
-          "operator": "United States",
-          "radar": "AN/APG-70"
+          "aircraft_family": "Su-27",
+          "aircraft_id": "aircraft:su_30sm",
+          "aircraft_variant": "Su-30SM",
+          "operator": "Russia",
+          "radar": "N011M Bars"
         },
         {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15ex_eagle_ii",
-          "aircraft_variant": "F-15EX Eagle II",
-          "operator": "United States",
-          "radar": "AN/APG-82(V)1"
+          "aircraft_family": "Su-27",
+          "aircraft_id": "aircraft:su_35s",
+          "aircraft_variant": "Su-35S",
+          "operator": "Russia",
+          "radar": "Irbis-E"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 176.0,
-        "bandwidth_min_mhz": 144.0,
-        "centre_frequency_max_ghz": 10.098,
-        "centre_frequency_min_ghz": 9.702,
-        "coherent_processing_interval_max_ms": 70.4,
-        "coherent_processing_interval_min_ms": 57.6,
-        "duty_cycle_max": 0.055,
-        "duty_cycle_min": 0.045,
-        "dwell_time_max_ms": 275.0,
-        "dwell_time_min_ms": 225.0,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
         "measured_bandwidth_mhz": {
-          "error": 12.006933,
-          "max": 162.093598,
-          "min": 144.0,
-          "value": 150.086664
+          "error": 6.527511,
+          "max": 88.121401,
+          "min": 75.066378,
+          "value": 81.593889
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.058353,
-          "max": 9.783936,
-          "min": 9.702,
-          "value": 9.725582
+          "error": 0.059693,
+          "max": 10.008482,
+          "min": 9.889097,
+          "value": 9.948789
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.202002,
+          "max": 16.227031,
+          "min": 13.823026,
+          "value": 15.025028
+        },
+        "measured_duty_cycle": {
+          "error": 0.001629,
+          "max": 0.021993,
+          "min": 0.018735,
+          "value": 0.020364
+        },
+        "measured_dwell_time_ms": {
+          "error": 6.059066,
+          "max": 81.797397,
+          "min": 69.679264,
+          "value": 75.73833
+        },
+        "measured_prf_hz": {
+          "error": 172.263551,
+          "max": 7062.805584,
+          "min": 6718.278482,
+          "value": 6890.542033
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 3.628162,
+          "max": 148.754626,
+          "min": 141.498302,
+          "value": 145.126464
         },
         "measured_pulse_width_us": {
-          "error": 0.758711,
-          "max": 10.242597,
-          "min": 9.0,
-          "value": 9.483886
+          "error": 0.193052,
+          "max": 2.606198,
+          "min": 2.220095,
+          "value": 2.413147
         },
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "prf_max_hz": 5000,
-        "prf_min_hz": 1000,
-        "pulse_width_max_us": 11.0,
-        "pulse_width_min_us": 9.0,
-        "radar_band": "X",
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_type": "ground",
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
+        "observed_scan_type": "mechanical_or_electronic",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
-        "area": "North Sea",
+        "area": "South China Sea",
         "error_box": {
-          "max_latitude_deg": 57.303432,
-          "max_longitude_deg": 1.821383,
-          "min_latitude_deg": 56.865218,
-          "min_longitude_deg": 1.636377
+          "max_latitude_deg": 16.675665,
+          "max_longitude_deg": 114.606361,
+          "min_latitude_deg": 16.322974,
+          "min_longitude_deg": 114.368336
         },
-        "estimated_latitude_deg": 57.084325,
-        "estimated_longitude_deg": 1.72888
+        "estimated_latitude_deg": 16.499319,
+        "estimated_longitude_deg": 114.487349
       },
       "ground_truth_label": {
-        "aircraft_family": "F-15",
-        "aircraft_id": "aircraft:f_15ex_eagle_ii",
-        "aircraft_variant": "F-15EX Eagle II",
-        "mode": "air_to_ground_mapping",
-        "mode_id": "radar_mode:an_apg_82_v_1:air_to_ground_mapping",
-        "operator": "United States",
-        "radar": "AN/APG-82(V)1",
-        "radar_id": "radar:an_apg_82_v_1"
+        "aircraft_family": "Su-27",
+        "aircraft_id": "aircraft:su_35s",
+        "aircraft_variant": "Su-35S",
+        "mode": "range_while_search",
+        "mode_id": "radar_mode:irbis_e:range_while_search",
+        "operator": "Russia",
+        "radar": "Irbis-E",
+        "radar_id": "radar:irbis_e"
       },
       "observation_id": "esm_obs_00002",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2024-02-19T01:28:46Z",
-      "timestamp_unix": 1708306126
+      "timestamp_iso8601": "2024-05-27T17:44:20Z",
+      "timestamp_unix": 1716831860
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 828.2,
-        "altitude_m": 1509.3,
-        "altitude_max_m": 2337.5,
-        "altitude_min_m": 681.1,
-        "ground_speed_error_kph": 49.1,
-        "ground_speed_kph": 1297.3,
-        "ground_speed_max_kph": 1346.4,
-        "ground_speed_min_kph": 1248.2,
-        "heading_deg": 169.2,
-        "heading_error_deg": 19.6
+        "altitude_error_m": 639.9,
+        "altitude_m": 9823.8,
+        "altitude_max_m": 10463.7,
+        "altitude_min_m": 9183.8,
+        "ground_speed_error_kph": 47.8,
+        "ground_speed_kph": 869.8,
+        "ground_speed_max_kph": 917.6,
+        "ground_speed_min_kph": 822.0,
+        "heading_deg": 121.3,
+        "heading_error_deg": 7.6
       },
       "candidate_labels_from_shared_kg_features": [
         {
-          "aircraft_family": "MiG-31",
-          "aircraft_id": "aircraft:mig_31bm",
-          "aircraft_variant": "MiG-31BM",
-          "operator": "Kazakhstan",
-          "radar": "Zaslon-M"
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29a",
+          "aircraft_variant": "MiG-29A",
+          "operator": "India",
+          "radar": "N019 Rubin"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29s",
+          "aircraft_variant": "MiG-29S",
+          "operator": "Russia",
+          "radar": "N019 Rubin"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29smt",
+          "aircraft_variant": "MiG-29SMT",
+          "operator": "Russia",
+          "radar": "Zhuk-ME"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29k",
+          "aircraft_variant": "MiG-29K",
+          "operator": "India",
+          "radar": "Zhuk-ME"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_35",
+          "aircraft_variant": "MiG-35",
+          "operator": "Russia",
+          "radar": "Zhuk-AE"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29upg",
+          "aircraft_variant": "MiG-29UPG",
+          "operator": "India",
+          "radar": "Zhuk-ME"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "PESA",
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 66.0,
-        "bandwidth_min_mhz": 54.0,
-        "centre_frequency_max_ghz": 9.5574,
-        "centre_frequency_min_ghz": 9.1826,
-        "coherent_processing_interval_max_ms": 35.2,
-        "coherent_processing_interval_min_ms": 28.8,
-        "duty_cycle_max": 0.0396,
-        "duty_cycle_min": 0.0324,
-        "dwell_time_max_ms": 176.0,
-        "dwell_time_min_ms": 144.0,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
         "measured_bandwidth_mhz": {
-          "error": 4.597478,
-          "max": 62.065958,
-          "min": 54.0,
-          "value": 57.468479
+          "error": 6.272512,
+          "max": 84.678909,
+          "min": 72.133885,
+          "value": 78.406397
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.055612,
-          "max": 9.324291,
-          "min": 9.213067,
-          "value": 9.268679
+          "error": 0.058214,
+          "max": 9.760468,
+          "min": 9.644041,
+          "value": 9.702255
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.368911,
+          "max": 18.480303,
+          "min": 15.74248,
+          "value": 17.111391
+        },
+        "measured_duty_cycle": {
+          "error": 0.001747,
+          "max": 0.023579,
+          "min": 0.020086,
+          "value": 0.021832
+        },
+        "measured_dwell_time_ms": {
+          "error": 5.760698,
+          "max": 77.769417,
+          "min": 66.248021,
+          "value": 72.008719
+        },
+        "measured_prf_hz": {
+          "error": 180.822953,
+          "max": 7413.741062,
+          "min": 7052.095157,
+          "value": 7232.918109
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 3.45642,
+          "max": 141.713204,
+          "min": 134.800365,
+          "value": 138.256784
         },
         "measured_pulse_width_us": {
-          "error": 0.087748,
-          "max": 1.184602,
-          "min": 1.08,
-          "value": 1.096854
+          "error": 0.195461,
+          "max": 2.638717,
+          "min": 2.247796,
+          "value": 2.443257
         },
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "prf_max_hz": 30000,
-        "prf_min_hz": 12000,
-        "pulse_width_max_us": 1.32,
-        "pulse_width_min_us": 1.08,
-        "radar_band": "X",
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
+        "observed_scan_type": "mechanical_or_electronic",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
-        "area": "Eastern Mediterranean",
+        "area": "Arabian Gulf",
         "error_box": {
-          "max_latitude_deg": 34.354884,
-          "max_longitude_deg": 32.376324,
-          "min_latitude_deg": 34.047515,
-          "min_longitude_deg": 31.703177
+          "max_latitude_deg": 27.181275,
+          "max_longitude_deg": 51.663816,
+          "min_latitude_deg": 26.880978,
+          "min_longitude_deg": 51.15012
         },
-        "estimated_latitude_deg": 34.201199,
-        "estimated_longitude_deg": 32.039751
+        "estimated_latitude_deg": 27.031126,
+        "estimated_longitude_deg": 51.406968
       },
       "ground_truth_label": {
-        "aircraft_family": "MiG-31",
-        "aircraft_id": "aircraft:mig_31bm",
-        "aircraft_variant": "MiG-31BM",
-        "mode": "single_target_track",
-        "mode_id": "radar_mode:zaslon_m:single_target_track",
-        "operator": "Kazakhstan",
-        "radar": "Zaslon-M",
-        "radar_id": "radar:zaslon_m"
+        "aircraft_family": "MiG-29",
+        "aircraft_id": "aircraft:mig_29upg",
+        "aircraft_variant": "MiG-29UPG",
+        "mode": "range_while_search",
+        "mode_id": "radar_mode:zhuk_me:range_while_search",
+        "operator": "India",
+        "radar": "Zhuk-ME",
+        "radar_id": "radar:zhuk_me"
       },
       "observation_id": "esm_obs_00003",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2025-08-11T17:57:31Z",
-      "timestamp_unix": 1754935051
+      "timestamp_iso8601": "2025-03-13T09:43:57Z",
+      "timestamp_unix": 1741859037
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 472.0,
-        "altitude_m": 13504.5,
-        "altitude_max_m": 13976.5,
-        "altitude_min_m": 13032.6,
-        "ground_speed_error_kph": 26.3,
-        "ground_speed_kph": 703.8,
-        "ground_speed_max_kph": 730.1,
-        "ground_speed_min_kph": 677.6,
-        "heading_deg": 175.3,
-        "heading_error_deg": 14.3
+        "altitude_error_m": 791.5,
+        "altitude_m": 16053.8,
+        "altitude_max_m": 16845.2,
+        "altitude_min_m": 15262.3,
+        "ground_speed_error_kph": 25.1,
+        "ground_speed_kph": 844.9,
+        "ground_speed_max_kph": 869.9,
+        "ground_speed_min_kph": 819.8,
+        "heading_deg": 350.9,
+        "heading_error_deg": 12.7
       },
       "candidate_labels_from_shared_kg_features": [
         {
-          "aircraft_family": "B-1",
-          "aircraft_id": "aircraft:b_1b_lancer",
-          "aircraft_variant": "B-1B Lancer",
-          "operator": "United States",
-          "radar": "AN/APQ-164"
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29a",
+          "aircraft_variant": "MiG-29A",
+          "operator": "Ukraine",
+          "radar": "N019 Rubin"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29s",
+          "aircraft_variant": "MiG-29S",
+          "operator": "Ukraine",
+          "radar": "N019 Rubin"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29smt",
+          "aircraft_variant": "MiG-29SMT",
+          "operator": "Russia",
+          "radar": "Zhuk-ME"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29k",
+          "aircraft_variant": "MiG-29K",
+          "operator": "Russia",
+          "radar": "Zhuk-ME"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_35",
+          "aircraft_variant": "MiG-35",
+          "operator": "Russia",
+          "radar": "Zhuk-AE"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29upg",
+          "aircraft_variant": "MiG-29UPG",
+          "operator": "India",
+          "radar": "Zhuk-ME"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "PESA",
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 88.0,
-        "bandwidth_min_mhz": 72.0,
-        "centre_frequency_max_ghz": 15.3,
-        "centre_frequency_min_ghz": 14.7,
-        "coherent_processing_interval_max_ms": 17.6,
-        "coherent_processing_interval_min_ms": 14.4,
-        "duty_cycle_max": 0.022,
-        "duty_cycle_min": 0.018,
-        "dwell_time_max_ms": 88.0,
-        "dwell_time_min_ms": 72.0,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
         "measured_bandwidth_mhz": {
-          "error": 6.756494,
-          "max": 88.0,
-          "min": 77.69968,
-          "value": 84.456174
+          "error": 5.889339,
+          "max": 79.50608,
+          "min": 67.727402,
+          "value": 73.616741
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.090466,
-          "max": 15.168139,
-          "min": 14.987207,
-          "value": 15.077673
+          "error": 0.055234,
+          "max": 9.26089,
+          "min": 9.150422,
+          "value": 9.205656
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.29518,
+          "max": 17.484924,
+          "min": 14.894565,
+          "value": 16.189744
+        },
+        "measured_duty_cycle": {
+          "error": 0.001497,
+          "max": 0.020208,
+          "min": 0.017214,
+          "value": 0.018711
+        },
+        "measured_dwell_time_ms": {
+          "error": 6.332704,
+          "max": 85.491502,
+          "min": 72.826094,
+          "value": 79.158798
+        },
+        "measured_prf_hz": {
+          "error": 82.486675,
+          "max": 3381.95369,
+          "min": 3216.980339,
+          "value": 3299.467015
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 7.576981,
+          "max": 310.656235,
+          "min": 295.502272,
+          "value": 303.079254
         },
         "measured_pulse_width_us": {
-          "error": 0.190791,
-          "max": 2.575679,
-          "min": 2.25,
-          "value": 2.384888
+          "error": 0.211881,
+          "max": 2.860392,
+          "min": 2.43663,
+          "value": 2.648511
         },
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "prf_max_hz": 8000,
-        "prf_min_hz": 3000,
-        "pulse_width_max_us": 2.75,
-        "pulse_width_min_us": 2.25,
-        "radar_band": "Ku",
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
+        "observed_scan_type": "mechanical_or_electronic",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
-        "area": "Eastern Mediterranean",
+        "area": "Arabian Gulf",
         "error_box": {
-          "max_latitude_deg": 34.094845,
-          "max_longitude_deg": 29.87076,
-          "min_latitude_deg": 33.772413,
-          "min_longitude_deg": 29.220137
+          "max_latitude_deg": 27.369998,
+          "max_longitude_deg": 53.711367,
+          "min_latitude_deg": 27.04169,
+          "min_longitude_deg": 53.405765
         },
-        "estimated_latitude_deg": 33.933629,
-        "estimated_longitude_deg": 29.545449
+        "estimated_latitude_deg": 27.205844,
+        "estimated_longitude_deg": 53.558566
       },
       "ground_truth_label": {
-        "aircraft_family": "B-1",
-        "aircraft_id": "aircraft:b_1b_lancer",
-        "aircraft_variant": "B-1B Lancer",
+        "aircraft_family": "MiG-29",
+        "aircraft_id": "aircraft:mig_29s",
+        "aircraft_variant": "MiG-29S",
         "mode": "range_while_search",
-        "mode_id": "radar_mode:an_apq_164:range_while_search",
-        "operator": "United States",
-        "radar": "AN/APQ-164",
-        "radar_id": "radar:an_apq_164"
+        "mode_id": "radar_mode:n019_rubin:range_while_search",
+        "operator": "Ukraine",
+        "radar": "N019 Rubin",
+        "radar_id": "radar:n019_rubin"
       },
       "observation_id": "esm_obs_00004",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2025-03-15T19:30:40Z",
-      "timestamp_unix": 1742067040
+      "timestamp_iso8601": "2024-04-14T13:03:36Z",
+      "timestamp_unix": 1713099816
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 807.9,
-        "altitude_m": 13310.1,
-        "altitude_max_m": 14118.0,
-        "altitude_min_m": 12502.3,
-        "ground_speed_error_kph": 60.0,
-        "ground_speed_kph": 1420.9,
-        "ground_speed_max_kph": 1480.9,
-        "ground_speed_min_kph": 1361.0,
-        "heading_deg": 75.9,
-        "heading_error_deg": 9.1
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "J-10",
-          "aircraft_id": "aircraft:j_10a",
-          "aircraft_variant": "J-10A",
-          "operator": "China",
-          "radar": "KLJ-10"
-        },
-        {
-          "aircraft_family": "J-10",
-          "aircraft_id": "aircraft:j_10b",
-          "aircraft_variant": "J-10B",
-          "operator": "China",
-          "radar": "Type 1473"
-        },
-        {
-          "aircraft_family": "J-10",
-          "aircraft_id": "aircraft:j_10c",
-          "aircraft_variant": "J-10C",
-          "operator": "China",
-          "radar": "Type 1493 AESA"
-        },
-        {
-          "aircraft_family": "J-11",
-          "aircraft_id": "aircraft:j_11b",
-          "aircraft_variant": "J-11B",
-          "operator": "China",
-          "radar": "Type 1473"
-        },
-        {
-          "aircraft_family": "J-15",
-          "aircraft_id": "aircraft:j_15",
-          "aircraft_variant": "J-15",
-          "operator": "China",
-          "radar": "Type 1473"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "pulse-doppler array",
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 176.0,
-        "bandwidth_min_mhz": 144.0,
-        "centre_frequency_max_ghz": 9.588,
-        "centre_frequency_min_ghz": 9.212,
-        "coherent_processing_interval_max_ms": 70.4,
-        "coherent_processing_interval_min_ms": 57.6,
-        "duty_cycle_max": 0.055,
-        "duty_cycle_min": 0.045,
-        "dwell_time_max_ms": 275.0,
-        "dwell_time_min_ms": 225.0,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "measured_bandwidth_mhz": {
-          "error": 13.489976,
-          "max": 176.0,
-          "min": 155.134728,
-          "value": 168.624704
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.057495,
-          "max": 9.588,
-          "min": 9.524971,
-          "value": 9.582466
-        },
-        "measured_pulse_width_us": {
-          "error": 0.787077,
-          "max": 10.625538,
-          "min": 9.051384,
-          "value": 9.838461
-        },
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "prf_max_hz": 5000,
-        "prf_min_hz": 1000,
-        "pulse_width_max_us": 11.0,
-        "pulse_width_min_us": 9.0,
-        "radar_band": "X",
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_type": "ground",
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      },
-      "estimated_emitter_location": {
-        "area": "Sea of Japan",
-        "error_box": {
-          "max_latitude_deg": 38.447641,
-          "max_longitude_deg": 134.878601,
-          "min_latitude_deg": 38.251407,
-          "min_longitude_deg": 134.645932
-        },
-        "estimated_latitude_deg": 38.349524,
-        "estimated_longitude_deg": 134.762267
-      },
-      "ground_truth_label": {
-        "aircraft_family": "J-10",
-        "aircraft_id": "aircraft:j_10b",
-        "aircraft_variant": "J-10B",
-        "mode": "air_to_ground_mapping",
-        "mode_id": "radar_mode:type_1473:air_to_ground_mapping",
-        "operator": "China",
-        "radar": "Type 1473",
-        "radar_id": "radar:type_1473"
-      },
-      "observation_id": "esm_obs_00005",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2024-05-28T02:36:54Z",
-      "timestamp_unix": 1716863814
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 201.8,
-        "altitude_m": 7516.8,
-        "altitude_max_m": 7718.6,
-        "altitude_min_m": 7315.0,
-        "ground_speed_error_kph": 96.5,
-        "ground_speed_kph": 465.5,
-        "ground_speed_max_kph": 562.1,
-        "ground_speed_min_kph": 369.0,
-        "heading_deg": 211.4,
-        "heading_error_deg": 17.0
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "Typhoon",
-          "aircraft_id": "aircraft:typhoon_tranche_1",
-          "aircraft_variant": "Typhoon Tranche 1",
-          "operator": "United Kingdom",
-          "radar": "CAPTOR-M"
-        },
-        {
-          "aircraft_family": "Typhoon",
-          "aircraft_id": "aircraft:typhoon_tranche_3",
-          "aircraft_variant": "Typhoon Tranche 3",
-          "operator": "United Kingdom",
-          "radar": "CAPTOR-E"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 132.0,
-        "bandwidth_min_mhz": 108.0,
-        "centre_frequency_max_ghz": 10.1796,
-        "centre_frequency_min_ghz": 9.7804,
-        "coherent_processing_interval_max_ms": 26.4,
-        "coherent_processing_interval_min_ms": 21.6,
-        "duty_cycle_max": 0.0352,
-        "duty_cycle_min": 0.0288,
-        "dwell_time_max_ms": 132.0,
-        "dwell_time_min_ms": 108.0,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "measured_bandwidth_mhz": {
-          "error": 8.658384,
-          "max": 116.88819,
-          "min": 108.0,
-          "value": 108.229806
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.05974,
-          "max": 10.016403,
-          "min": 9.896923,
-          "value": 9.956663
-        },
-        "measured_pulse_width_us": {
-          "error": 0.147178,
-          "max": 1.98,
-          "min": 1.692542,
-          "value": 1.83972
-        },
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "prf_max_hz": 18000,
-        "prf_min_hz": 6000,
-        "pulse_width_max_us": 1.98,
-        "pulse_width_min_us": 1.62,
-        "radar_band": "X",
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_type": "sector",
-        "track_capacity_max": 40,
-        "track_capacity_min": 40,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "South China Sea",
-        "error_box": {
-          "max_latitude_deg": 16.255305,
-          "max_longitude_deg": 112.956551,
-          "min_latitude_deg": 16.061715,
-          "min_longitude_deg": 112.489135
-        },
-        "estimated_latitude_deg": 16.15851,
-        "estimated_longitude_deg": 112.722843
-      },
-      "ground_truth_label": {
-        "aircraft_family": "Typhoon",
-        "aircraft_id": "aircraft:typhoon_tranche_3",
-        "aircraft_variant": "Typhoon Tranche 3",
-        "mode": "track_while_scan",
-        "mode_id": "radar_mode:captor_e:track_while_scan",
-        "operator": "United Kingdom",
-        "radar": "CAPTOR-E",
-        "radar_id": "radar:captor_e"
-      },
-      "observation_id": "esm_obs_00006",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2024-06-14T15:08:40Z",
-      "timestamp_unix": 1718377720
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 162.8,
-        "altitude_m": 7905.5,
-        "altitude_max_m": 8068.3,
-        "altitude_min_m": 7742.7,
-        "ground_speed_error_kph": 80.5,
-        "ground_speed_kph": 1137.0,
-        "ground_speed_max_kph": 1217.5,
-        "ground_speed_min_kph": 1056.5,
-        "heading_deg": 17.1,
-        "heading_error_deg": 4.0
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15c",
-          "aircraft_variant": "F-15C",
-          "operator": "Israel",
-          "radar": "AN/APG-63"
-        },
-        {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15sa",
-          "aircraft_variant": "F-15SA",
-          "operator": "Saudi Arabia",
-          "radar": "AN/APG-63(V)3"
-        },
-        {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15e_strike_eagle",
-          "aircraft_variant": "F-15E Strike Eagle",
-          "operator": "United States",
-          "radar": "AN/APG-70"
-        },
-        {
-          "aircraft_family": "F-15",
-          "aircraft_id": "aircraft:f_15ex_eagle_ii",
-          "aircraft_variant": "F-15EX Eagle II",
-          "operator": "United States",
-          "radar": "AN/APG-82(V)1"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "mechanically scanned array",
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 132.0,
-        "bandwidth_min_mhz": 108.0,
-        "centre_frequency_max_ghz": 9.7716,
-        "centre_frequency_min_ghz": 9.3884,
-        "coherent_processing_interval_max_ms": 26.4,
-        "coherent_processing_interval_min_ms": 21.6,
-        "duty_cycle_max": 0.0352,
-        "duty_cycle_min": 0.0288,
-        "dwell_time_max_ms": 132.0,
-        "dwell_time_min_ms": 108.0,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "measured_bandwidth_mhz": {
-          "error": 10.384174,
-          "max": 132.0,
-          "min": 119.417996,
-          "value": 129.80217
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.056685,
-          "max": 9.504149,
-          "min": 9.39078,
-          "value": 9.447465
-        },
-        "measured_pulse_width_us": {
-          "error": 0.153153,
-          "max": 1.98,
-          "min": 1.761256,
-          "value": 1.914409
-        },
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "prf_max_hz": 18000,
-        "prf_min_hz": 6000,
-        "pulse_width_max_us": 1.98,
-        "pulse_width_min_us": 1.62,
-        "radar_band": "X",
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_type": "sector",
-        "track_capacity_max": 14,
-        "track_capacity_min": 14,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "Arabian Gulf",
-        "error_box": {
-          "max_latitude_deg": 26.657446,
-          "max_longitude_deg": 51.932685,
-          "min_latitude_deg": 26.1949,
-          "min_longitude_deg": 51.518169
-        },
-        "estimated_latitude_deg": 26.426173,
-        "estimated_longitude_deg": 51.725427
-      },
-      "ground_truth_label": {
-        "aircraft_family": "F-15",
-        "aircraft_id": "aircraft:f_15c",
-        "aircraft_variant": "F-15C",
-        "mode": "track_while_scan",
-        "mode_id": "radar_mode:an_apg_63:track_while_scan",
-        "operator": "Israel",
-        "radar": "AN/APG-63",
-        "radar_id": "radar:an_apg_63"
-      },
-      "observation_id": "esm_obs_00007",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2025-05-02T04:41:31Z",
-      "timestamp_unix": 1746160891
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 591.4,
-        "altitude_m": 7205.5,
-        "altitude_max_m": 7797.0,
-        "altitude_min_m": 6614.1,
-        "ground_speed_error_kph": 123.0,
-        "ground_speed_kph": 524.2,
-        "ground_speed_max_kph": 647.2,
-        "ground_speed_min_kph": 401.2,
-        "heading_deg": 100.9,
-        "heading_error_deg": 18.5
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "Tejas",
-          "aircraft_id": "aircraft:tejas_mk1",
-          "aircraft_variant": "Tejas Mk1",
-          "operator": "India",
-          "radar": "EL/M-2032"
-        },
-        {
-          "aircraft_family": "AMX",
-          "aircraft_id": "aircraft:amx_a_11b",
-          "aircraft_variant": "AMX A-11B",
-          "operator": "Brazil",
-          "radar": "EL/M-2032"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "multimode planar array",
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 132.0,
-        "bandwidth_min_mhz": 108.0,
-        "centre_frequency_max_ghz": 9.7716,
-        "centre_frequency_min_ghz": 9.3884,
-        "coherent_processing_interval_max_ms": 26.4,
-        "coherent_processing_interval_min_ms": 21.6,
-        "duty_cycle_max": 0.0352,
-        "duty_cycle_min": 0.0288,
-        "dwell_time_max_ms": 132.0,
-        "dwell_time_min_ms": 108.0,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "measured_bandwidth_mhz": {
-          "error": 9.133404,
-          "max": 123.300958,
-          "min": 108.0,
-          "value": 114.167554
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.05795,
-          "max": 9.716345,
-          "min": 9.600444,
-          "value": 9.658395
-        },
-        "measured_pulse_width_us": {
-          "error": 0.153323,
-          "max": 1.98,
-          "min": 1.763215,
-          "value": 1.916538
-        },
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "prf_max_hz": 18000,
-        "prf_min_hz": 6000,
-        "pulse_width_max_us": 1.98,
-        "pulse_width_min_us": 1.62,
-        "radar_band": "X",
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "Western Pacific",
-        "error_box": {
-          "max_latitude_deg": 23.640819,
-          "max_longitude_deg": 144.078309,
-          "min_latitude_deg": 23.119793,
-          "min_longitude_deg": 143.974292
-        },
-        "estimated_latitude_deg": 23.380306,
-        "estimated_longitude_deg": 144.0263
-      },
-      "ground_truth_label": {
-        "aircraft_family": "AMX",
-        "aircraft_id": "aircraft:amx_a_11b",
-        "aircraft_variant": "AMX A-11B",
-        "mode": "track_while_scan",
-        "mode_id": "radar_mode:el_m_2032:track_while_scan",
-        "operator": "Brazil",
-        "radar": "EL/M-2032",
-        "radar_id": "radar:el_m_2032"
-      },
-      "observation_id": "esm_obs_00008",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2025-07-28T15:24:20Z",
-      "timestamp_unix": 1753716260
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 686.3,
-        "altitude_m": 7674.2,
-        "altitude_max_m": 8360.6,
-        "altitude_min_m": 6987.9,
-        "ground_speed_error_kph": 63.1,
-        "ground_speed_kph": 587.2,
-        "ground_speed_max_kph": 650.3,
-        "ground_speed_min_kph": 524.2,
-        "heading_deg": 187.9,
-        "heading_error_deg": 19.0
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "J-7",
-          "aircraft_id": "aircraft:j_7g",
-          "aircraft_variant": "J-7G",
-          "operator": "Nigeria",
-          "radar": "KLJ-7"
-        },
-        {
-          "aircraft_family": "JF-17",
-          "aircraft_id": "aircraft:jf_17_block_i",
-          "aircraft_variant": "JF-17 Block I",
-          "operator": "Nigeria",
-          "radar": "KLJ-7"
-        },
-        {
-          "aircraft_family": "JF-17",
-          "aircraft_id": "aircraft:jf_17_block_iii",
-          "aircraft_variant": "JF-17 Block III",
-          "operator": "P",
-          "radar": "KLJ-7A"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "slotted planar array",
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 88.0,
-        "bandwidth_min_mhz": 72.0,
-        "centre_frequency_max_ghz": 9.588,
-        "centre_frequency_min_ghz": 9.212,
-        "coherent_processing_interval_max_ms": 17.6,
-        "coherent_processing_interval_min_ms": 14.4,
-        "duty_cycle_max": 0.022,
-        "duty_cycle_min": 0.018,
-        "dwell_time_max_ms": 88.0,
-        "dwell_time_min_ms": 72.0,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "measured_bandwidth_mhz": {
-          "error": 6.330503,
-          "max": 85.461791,
-          "min": 72.800785,
-          "value": 79.131288
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.055879,
-          "max": 9.369096,
-          "min": 9.257338,
-          "value": 9.313217
-        },
-        "measured_pulse_width_us": {
-          "error": 0.182418,
-          "max": 2.462646,
-          "min": 2.25,
-          "value": 2.280228
-        },
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "prf_max_hz": 8000,
-        "prf_min_hz": 3000,
-        "pulse_width_max_us": 2.75,
-        "pulse_width_min_us": 2.25,
-        "radar_band": "X",
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "Baltic Sea",
-        "error_box": {
-          "max_latitude_deg": 54.937266,
-          "max_longitude_deg": 18.652512,
-          "min_latitude_deg": 54.254505,
-          "min_longitude_deg": 18.533509
-        },
-        "estimated_latitude_deg": 54.595886,
-        "estimated_longitude_deg": 18.593011
-      },
-      "ground_truth_label": {
-        "aircraft_family": "JF-17",
-        "aircraft_id": "aircraft:jf_17_block_i",
-        "aircraft_variant": "JF-17 Block I",
-        "mode": "range_while_search",
-        "mode_id": "radar_mode:klj_7:range_while_search",
-        "operator": "Nigeria",
-        "radar": "KLJ-7",
-        "radar_id": "radar:klj_7"
-      },
-      "observation_id": "esm_obs_00009",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2024-02-23T17:07:48Z",
-      "timestamp_unix": 1708708068
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 820.2,
-        "altitude_m": 9281.9,
-        "altitude_max_m": 10102.0,
-        "altitude_min_m": 8461.7,
-        "ground_speed_error_kph": 109.8,
-        "ground_speed_kph": 525.3,
-        "ground_speed_max_kph": 635.0,
-        "ground_speed_min_kph": 415.5,
-        "heading_deg": 265.4,
-        "heading_error_deg": 14.7
+        "altitude_error_m": 597.7,
+        "altitude_m": 1728.0,
+        "altitude_max_m": 2325.7,
+        "altitude_min_m": 1130.3,
+        "ground_speed_error_kph": 67.4,
+        "ground_speed_kph": 1086.6,
+        "ground_speed_max_kph": 1154.0,
+        "ground_speed_min_kph": 1019.2,
+        "heading_deg": 45.8,
+        "heading_error_deg": 12.6
       },
       "candidate_labels_from_shared_kg_features": [
         {
@@ -1110,350 +574,105 @@
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 110.0,
-        "bandwidth_min_mhz": 90.0,
-        "centre_frequency_max_ghz": 9.843,
-        "centre_frequency_min_ghz": 9.457,
-        "coherent_processing_interval_max_ms": 30.8,
-        "coherent_processing_interval_min_ms": 25.2,
-        "duty_cycle_max": 0.0495,
-        "duty_cycle_min": 0.0405,
-        "dwell_time_max_ms": 154.0,
-        "dwell_time_min_ms": 126.0,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
         "measured_bandwidth_mhz": {
-          "error": 7.698888,
-          "max": 103.934982,
-          "min": 90.0,
-          "value": 96.236094
+          "error": 9.795876,
+          "max": 132.244319,
+          "min": 112.652568,
+          "value": 122.448444
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.05757,
-          "max": 9.652554,
-          "min": 9.537414,
-          "value": 9.594984
+          "error": 0.059232,
+          "max": 9.93122,
+          "min": 9.812756,
+          "value": 9.871988
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.897552,
+          "max": 25.616952,
+          "min": 21.821848,
+          "value": 23.7194
+        },
+        "measured_duty_cycle": {
+          "error": 0.002379,
+          "max": 0.032116,
+          "min": 0.027358,
+          "value": 0.029737
+        },
+        "measured_dwell_time_ms": {
+          "error": 8.658384,
+          "max": 116.88819,
+          "min": 99.571421,
+          "value": 108.229806
+        },
+        "measured_prf_hz": {
+          "error": 323.08795,
+          "max": 13246.605961,
+          "min": 12600.430061,
+          "value": 12923.518011
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.934458,
+          "max": 79.312769,
+          "min": 75.443854,
+          "value": 77.378311
         },
         "measured_pulse_width_us": {
-          "error": 0.072537,
-          "max": 0.979245,
-          "min": 0.9,
-          "value": 0.906708
+          "error": 0.130813,
+          "max": 1.765972,
+          "min": 1.504346,
+          "value": 1.635159
         },
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "prf_max_hz": 45000,
-        "prf_min_hz": 15000,
-        "pulse_width_max_us": 1.1,
-        "pulse_width_min_us": 0.9,
-        "radar_band": "X",
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_type": "sector",
-        "track_capacity_max": 15,
-        "track_capacity_min": 15,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
+        "observed_scan_type": "sector",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
-        "area": "Eastern Mediterranean",
+        "area": "Bay of Bengal",
         "error_box": {
-          "max_latitude_deg": 34.578757,
-          "max_longitude_deg": 32.041288,
-          "min_latitude_deg": 34.314658,
-          "min_longitude_deg": 31.3417
+          "max_latitude_deg": 16.044638,
+          "max_longitude_deg": 87.755305,
+          "min_latitude_deg": 15.937099,
+          "min_longitude_deg": 87.561715
         },
-        "estimated_latitude_deg": 34.446707,
-        "estimated_longitude_deg": 31.691494
+        "estimated_latitude_deg": 15.990868,
+        "estimated_longitude_deg": 87.65851
       },
       "ground_truth_label": {
         "aircraft_family": "MiG-29",
-        "aircraft_id": "aircraft:mig_35",
-        "aircraft_variant": "MiG-35",
-        "mode": "look_down_shoot_down",
-        "mode_id": "radar_mode:zhuk_ae:look_down_shoot_down",
+        "aircraft_id": "aircraft:mig_29smt",
+        "aircraft_variant": "MiG-29SMT",
+        "mode": "track_while_scan",
+        "mode_id": "radar_mode:zhuk_me:track_while_scan",
         "operator": "Russia",
-        "radar": "Zhuk-AE",
-        "radar_id": "radar:zhuk_ae"
+        "radar": "Zhuk-ME",
+        "radar_id": "radar:zhuk_me"
       },
-      "observation_id": "esm_obs_00010",
+      "observation_id": "esm_obs_00005",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2025-12-07T23:35:23Z",
-      "timestamp_unix": 1765150523
+      "timestamp_iso8601": "2024-11-02T05:48:42Z",
+      "timestamp_unix": 1730526522
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 611.5,
-        "altitude_m": 8937.9,
-        "altitude_max_m": 9549.4,
-        "altitude_min_m": 8326.4,
-        "ground_speed_error_kph": 34.2,
-        "ground_speed_kph": 1032.7,
-        "ground_speed_max_kph": 1066.9,
-        "ground_speed_min_kph": 998.5,
-        "heading_deg": 357.6,
-        "heading_error_deg": 17.8
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18e_super_hornet",
-          "aircraft_variant": "F/A-18E Super Hornet",
-          "operator": "Australia",
-          "radar": "AN/APG-79"
-        },
-        {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18f_super_hornet",
-          "aircraft_variant": "F/A-18F Super Hornet",
-          "operator": "Australia",
-          "radar": "AN/APG-79"
-        },
-        {
-          "aircraft_family": "EA-18G",
-          "aircraft_id": "aircraft:ea_18g_growler",
-          "aircraft_variant": "EA-18G Growler",
-          "operator": "Australia",
-          "radar": "AN/APG-79"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 88.0,
-        "bandwidth_min_mhz": 72.0,
-        "centre_frequency_max_ghz": 10.2,
-        "centre_frequency_min_ghz": 9.8,
-        "coherent_processing_interval_max_ms": 17.6,
-        "coherent_processing_interval_min_ms": 14.4,
-        "duty_cycle_max": 0.022,
-        "duty_cycle_min": 0.018,
-        "dwell_time_max_ms": 88.0,
-        "dwell_time_min_ms": 72.0,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "measured_bandwidth_mhz": {
-          "error": 5.859417,
-          "max": 79.102126,
-          "min": 72.0,
-          "value": 73.242709
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.059936,
-          "max": 10.049247,
-          "min": 9.929376,
-          "value": 9.989311
-        },
-        "measured_pulse_width_us": {
-          "error": 0.214292,
-          "max": 2.75,
-          "min": 2.464356,
-          "value": 2.678648
-        },
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "prf_max_hz": 8000,
-        "prf_min_hz": 3000,
-        "pulse_width_max_us": 2.75,
-        "pulse_width_min_us": 2.25,
-        "radar_band": "X",
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "North Sea",
-        "error_box": {
-          "max_latitude_deg": 57.570405,
-          "max_longitude_deg": 2.620769,
-          "min_latitude_deg": 57.110431,
-          "min_longitude_deg": 2.316076
-        },
-        "estimated_latitude_deg": 57.340418,
-        "estimated_longitude_deg": 2.468422
-      },
-      "ground_truth_label": {
-        "aircraft_family": "EA-18G",
-        "aircraft_id": "aircraft:ea_18g_growler",
-        "aircraft_variant": "EA-18G Growler",
-        "mode": "range_while_search",
-        "mode_id": "radar_mode:an_apg_79:range_while_search",
-        "operator": "Australia",
-        "radar": "AN/APG-79",
-        "radar_id": "radar:an_apg_79"
-      },
-      "observation_id": "esm_obs_00011",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2025-06-16T04:02:46Z",
-      "timestamp_unix": 1750046566
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 489.0,
-        "altitude_m": 11027.8,
-        "altitude_max_m": 11516.9,
-        "altitude_min_m": 10538.8,
-        "ground_speed_error_kph": 100.9,
-        "ground_speed_kph": 562.9,
-        "ground_speed_max_kph": 663.8,
-        "ground_speed_min_kph": 462.0,
-        "heading_deg": 322.7,
-        "heading_error_deg": 8.6
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18c_hornet",
-          "aircraft_variant": "F/A-18C Hornet",
-          "operator": "United States",
-          "radar": "AN/APG-73"
-        },
-        {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18e_super_hornet",
-          "aircraft_variant": "F/A-18E Super Hornet",
-          "operator": "Australia",
-          "radar": "AN/APG-79"
-        },
-        {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18f_super_hornet",
-          "aircraft_variant": "F/A-18F Super Hornet",
-          "operator": "Australia",
-          "radar": "AN/APG-79"
-        },
-        {
-          "aircraft_family": "EA-18G",
-          "aircraft_id": "aircraft:ea_18g_growler",
-          "aircraft_variant": "EA-18G Growler",
-          "operator": "Australia",
-          "radar": "AN/APG-79"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 176.0,
-        "bandwidth_min_mhz": 144.0,
-        "centre_frequency_max_ghz": 10.098,
-        "centre_frequency_min_ghz": 9.702,
-        "coherent_processing_interval_max_ms": 70.4,
-        "coherent_processing_interval_min_ms": 57.6,
-        "duty_cycle_max": 0.055,
-        "duty_cycle_min": 0.045,
-        "dwell_time_max_ms": 275.0,
-        "dwell_time_min_ms": 225.0,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "measured_bandwidth_mhz": {
-          "error": 13.666227,
-          "max": 176.0,
-          "min": 157.161614,
-          "value": 170.827841
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.059259,
-          "max": 9.935706,
-          "min": 9.817188,
-          "value": 9.876447
-        },
-        "measured_pulse_width_us": {
-          "error": 0.733405,
-          "max": 9.90097,
-          "min": 9.0,
-          "value": 9.167564
-        },
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "prf_max_hz": 5000,
-        "prf_min_hz": 1000,
-        "pulse_width_max_us": 11.0,
-        "pulse_width_min_us": 9.0,
-        "radar_band": "X",
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_type": "ground",
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      },
-      "estimated_emitter_location": {
-        "area": "North Sea",
-        "error_box": {
-          "max_latitude_deg": 55.717838,
-          "max_longitude_deg": 1.349563,
-          "min_latitude_deg": 55.643572,
-          "min_longitude_deg": 0.67683
-        },
-        "estimated_latitude_deg": 55.680705,
-        "estimated_longitude_deg": 1.013197
-      },
-      "ground_truth_label": {
-        "aircraft_family": "F/A-18",
-        "aircraft_id": "aircraft:f_a_18f_super_hornet",
-        "aircraft_variant": "F/A-18F Super Hornet",
-        "mode": "air_to_ground_mapping",
-        "mode_id": "radar_mode:an_apg_79:air_to_ground_mapping",
-        "operator": "Australia",
-        "radar": "AN/APG-79",
-        "radar_id": "radar:an_apg_79"
-      },
-      "observation_id": "esm_obs_00012",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2024-12-21T13:11:11Z",
-      "timestamp_unix": 1734786671
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 804.2,
-        "altitude_m": 14798.8,
-        "altitude_max_m": 15603.0,
-        "altitude_min_m": 13994.6,
-        "ground_speed_error_kph": 130.1,
-        "ground_speed_kph": 880.9,
-        "ground_speed_max_kph": 1011.0,
-        "ground_speed_min_kph": 750.8,
-        "heading_deg": 138.4,
-        "heading_error_deg": 12.5
+        "altitude_error_m": 304.1,
+        "altitude_m": 3299.3,
+        "altitude_max_m": 3603.4,
+        "altitude_min_m": 2995.1,
+        "ground_speed_error_kph": 83.9,
+        "ground_speed_kph": 497.4,
+        "ground_speed_max_kph": 581.3,
+        "ground_speed_min_kph": 413.5,
+        "heading_deg": 266.3,
+        "heading_error_deg": 9.0
       },
       "candidate_labels_from_shared_kg_features": [
         {
           "aircraft_family": "F-15",
           "aircraft_id": "aircraft:f_15c",
           "aircraft_variant": "F-15C",
-          "operator": "Saudi Arabia",
+          "operator": "Israel",
           "radar": "AN/APG-63"
         },
         {
@@ -1479,336 +698,758 @@
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 176.0,
-        "bandwidth_min_mhz": 144.0,
-        "centre_frequency_max_ghz": 9.996,
-        "centre_frequency_min_ghz": 9.604,
-        "coherent_processing_interval_max_ms": 70.4,
-        "coherent_processing_interval_min_ms": 57.6,
-        "duty_cycle_max": 0.055,
-        "duty_cycle_min": 0.045,
-        "dwell_time_max_ms": 275.0,
-        "dwell_time_min_ms": 225.0,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
         "measured_bandwidth_mhz": {
-          "error": 12.396862,
-          "max": 167.357639,
-          "min": 144.0,
-          "value": 154.960777
+          "error": 10.384174,
+          "max": 140.186343,
+          "min": 119.417996,
+          "value": 129.80217
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.059397,
-          "max": 9.958875,
-          "min": 9.840081,
-          "value": 9.899478
+          "error": 0.056685,
+          "max": 9.504149,
+          "min": 9.39078,
+          "value": 9.447465
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.011939,
+          "max": 27.161176,
+          "min": 23.137298,
+          "value": 25.149237
+        },
+        "measured_duty_cycle": {
+          "error": 0.002401,
+          "max": 0.032416,
+          "min": 0.027614,
+          "value": 0.030015
+        },
+        "measured_dwell_time_ms": {
+          "error": 10.445577,
+          "max": 141.015295,
+          "min": 120.12414,
+          "value": 130.569718
+        },
+        "measured_prf_hz": {
+          "error": 395.340585,
+          "max": 16208.963978,
+          "min": 15418.282809,
+          "value": 15813.623394
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.580915,
+          "max": 64.817529,
+          "min": 61.655699,
+          "value": 63.236614
         },
         "measured_pulse_width_us": {
-          "error": 0.868848,
-          "max": 11.0,
-          "min": 9.991755,
-          "value": 10.860603
+          "error": 0.136786,
+          "max": 1.846605,
+          "min": 1.573034,
+          "value": 1.709819
         },
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "prf_max_hz": 5000,
-        "prf_min_hz": 1000,
-        "pulse_width_max_us": 11.0,
-        "pulse_width_min_us": 9.0,
-        "radar_band": "X",
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_type": "ground",
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
+        "observed_scan_type": "sector",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
-        "area": "Western Pacific",
+        "area": "Arabian Gulf",
         "error_box": {
-          "max_latitude_deg": 25.418268,
-          "max_longitude_deg": 144.574404,
-          "min_latitude_deg": 24.932093,
-          "min_longitude_deg": 144.38736
+          "max_latitude_deg": 26.495327,
+          "max_longitude_deg": 52.469749,
+          "min_latitude_deg": 26.126517,
+          "min_longitude_deg": 52.359511
         },
-        "estimated_latitude_deg": 25.175181,
-        "estimated_longitude_deg": 144.480882
+        "estimated_latitude_deg": 26.310922,
+        "estimated_longitude_deg": 52.41463
       },
       "ground_truth_label": {
         "aircraft_family": "F-15",
-        "aircraft_id": "aircraft:f_15sa",
-        "aircraft_variant": "F-15SA",
-        "mode": "air_to_ground_mapping",
-        "mode_id": "radar_mode:an_apg_63_v_3:air_to_ground_mapping",
-        "operator": "Saudi Arabia",
-        "radar": "AN/APG-63(V)3",
-        "radar_id": "radar:an_apg_63_v_3"
+        "aircraft_id": "aircraft:f_15c",
+        "aircraft_variant": "F-15C",
+        "mode": "track_while_scan",
+        "mode_id": "radar_mode:an_apg_63:track_while_scan",
+        "operator": "Israel",
+        "radar": "AN/APG-63",
+        "radar_id": "radar:an_apg_63"
       },
-      "observation_id": "esm_obs_00013",
+      "observation_id": "esm_obs_00006",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2024-05-11T17:42:23Z",
-      "timestamp_unix": 1715449343
+      "timestamp_iso8601": "2025-05-02T04:41:31Z",
+      "timestamp_unix": 1746160891
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 600.6,
-        "altitude_m": 4115.2,
-        "altitude_max_m": 4715.8,
-        "altitude_min_m": 3514.6,
-        "ground_speed_error_kph": 72.6,
-        "ground_speed_kph": 725.2,
-        "ground_speed_max_kph": 797.8,
-        "ground_speed_min_kph": 652.6,
-        "heading_deg": 177.8,
-        "heading_error_deg": 7.7
+        "altitude_error_m": 241.0,
+        "altitude_m": 6944.7,
+        "altitude_max_m": 7185.7,
+        "altitude_min_m": 6703.7,
+        "ground_speed_error_kph": 32.0,
+        "ground_speed_kph": 719.2,
+        "ground_speed_max_kph": 751.1,
+        "ground_speed_min_kph": 687.2,
+        "heading_deg": 132.8,
+        "heading_error_deg": 12.3
       },
       "candidate_labels_from_shared_kg_features": [
         {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18c_hornet",
-          "aircraft_variant": "F/A-18C Hornet",
-          "operator": "Finland",
-          "radar": "AN/APG-73"
+          "aircraft_family": "Rafale",
+          "aircraft_id": "aircraft:rafale_eh_dh",
+          "aircraft_variant": "Rafale EH/DH",
+          "operator": "India",
+          "radar": "RBE2-AA"
         },
         {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18e_super_hornet",
-          "aircraft_variant": "F/A-18E Super Hornet",
-          "operator": "United States",
-          "radar": "AN/APG-79"
+          "aircraft_family": "Rafale",
+          "aircraft_id": "aircraft:rafale_c",
+          "aircraft_variant": "Rafale C",
+          "operator": "India",
+          "radar": "RBE2-AA"
         },
         {
-          "aircraft_family": "F/A-18",
-          "aircraft_id": "aircraft:f_a_18f_super_hornet",
-          "aircraft_variant": "F/A-18F Super Hornet",
-          "operator": "United States",
-          "radar": "AN/APG-79"
+          "aircraft_family": "Rafale",
+          "aircraft_id": "aircraft:rafale_b",
+          "aircraft_variant": "Rafale B",
+          "operator": "India",
+          "radar": "RBE2-AA"
+        },
+        {
+          "aircraft_family": "Rafale",
+          "aircraft_id": "aircraft:rafale_m",
+          "aircraft_variant": "Rafale M",
+          "operator": "France",
+          "radar": "RBE2-AA"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "slotted planar array",
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 132.0,
-        "bandwidth_min_mhz": 108.0,
-        "centre_frequency_max_ghz": 9.8736,
-        "centre_frequency_min_ghz": 9.4864,
-        "coherent_processing_interval_max_ms": 26.4,
-        "coherent_processing_interval_min_ms": 21.6,
-        "duty_cycle_max": 0.0352,
-        "duty_cycle_min": 0.0288,
-        "dwell_time_max_ms": 132.0,
-        "dwell_time_min_ms": 108.0,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
         "measured_bandwidth_mhz": {
-          "error": 10.247224,
-          "max": 132.0,
-          "min": 117.843071,
-          "value": 128.090295
+          "error": 8.686778,
+          "max": 117.271502,
+          "min": 99.897946,
+          "value": 108.584724
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.058072,
-          "max": 9.736704,
-          "min": 9.62056,
-          "value": 9.678632
+          "error": 0.059147,
+          "max": 9.917057,
+          "min": 9.798762,
+          "value": 9.857909
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.308771,
+          "max": 31.168414,
+          "min": 26.550871,
+          "value": 28.859643
+        },
+        "measured_duty_cycle": {
+          "error": 0.003585,
+          "max": 0.048399,
+          "min": 0.041229,
+          "value": 0.044814
+        },
+        "measured_dwell_time_ms": {
+          "error": 11.45955,
+          "max": 154.703926,
+          "min": 131.784825,
+          "value": 143.244376
+        },
+        "measured_prf_hz": {
+          "error": 1107.883662,
+          "max": 45423.230157,
+          "min": 43207.462832,
+          "value": 44315.346495
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 0.564139,
+          "max": 23.129685,
+          "min": 22.001408,
+          "value": 22.565546
         },
         "measured_pulse_width_us": {
-          "error": 0.154043,
-          "max": 1.98,
-          "min": 1.771496,
-          "value": 1.925539
+          "error": 0.074022,
+          "max": 0.999302,
+          "min": 0.851258,
+          "value": 0.92528
         },
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "prf_max_hz": 18000,
-        "prf_min_hz": 6000,
-        "pulse_width_max_us": 1.98,
-        "pulse_width_min_us": 1.62,
-        "radar_band": "X",
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
+        "observed_scan_type": "sector",
+        "observed_waveform": "doppler_filtering"
       },
       "estimated_emitter_location": {
         "area": "Eastern Mediterranean",
         "error_box": {
-          "max_latitude_deg": 35.934122,
-          "max_longitude_deg": 30.504596,
-          "min_latitude_deg": 35.765879,
-          "min_longitude_deg": 30.15618
+          "max_latitude_deg": 33.935931,
+          "max_longitude_deg": 32.287384,
+          "min_latitude_deg": 33.745385,
+          "min_longitude_deg": 32.216777
         },
-        "estimated_latitude_deg": 35.85,
-        "estimated_longitude_deg": 30.330388
+        "estimated_latitude_deg": 33.840658,
+        "estimated_longitude_deg": 32.252081
       },
       "ground_truth_label": {
-        "aircraft_family": "F/A-18",
-        "aircraft_id": "aircraft:f_a_18c_hornet",
-        "aircraft_variant": "F/A-18C Hornet",
-        "mode": "track_while_scan",
-        "mode_id": "radar_mode:an_apg_73:track_while_scan",
-        "operator": "Finland",
-        "radar": "AN/APG-73",
-        "radar_id": "radar:an_apg_73"
+        "aircraft_family": "Rafale",
+        "aircraft_id": "aircraft:rafale_b",
+        "aircraft_variant": "Rafale B",
+        "mode": "look_down_shoot_down",
+        "mode_id": "radar_mode:rbe2_aa:look_down_shoot_down",
+        "operator": "India",
+        "radar": "RBE2-AA",
+        "radar_id": "radar:rbe2_aa"
       },
-      "observation_id": "esm_obs_00014",
+      "observation_id": "esm_obs_00007",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2024-04-14T12:14:41Z",
-      "timestamp_unix": 1713096881
+      "timestamp_iso8601": "2024-08-15T22:01:52Z",
+      "timestamp_unix": 1723759312
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 763.7,
-        "altitude_m": 7056.2,
-        "altitude_max_m": 7820.0,
-        "altitude_min_m": 6292.5,
-        "ground_speed_error_kph": 27.8,
-        "ground_speed_kph": 585.9,
-        "ground_speed_max_kph": 613.7,
-        "ground_speed_min_kph": 558.0,
-        "heading_deg": 85.5,
-        "heading_error_deg": 4.5
+        "altitude_error_m": 348.9,
+        "altitude_m": 2414.2,
+        "altitude_max_m": 2763.0,
+        "altitude_min_m": 2065.3,
+        "ground_speed_error_kph": 32.7,
+        "ground_speed_kph": 1048.4,
+        "ground_speed_max_kph": 1081.1,
+        "ground_speed_min_kph": 1015.6,
+        "heading_deg": 49.2,
+        "heading_error_deg": 3.3
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "F-16",
+          "aircraft_id": "aircraft:f_16v_block_70_72",
+          "aircraft_variant": "F-16V Block 70/72",
+          "operator": "Bahrain",
+          "radar": "AN/APG-83 SABR"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 5.261274,
+          "max": 71.027195,
+          "min": 60.504647,
+          "value": 65.765921
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.06167,
+          "max": 10.339922,
+          "min": 10.216583,
+          "value": 10.278253
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.375858,
+          "max": 32.07408,
+          "min": 27.322364,
+          "value": 29.698222
+        },
+        "measured_duty_cycle": {
+          "error": 0.002929,
+          "max": 0.039537,
+          "min": 0.033679,
+          "value": 0.036608
+        },
+        "measured_dwell_time_ms": {
+          "error": 11.609806,
+          "max": 156.732383,
+          "min": 133.512771,
+          "value": 145.122577
+        },
+        "measured_prf_hz": {
+          "error": 595.619421,
+          "max": 24420.396258,
+          "min": 23229.157416,
+          "value": 23824.776837
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.049328,
+          "max": 43.022439,
+          "min": 40.923783,
+          "value": 41.973111
+        },
+        "measured_pulse_width_us": {
+          "error": 0.099671,
+          "max": 1.345565,
+          "min": 1.146222,
+          "value": 1.245893
+        },
+        "observed_scan_type": "focused",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "North Sea",
+        "error_box": {
+          "max_latitude_deg": 56.304156,
+          "max_longitude_deg": 1.86315,
+          "min_latitude_deg": 56.044601,
+          "min_longitude_deg": 1.781683
+        },
+        "estimated_latitude_deg": 56.174379,
+        "estimated_longitude_deg": 1.822416
+      },
+      "ground_truth_label": {
+        "aircraft_family": "F-16",
+        "aircraft_id": "aircraft:f_16v_block_70_72",
+        "aircraft_variant": "F-16V Block 70/72",
+        "mode": "single_target_track",
+        "mode_id": "radar_mode:an_apg_83_sabr:single_target_track",
+        "operator": "Bahrain",
+        "radar": "AN/APG-83 SABR",
+        "radar_id": "radar:an_apg_83_sabr"
+      },
+      "observation_id": "esm_obs_00008",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2024-04-17T12:07:04Z",
+      "timestamp_unix": 1713355624
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 405.9,
+        "altitude_m": 8497.4,
+        "altitude_max_m": 8903.3,
+        "altitude_min_m": 8091.5,
+        "ground_speed_error_kph": 96.9,
+        "ground_speed_kph": 1313.5,
+        "ground_speed_max_kph": 1410.3,
+        "ground_speed_min_kph": 1216.6,
+        "heading_deg": 209.8,
+        "heading_error_deg": 13.0
       },
       "candidate_labels_from_shared_kg_features": [
         {
           "aircraft_family": "Gripen",
           "aircraft_id": "aircraft:jas_39c_gripen",
           "aircraft_variant": "JAS 39C Gripen",
-          "operator": "Hungary",
+          "operator": "Thailand",
           "radar": "PS-05/A"
-        },
-        {
-          "aircraft_family": "Gripen",
-          "aircraft_id": "aircraft:jas_39e_gripen",
-          "aircraft_variant": "JAS 39E Gripen",
-          "operator": "Sweden",
-          "radar": "Raven ES-05"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "mechanically scanned array",
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 88.0,
-        "bandwidth_min_mhz": 72.0,
-        "centre_frequency_max_ghz": 9.792,
-        "centre_frequency_min_ghz": 9.408,
-        "coherent_processing_interval_max_ms": 17.6,
-        "coherent_processing_interval_min_ms": 14.4,
-        "duty_cycle_max": 0.022,
-        "duty_cycle_min": 0.018,
-        "dwell_time_max_ms": 88.0,
-        "dwell_time_min_ms": 72.0,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
         "measured_bandwidth_mhz": {
-          "error": 6.877221,
-          "max": 88.0,
-          "min": 79.088044,
-          "value": 85.965265
+          "error": 5.218799,
+          "max": 70.453793,
+          "min": 60.016194,
+          "value": 65.234993
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.056521,
-          "max": 9.476611,
-          "min": 9.408,
-          "value": 9.420091
+          "error": 0.057257,
+          "max": 9.600145,
+          "min": 9.485631,
+          "value": 9.542888
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.478906,
+          "max": 33.465236,
+          "min": 28.507424,
+          "value": 30.98633
+        },
+        "measured_duty_cycle": {
+          "error": 0.003147,
+          "max": 0.042483,
+          "min": 0.036189,
+          "value": 0.039336
+        },
+        "measured_dwell_time_ms": {
+          "error": 11.737413,
+          "max": 158.455071,
+          "min": 134.980246,
+          "value": 146.717658
+        },
+        "measured_prf_hz": {
+          "error": 631.717183,
+          "max": 25900.404511,
+          "min": 24636.970145,
+          "value": 25268.687328
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 0.989367,
+          "max": 40.564038,
+          "min": 38.585305,
+          "value": 39.574671
         },
         "measured_pulse_width_us": {
-          "error": 0.18166,
-          "max": 2.452404,
-          "min": 2.25,
-          "value": 2.270744
+          "error": 0.088887,
+          "max": 1.199978,
+          "min": 1.022203,
+          "value": 1.111091
         },
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "prf_max_hz": 8000,
-        "prf_min_hz": 3000,
-        "pulse_width_max_us": 2.75,
-        "pulse_width_min_us": 2.25,
-        "radar_band": "X",
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
+        "observed_scan_type": "focused",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
-        "area": "South China Sea",
+        "area": "Western Pacific",
         "error_box": {
-          "max_latitude_deg": 16.99503,
-          "max_longitude_deg": 113.463208,
-          "min_latitude_deg": 16.428462,
-          "min_longitude_deg": 113.390975
+          "max_latitude_deg": 25.365997,
+          "max_longitude_deg": 146.396274,
+          "min_latitude_deg": 25.039019,
+          "min_longitude_deg": 145.830334
         },
-        "estimated_latitude_deg": 16.711746,
-        "estimated_longitude_deg": 113.427091
+        "estimated_latitude_deg": 25.202508,
+        "estimated_longitude_deg": 146.113304
       },
       "ground_truth_label": {
         "aircraft_family": "Gripen",
         "aircraft_id": "aircraft:jas_39c_gripen",
         "aircraft_variant": "JAS 39C Gripen",
-        "mode": "range_while_search",
-        "mode_id": "radar_mode:ps_05_a:range_while_search",
-        "operator": "Hungary",
+        "mode": "single_target_track",
+        "mode_id": "radar_mode:ps_05_a:single_target_track",
+        "operator": "Thailand",
         "radar": "PS-05/A",
         "radar_id": "radar:ps_05_a"
       },
-      "observation_id": "esm_obs_00015",
+      "observation_id": "esm_obs_00009",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2025-10-05T16:35:51Z",
-      "timestamp_unix": 1759682151
+      "timestamp_iso8601": "2025-07-26T10:46:41Z",
+      "timestamp_unix": 1753526801
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 243.3,
-        "altitude_m": 8143.8,
-        "altitude_max_m": 8387.1,
-        "altitude_min_m": 7900.6,
-        "ground_speed_error_kph": 107.1,
-        "ground_speed_kph": 460.8,
-        "ground_speed_max_kph": 567.9,
-        "ground_speed_min_kph": 353.6,
-        "heading_deg": 98.0,
-        "heading_error_deg": 8.2
+        "altitude_error_m": 724.0,
+        "altitude_m": 17814.0,
+        "altitude_max_m": 18538.0,
+        "altitude_min_m": 17090.1,
+        "ground_speed_error_kph": 38.0,
+        "ground_speed_kph": 472.3,
+        "ground_speed_max_kph": 510.3,
+        "ground_speed_min_kph": 434.3,
+        "heading_deg": 237.6,
+        "heading_error_deg": 10.8
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "MiG-31",
+          "aircraft_id": "aircraft:mig_31b",
+          "aircraft_variant": "MiG-31B",
+          "operator": "Russia",
+          "radar": "Zaslon"
+        },
+        {
+          "aircraft_family": "MiG-31",
+          "aircraft_id": "aircraft:mig_31bm",
+          "aircraft_variant": "MiG-31BM",
+          "operator": "Russia",
+          "radar": "Zaslon-M"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 6.692105,
+          "max": 90.343418,
+          "min": 76.959208,
+          "value": 83.651313
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.056343,
+          "max": 9.446866,
+          "min": 9.33418,
+          "value": 9.390523
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.264774,
+          "max": 17.074446,
+          "min": 14.544898,
+          "value": 15.809672
+        },
+        "measured_duty_cycle": {
+          "error": 0.001626,
+          "max": 0.02195,
+          "min": 0.018698,
+          "value": 0.020324
+        },
+        "measured_dwell_time_ms": {
+          "error": 6.833114,
+          "max": 92.247034,
+          "min": 78.580807,
+          "value": 85.41392
+        },
+        "measured_prf_hz": {
+          "error": 123.554541,
+          "max": 5065.736201,
+          "min": 4818.627118,
+          "value": 4942.181659
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 5.058495,
+          "max": 207.398285,
+          "min": 197.281295,
+          "value": 202.33979
+        },
+        "measured_pulse_width_us": {
+          "error": 0.209402,
+          "max": 2.826921,
+          "min": 2.408118,
+          "value": 2.617519
+        },
+        "observed_scan_type": "mechanical_or_electronic",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "Eastern Mediterranean",
+        "error_box": {
+          "max_latitude_deg": 34.685367,
+          "max_longitude_deg": 31.101668,
+          "min_latitude_deg": 34.426816,
+          "min_longitude_deg": 30.98552
+        },
+        "estimated_latitude_deg": 34.556091,
+        "estimated_longitude_deg": 31.043594
+      },
+      "ground_truth_label": {
+        "aircraft_family": "MiG-31",
+        "aircraft_id": "aircraft:mig_31bm",
+        "aircraft_variant": "MiG-31BM",
+        "mode": "range_while_search",
+        "mode_id": "radar_mode:zaslon_m:range_while_search",
+        "operator": "Russia",
+        "radar": "Zaslon-M",
+        "radar_id": "radar:zaslon_m"
+      },
+      "observation_id": "esm_obs_00010",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2024-07-18T18:36:59Z",
+      "timestamp_unix": 1721327819
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 275.7,
+        "altitude_m": 4444.3,
+        "altitude_max_m": 4720.0,
+        "altitude_min_m": 4168.6,
+        "ground_speed_error_kph": 49.6,
+        "ground_speed_kph": 1204.6,
+        "ground_speed_max_kph": 1254.3,
+        "ground_speed_min_kph": 1155.0,
+        "heading_deg": 331.5,
+        "heading_error_deg": 5.8
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29a",
+          "aircraft_variant": "MiG-29A",
+          "operator": "Ukraine",
+          "radar": "N019 Rubin"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29s",
+          "aircraft_variant": "MiG-29S",
+          "operator": "Ukraine",
+          "radar": "N019 Rubin"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 4.514471,
+          "max": 60.945364,
+          "min": 51.916422,
+          "value": 56.430893
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.056923,
+          "max": 9.544045,
+          "min": 9.430199,
+          "value": 9.487122
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.530269,
+          "max": 34.158637,
+          "min": 29.098098,
+          "value": 31.628368
+        },
+        "measured_duty_cycle": {
+          "error": 0.002972,
+          "max": 0.040124,
+          "min": 0.03418,
+          "value": 0.037152
+        },
+        "measured_dwell_time_ms": {
+          "error": 13.802821,
+          "max": 186.338082,
+          "min": 158.732441,
+          "value": 172.535261
+        },
+        "measured_prf_hz": {
+          "error": 376.323219,
+          "max": 15429.251976,
+          "min": 14676.605538,
+          "value": 15052.928757
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.660806,
+          "max": 68.093061,
+          "min": 64.771449,
+          "value": 66.432255
+        },
+        "measured_pulse_width_us": {
+          "error": 0.10379,
+          "max": 1.401163,
+          "min": 1.193583,
+          "value": 1.297373
+        },
+        "observed_scan_type": "focused",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "Bay of Bengal",
+        "error_box": {
+          "max_latitude_deg": 14.947207,
+          "max_longitude_deg": 87.538986,
+          "min_latitude_deg": 14.481336,
+          "min_longitude_deg": 86.96461
+        },
+        "estimated_latitude_deg": 14.714272,
+        "estimated_longitude_deg": 87.251798
+      },
+      "ground_truth_label": {
+        "aircraft_family": "MiG-29",
+        "aircraft_id": "aircraft:mig_29s",
+        "aircraft_variant": "MiG-29S",
+        "mode": "single_target_track",
+        "mode_id": "radar_mode:n019_rubin:single_target_track",
+        "operator": "Ukraine",
+        "radar": "N019 Rubin",
+        "radar_id": "radar:n019_rubin"
+      },
+      "observation_id": "esm_obs_00011",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2024-04-21T05:49:16Z",
+      "timestamp_unix": 1713678556
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 356.3,
+        "altitude_m": 15391.4,
+        "altitude_max_m": 15747.7,
+        "altitude_min_m": 15035.1,
+        "ground_speed_error_kph": 96.8,
+        "ground_speed_kph": 1166.3,
+        "ground_speed_max_kph": 1263.1,
+        "ground_speed_min_kph": 1069.4,
+        "heading_deg": 298.3,
+        "heading_error_deg": 7.0
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "F-15",
+          "aircraft_id": "aircraft:f_15c",
+          "aircraft_variant": "F-15C",
+          "operator": "Israel",
+          "radar": "AN/APG-63"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 4.35895,
+          "max": 58.845819,
+          "min": 50.12792,
+          "value": 54.486869
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.058633,
+          "max": 9.830881,
+          "min": 9.713614,
+          "value": 9.772247
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.361769,
+          "max": 31.883877,
+          "min": 27.160339,
+          "value": 29.522108
+        },
+        "measured_duty_cycle": {
+          "error": 0.003065,
+          "max": 0.041383,
+          "min": 0.035252,
+          "value": 0.038317
+        },
+        "measured_dwell_time_ms": {
+          "error": 12.72666,
+          "max": 171.809914,
+          "min": 146.356594,
+          "value": 159.083254
+        },
+        "measured_prf_hz": {
+          "error": 328.862557,
+          "max": 13483.364838,
+          "min": 12825.639724,
+          "value": 13154.502281
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.90049,
+          "max": 77.92009,
+          "min": 74.11911,
+          "value": 76.0196
+        },
+        "measured_pulse_width_us": {
+          "error": 0.105223,
+          "max": 1.420509,
+          "min": 1.210063,
+          "value": 1.315286
+        },
+        "observed_scan_type": "focused",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "Arabian Gulf",
+        "error_box": {
+          "max_latitude_deg": 26.939081,
+          "max_longitude_deg": 52.642731,
+          "min_latitude_deg": 26.546296,
+          "min_longitude_deg": 52.152557
+        },
+        "estimated_latitude_deg": 26.742688,
+        "estimated_longitude_deg": 52.397644
+      },
+      "ground_truth_label": {
+        "aircraft_family": "F-15",
+        "aircraft_id": "aircraft:f_15c",
+        "aircraft_variant": "F-15C",
+        "mode": "single_target_track",
+        "mode_id": "radar_mode:an_apg_63:single_target_track",
+        "operator": "Israel",
+        "radar": "AN/APG-63",
+        "radar_id": "radar:an_apg_63"
+      },
+      "observation_id": "esm_obs_00012",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2025-10-12T04:35:35Z",
+      "timestamp_unix": 1760243735
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 394.9,
+        "altitude_m": 9852.1,
+        "altitude_max_m": 10247.1,
+        "altitude_min_m": 9457.2,
+        "ground_speed_error_kph": 98.6,
+        "ground_speed_kph": 559.0,
+        "ground_speed_max_kph": 657.6,
+        "ground_speed_min_kph": 460.4,
+        "heading_deg": 28.1,
+        "heading_error_deg": 5.6
       },
       "candidate_labels_from_shared_kg_features": [
         {
           "aircraft_family": "Su-27",
           "aircraft_id": "aircraft:su_27s",
           "aircraft_variant": "Su-27S",
-          "operator": "Russia",
+          "operator": "China",
           "radar": "N001 Myech"
         },
         {
@@ -1829,441 +1470,419 @@
           "aircraft_family": "Su-27",
           "aircraft_id": "aircraft:su_35s",
           "aircraft_variant": "Su-35S",
-          "operator": "Russia",
+          "operator": "China",
           "radar": "Irbis-E"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "PESA",
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 110.0,
-        "bandwidth_min_mhz": 90.0,
-        "centre_frequency_max_ghz": 9.741,
-        "centre_frequency_min_ghz": 9.359,
-        "coherent_processing_interval_max_ms": 30.8,
-        "coherent_processing_interval_min_ms": 25.2,
-        "duty_cycle_max": 0.0495,
-        "duty_cycle_min": 0.0405,
-        "dwell_time_max_ms": 154.0,
-        "dwell_time_min_ms": 126.0,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
         "measured_bandwidth_mhz": {
-          "error": 8.248069,
-          "max": 110.0,
-          "min": 94.852792,
-          "value": 103.100861
+          "error": 13.546275,
+          "max": 182.874707,
+          "min": 155.782158,
+          "value": 169.328433
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.057598,
-          "max": 9.657244,
-          "min": 9.542048,
-          "value": 9.599646
+          "error": 0.055374,
+          "max": 9.284333,
+          "min": 9.173586,
+          "value": 9.228959
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 4.63332,
+          "max": 62.549819,
+          "min": 53.283179,
+          "value": 57.916499
+        },
+        "measured_duty_cycle": {
+          "error": 0.003964,
+          "max": 0.053512,
+          "min": 0.045584,
+          "value": 0.049548
+        },
+        "measured_dwell_time_ms": {
+          "error": 21.318674,
+          "max": 287.802095,
+          "min": 245.164748,
+          "value": 266.483422
+        },
+        "measured_prf_hz": {
+          "error": 26.911401,
+          "max": 1103.367461,
+          "min": 1049.544658,
+          "value": 1076.456059
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 23.224357,
+          "max": 952.198644,
+          "min": 905.74993,
+          "value": 928.974287
         },
         "measured_pulse_width_us": {
-          "error": 0.084918,
-          "max": 1.1,
-          "min": 0.976559,
-          "value": 1.061477
+          "error": 0.741741,
+          "max": 10.013503,
+          "min": 8.530021,
+          "value": 9.271762
         },
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "prf_max_hz": 45000,
-        "prf_min_hz": 15000,
-        "pulse_width_max_us": 1.1,
-        "pulse_width_min_us": 0.9,
-        "radar_band": "X",
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_type": "sector",
-        "track_capacity_max": 7,
-        "track_capacity_min": 7,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
+        "observed_scan_type": "ground",
+        "observed_waveform": "synthetic_aperture_or_real_beam"
+      },
+      "estimated_emitter_location": {
+        "area": "Arabian Gulf",
+        "error_box": {
+          "max_latitude_deg": 26.932647,
+          "max_longitude_deg": 53.707439,
+          "min_latitude_deg": 26.242879,
+          "min_longitude_deg": 53.573644
+        },
+        "estimated_latitude_deg": 26.587763,
+        "estimated_longitude_deg": 53.640542
+      },
+      "ground_truth_label": {
+        "aircraft_family": "Su-27",
+        "aircraft_id": "aircraft:su_27s",
+        "aircraft_variant": "Su-27S",
+        "mode": "air_to_ground_mapping",
+        "mode_id": "radar_mode:n001_myech:air_to_ground_mapping",
+        "operator": "China",
+        "radar": "N001 Myech",
+        "radar_id": "radar:n001_myech"
+      },
+      "observation_id": "esm_obs_00013",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2024-10-02T03:02:27Z",
+      "timestamp_unix": 1727838147
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 462.8,
+        "altitude_m": 10324.6,
+        "altitude_max_m": 10787.4,
+        "altitude_min_m": 9861.7,
+        "ground_speed_error_kph": 39.9,
+        "ground_speed_kph": 786.6,
+        "ground_speed_max_kph": 826.5,
+        "ground_speed_min_kph": 746.6,
+        "heading_deg": 225.2,
+        "heading_error_deg": 18.4
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "Harrier",
+          "aircraft_id": "aircraft:harrier_gr_9",
+          "aircraft_variant": "Harrier GR.9",
+          "operator": "United Kingdom",
+          "radar": "Blue Fox"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 9.546623,
+          "max": 128.879411,
+          "min": 109.786165,
+          "value": 119.332788
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.05459,
+          "max": 9.152987,
+          "min": 9.043806,
+          "value": 9.098397
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.860764,
+          "max": 25.120314,
+          "min": 21.398786,
+          "value": 23.25955
+        },
+        "measured_duty_cycle": {
+          "error": 0.002443,
+          "max": 0.032987,
+          "min": 0.0281,
+          "value": 0.030543
+        },
+        "measured_dwell_time_ms": {
+          "error": 9.978838,
+          "max": 134.714316,
+          "min": 114.75664,
+          "value": 124.735478
+        },
+        "measured_prf_hz": {
+          "error": 364.251287,
+          "max": 14934.302751,
+          "min": 14205.800178,
+          "value": 14570.051465
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.715848,
+          "max": 70.349786,
+          "min": 66.918089,
+          "value": 68.633937
+        },
+        "measured_pulse_width_us": {
+          "error": 0.134758,
+          "max": 1.819234,
+          "min": 1.549718,
+          "value": 1.684476
+        },
+        "observed_scan_type": "sector",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "Baltic Sea",
+        "error_box": {
+          "max_latitude_deg": 55.250544,
+          "max_longitude_deg": 19.433704,
+          "min_latitude_deg": 54.610553,
+          "min_longitude_deg": 19.31789
+        },
+        "estimated_latitude_deg": 54.930549,
+        "estimated_longitude_deg": 19.375797
+      },
+      "ground_truth_label": {
+        "aircraft_family": "Harrier",
+        "aircraft_id": "aircraft:harrier_gr_9",
+        "aircraft_variant": "Harrier GR.9",
+        "mode": "track_while_scan",
+        "mode_id": "radar_mode:blue_fox:track_while_scan",
+        "operator": "United Kingdom",
+        "radar": "Blue Fox",
+        "radar_id": "radar:blue_fox"
+      },
+      "observation_id": "esm_obs_00014",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2025-07-08T18:04:48Z",
+      "timestamp_unix": 1751997888
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 828.0,
+        "altitude_m": 11160.3,
+        "altitude_max_m": 11988.2,
+        "altitude_min_m": 10332.3,
+        "ground_speed_error_kph": 61.8,
+        "ground_speed_kph": 643.8,
+        "ground_speed_max_kph": 705.6,
+        "ground_speed_min_kph": 581.9,
+        "heading_deg": 308.1,
+        "heading_error_deg": 8.3
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "AV-8B",
+          "aircraft_id": "aircraft:av_8b_harrier_ii_plus",
+          "aircraft_variant": "AV-8B Harrier II Plus",
+          "operator": "Spain",
+          "radar": "AN/APG-65"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 13.559724,
+          "max": 183.056276,
+          "min": 155.936828,
+          "value": 169.496552
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.057256,
+          "max": 9.59988,
+          "min": 9.485369,
+          "value": 9.542625
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 4.817812,
+          "max": 65.04046,
+          "min": 55.404836,
+          "value": 60.222648
+        },
+        "measured_duty_cycle": {
+          "error": 0.004121,
+          "max": 0.055634,
+          "min": 0.047392,
+          "value": 0.051513
+        },
+        "measured_dwell_time_ms": {
+          "error": 20.887743,
+          "max": 281.984525,
+          "min": 240.20904,
+          "value": 261.096783
+        },
+        "measured_prf_hz": {
+          "error": 119.425801,
+          "max": 4896.457829,
+          "min": 4657.606227,
+          "value": 4777.032028
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 5.233375,
+          "max": 214.568375,
+          "min": 204.101625,
+          "value": 209.335
+        },
+        "measured_pulse_width_us": {
+          "error": 0.794193,
+          "max": 10.721609,
+          "min": 9.133222,
+          "value": 9.927415
+        },
+        "observed_scan_type": "ground",
+        "observed_waveform": "synthetic_aperture_or_real_beam"
       },
       "estimated_emitter_location": {
         "area": "Eastern Mediterranean",
         "error_box": {
-          "max_latitude_deg": 35.235524,
-          "max_longitude_deg": 30.185204,
-          "min_latitude_deg": 34.871433,
-          "min_longitude_deg": 30.010845
+          "max_latitude_deg": 33.983648,
+          "max_longitude_deg": 32.542706,
+          "min_latitude_deg": 33.296132,
+          "min_longitude_deg": 31.857196
         },
-        "estimated_latitude_deg": 35.053478,
-        "estimated_longitude_deg": 30.098024
+        "estimated_latitude_deg": 33.63989,
+        "estimated_longitude_deg": 32.199951
       },
       "ground_truth_label": {
-        "aircraft_family": "Su-27",
-        "aircraft_id": "aircraft:su_30mki",
-        "aircraft_variant": "Su-30MKI",
+        "aircraft_family": "AV-8B",
+        "aircraft_id": "aircraft:av_8b_harrier_ii_plus",
+        "aircraft_variant": "AV-8B Harrier II Plus",
+        "mode": "air_to_ground_mapping",
+        "mode_id": "radar_mode:an_apg_65:air_to_ground_mapping",
+        "operator": "Spain",
+        "radar": "AN/APG-65",
+        "radar_id": "radar:an_apg_65"
+      },
+      "observation_id": "esm_obs_00015",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2025-05-21T22:43:15Z",
+      "timestamp_unix": 1747867395
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 642.3,
+        "altitude_m": 16845.7,
+        "altitude_max_m": 17488.0,
+        "altitude_min_m": 16203.4,
+        "ground_speed_error_kph": 84.6,
+        "ground_speed_kph": 1449.8,
+        "ground_speed_max_kph": 1534.4,
+        "ground_speed_min_kph": 1365.2,
+        "heading_deg": 158.5,
+        "heading_error_deg": 17.8
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "MiG-31",
+          "aircraft_id": "aircraft:mig_31b",
+          "aircraft_variant": "MiG-31B",
+          "operator": "Russia",
+          "radar": "Zaslon"
+        },
+        {
+          "aircraft_family": "MiG-31",
+          "aircraft_id": "aircraft:mig_31bm",
+          "aircraft_variant": "MiG-31BM",
+          "operator": "Russia",
+          "radar": "Zaslon-M"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 8.429174,
+          "max": 113.793843,
+          "min": 96.935496,
+          "value": 105.36467
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.055311,
+          "max": 9.273822,
+          "min": 9.1632,
+          "value": 9.218511
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.044697,
+          "max": 27.603416,
+          "min": 23.514021,
+          "value": 25.558718
+        },
+        "measured_duty_cycle": {
+          "error": 0.003823,
+          "max": 0.051605,
+          "min": 0.04396,
+          "value": 0.047782
+        },
+        "measured_dwell_time_ms": {
+          "error": 11.871686,
+          "max": 160.267762,
+          "min": 136.52439,
+          "value": 148.396076
+        },
+        "measured_prf_hz": {
+          "error": 740.585619,
+          "max": 30364.010385,
+          "min": 28882.839146,
+          "value": 29623.424765
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 0.843927,
+          "max": 34.600996,
+          "min": 32.913142,
+          "value": 33.757069
+        },
+        "measured_pulse_width_us": {
+          "error": 0.072455,
+          "max": 0.978137,
+          "min": 0.833228,
+          "value": 0.905682
+        },
+        "observed_scan_type": "sector",
+        "observed_waveform": "doppler_filtering"
+      },
+      "estimated_emitter_location": {
+        "area": "Baltic Sea",
+        "error_box": {
+          "max_latitude_deg": 55.672488,
+          "max_longitude_deg": 19.24033,
+          "min_latitude_deg": 55.026244,
+          "min_longitude_deg": 18.879171
+        },
+        "estimated_latitude_deg": 55.349366,
+        "estimated_longitude_deg": 19.05975
+      },
+      "ground_truth_label": {
+        "aircraft_family": "MiG-31",
+        "aircraft_id": "aircraft:mig_31bm",
+        "aircraft_variant": "MiG-31BM",
         "mode": "look_down_shoot_down",
-        "mode_id": "radar_mode:n011m_bars:look_down_shoot_down",
-        "operator": "India",
-        "radar": "N011M Bars",
-        "radar_id": "radar:n011m_bars"
+        "mode_id": "radar_mode:zaslon_m:look_down_shoot_down",
+        "operator": "Russia",
+        "radar": "Zaslon-M",
+        "radar_id": "radar:zaslon_m"
       },
       "observation_id": "esm_obs_00016",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2024-03-25T16:17:01Z",
-      "timestamp_unix": 1711383421
+      "timestamp_iso8601": "2024-09-22T16:21:01Z",
+      "timestamp_unix": 1727022061
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 737.4,
-        "altitude_m": 7660.3,
-        "altitude_max_m": 8397.7,
-        "altitude_min_m": 6922.8,
-        "ground_speed_error_kph": 126.1,
-        "ground_speed_kph": 721.8,
-        "ground_speed_max_kph": 847.9,
-        "ground_speed_min_kph": 595.7,
-        "heading_deg": 339.9,
-        "heading_error_deg": 10.3
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "Super Etendard",
-          "aircraft_id": "aircraft:super_etendard_modernise",
-          "aircraft_variant": "Super Etendard Modernise",
-          "operator": "France",
-          "radar": "Anemone"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "pulse-doppler array",
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 110.0,
-        "bandwidth_min_mhz": 90.0,
-        "centre_frequency_max_ghz": 9.537,
-        "centre_frequency_min_ghz": 9.163,
-        "coherent_processing_interval_max_ms": 30.8,
-        "coherent_processing_interval_min_ms": 25.2,
-        "duty_cycle_max": 0.0495,
-        "duty_cycle_min": 0.0405,
-        "dwell_time_max_ms": 154.0,
-        "dwell_time_min_ms": 126.0,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "measured_bandwidth_mhz": {
-          "error": 8.649979,
-          "max": 110.0,
-          "min": 99.474761,
-          "value": 108.12474
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.056755,
-          "max": 9.515938,
-          "min": 9.402428,
-          "value": 9.459183
-        },
-        "measured_pulse_width_us": {
-          "error": 0.073395,
-          "max": 0.990837,
-          "min": 0.9,
-          "value": 0.917442
-        },
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "prf_max_hz": 45000,
-        "prf_min_hz": 15000,
-        "pulse_width_max_us": 1.1,
-        "pulse_width_min_us": 0.9,
-        "radar_band": "I/J",
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_type": "sector",
-        "track_capacity_max": 4,
-        "track_capacity_min": 4,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      },
-      "estimated_emitter_location": {
-        "area": "Sea of Japan",
-        "error_box": {
-          "max_latitude_deg": 38.619905,
-          "max_longitude_deg": 135.181797,
-          "min_latitude_deg": 38.159554,
-          "min_longitude_deg": 134.53942
-        },
-        "estimated_latitude_deg": 38.38973,
-        "estimated_longitude_deg": 134.860608
-      },
-      "ground_truth_label": {
-        "aircraft_family": "Super Etendard",
-        "aircraft_id": "aircraft:super_etendard_modernise",
-        "aircraft_variant": "Super Etendard Modernise",
-        "mode": "look_down_shoot_down",
-        "mode_id": "radar_mode:anemone:look_down_shoot_down",
-        "operator": "France",
-        "radar": "Anemone",
-        "radar_id": "radar:anemone"
-      },
-      "observation_id": "esm_obs_00017",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2025-10-21T06:04:02Z",
-      "timestamp_unix": 1761026642
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 452.7,
-        "altitude_m": 6278.0,
-        "altitude_max_m": 6730.8,
-        "altitude_min_m": 5825.3,
-        "ground_speed_error_kph": 34.5,
-        "ground_speed_kph": 1298.6,
-        "ground_speed_max_kph": 1333.1,
-        "ground_speed_min_kph": 1264.1,
-        "heading_deg": 198.1,
-        "heading_error_deg": 15.8
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "J-7",
-          "aircraft_id": "aircraft:j_7g",
-          "aircraft_variant": "J-7G",
-          "operator": "China",
-          "radar": "KLJ-7"
-        },
-        {
-          "aircraft_family": "JF-17",
-          "aircraft_id": "aircraft:jf_17_block_i",
-          "aircraft_variant": "JF-17 Block I",
-          "operator": "Pakistan",
-          "radar": "KLJ-7"
-        },
-        {
-          "aircraft_family": "JF-17",
-          "aircraft_id": "aircraft:jf_17_block_iii",
-          "aircraft_variant": "JF-17 Block III",
-          "operator": "Pakistan",
-          "radar": "KLJ-7A"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "slotted planar array",
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 88.0,
-        "bandwidth_min_mhz": 72.0,
-        "centre_frequency_max_ghz": 9.588,
-        "centre_frequency_min_ghz": 9.212,
-        "coherent_processing_interval_max_ms": 17.6,
-        "coherent_processing_interval_min_ms": 14.4,
-        "duty_cycle_max": 0.022,
-        "duty_cycle_min": 0.018,
-        "dwell_time_max_ms": 88.0,
-        "dwell_time_min_ms": 72.0,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "measured_bandwidth_mhz": {
-          "error": 6.259485,
-          "max": 84.503046,
-          "min": 72.0,
-          "value": 78.243561
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.055819,
-          "max": 9.35892,
-          "min": 9.247283,
-          "value": 9.303102
-        },
-        "measured_pulse_width_us": {
-          "error": 0.183514,
-          "max": 2.477435,
-          "min": 2.25,
-          "value": 2.293921
-        },
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "prf_max_hz": 8000,
-        "prf_min_hz": 3000,
-        "pulse_width_max_us": 2.75,
-        "pulse_width_min_us": 2.25,
-        "radar_band": "X",
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "South China Sea",
-        "error_box": {
-          "max_latitude_deg": 16.743396,
-          "max_longitude_deg": 115.193558,
-          "min_latitude_deg": 16.478343,
-          "min_longitude_deg": 114.551165
-        },
-        "estimated_latitude_deg": 16.61087,
-        "estimated_longitude_deg": 114.872361
-      },
-      "ground_truth_label": {
-        "aircraft_family": "JF-17",
-        "aircraft_id": "aircraft:jf_17_block_i",
-        "aircraft_variant": "JF-17 Block I",
-        "mode": "range_while_search",
-        "mode_id": "radar_mode:klj_7:range_while_search",
-        "operator": "Pakistan",
-        "radar": "KLJ-7",
-        "radar_id": "radar:klj_7"
-      },
-      "observation_id": "esm_obs_00018",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2024-06-14T16:08:11Z",
-      "timestamp_unix": 1718381291
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 452.1,
-        "altitude_m": 7830.5,
-        "altitude_max_m": 8282.6,
-        "altitude_min_m": 7378.4,
-        "ground_speed_error_kph": 103.0,
-        "ground_speed_kph": 1350.6,
-        "ground_speed_max_kph": 1453.5,
-        "ground_speed_min_kph": 1247.6,
-        "heading_deg": 316.8,
-        "heading_error_deg": 12.4
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "Tornado",
-          "aircraft_id": "aircraft:tornado_f3",
-          "aircraft_variant": "Tornado F3",
-          "operator": "United Kingdom",
-          "radar": "Foxhunter"
-        },
-        {
-          "aircraft_family": "Tornado",
-          "aircraft_id": "aircraft:tornado_ids",
-          "aircraft_variant": "Tornado IDS",
-          "operator": "Germany",
-          "radar": "ECR-90"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "mechanically scanned array",
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 132.0,
-        "bandwidth_min_mhz": 108.0,
-        "centre_frequency_max_ghz": 9.8736,
-        "centre_frequency_min_ghz": 9.4864,
-        "coherent_processing_interval_max_ms": 26.4,
-        "coherent_processing_interval_min_ms": 21.6,
-        "duty_cycle_max": 0.0352,
-        "duty_cycle_min": 0.0288,
-        "dwell_time_max_ms": 132.0,
-        "dwell_time_min_ms": 108.0,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "measured_bandwidth_mhz": {
-          "error": 9.463554,
-          "max": 127.757977,
-          "min": 108.830869,
-          "value": 118.294423
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.058934,
-          "max": 9.8736,
-          "min": 9.763381,
-          "value": 9.822315
-        },
-        "measured_pulse_width_us": {
-          "error": 0.130611,
-          "max": 1.763249,
-          "min": 1.62,
-          "value": 1.632638
-        },
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "prf_max_hz": 18000,
-        "prf_min_hz": 6000,
-        "pulse_width_max_us": 1.98,
-        "pulse_width_min_us": 1.62,
-        "radar_band": "X",
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "Bay of Bengal",
-        "error_box": {
-          "max_latitude_deg": 15.74033,
-          "max_longitude_deg": 89.597965,
-          "min_latitude_deg": 15.379171,
-          "min_longitude_deg": 88.898078
-        },
-        "estimated_latitude_deg": 15.55975,
-        "estimated_longitude_deg": 89.248022
-      },
-      "ground_truth_label": {
-        "aircraft_family": "Tornado",
-        "aircraft_id": "aircraft:tornado_ids",
-        "aircraft_variant": "Tornado IDS",
-        "mode": "track_while_scan",
-        "mode_id": "radar_mode:ecr_90:track_while_scan",
-        "operator": "Germany",
-        "radar": "ECR-90",
-        "radar_id": "radar:ecr_90"
-      },
-      "observation_id": "esm_obs_00019",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2025-09-20T11:27:56Z",
-      "timestamp_unix": 1758367676
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 266.6,
-        "altitude_m": 15294.7,
-        "altitude_max_m": 15561.2,
-        "altitude_min_m": 15028.1,
-        "ground_speed_error_kph": 128.6,
-        "ground_speed_kph": 831.2,
-        "ground_speed_max_kph": 959.8,
-        "ground_speed_min_kph": 702.7,
-        "heading_deg": 306.3,
-        "heading_error_deg": 19.4
+        "altitude_error_m": 498.1,
+        "altitude_m": 10389.7,
+        "altitude_max_m": 10887.8,
+        "altitude_min_m": 9891.6,
+        "ground_speed_error_kph": 56.4,
+        "ground_speed_kph": 591.2,
+        "ground_speed_max_kph": 647.5,
+        "ground_speed_min_kph": 534.8,
+        "heading_deg": 148.0,
+        "heading_error_deg": 4.1
       },
       "candidate_labels_from_shared_kg_features": [
         {
@@ -2282,26 +1901,9 @@
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "mechanically scanned array",
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 110.0,
-        "bandwidth_min_mhz": 90.0,
-        "centre_frequency_max_ghz": 9.843,
-        "centre_frequency_min_ghz": 9.457,
-        "coherent_processing_interval_max_ms": 30.8,
-        "coherent_processing_interval_min_ms": 25.2,
-        "duty_cycle_max": 0.0495,
-        "duty_cycle_min": 0.0405,
-        "dwell_time_max_ms": 154.0,
-        "dwell_time_min_ms": 126.0,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
         "measured_bandwidth_mhz": {
           "error": 8.529856,
-          "max": 110.0,
+          "max": 115.153049,
           "min": 98.093338,
           "value": 106.623194
         },
@@ -2311,40 +1913,55 @@
           "min": 9.614651,
           "value": 9.672687
         },
-        "measured_pulse_width_us": {
-          "error": 0.080984,
-          "max": 1.093291,
-          "min": 0.931322,
-          "value": 1.012306
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.422431,
+          "max": 32.702818,
+          "min": 27.857956,
+          "value": 30.280387
         },
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "prf_max_hz": 45000,
-        "prf_min_hz": 15000,
-        "pulse_width_max_us": 1.1,
-        "pulse_width_min_us": 0.9,
-        "radar_band": "X",
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
+        "measured_duty_cycle": {
+          "error": 0.00361,
+          "max": 0.048738,
+          "min": 0.041518,
+          "value": 0.045128
+        },
+        "measured_dwell_time_ms": {
+          "error": 10.65459,
+          "max": 143.836965,
+          "min": 122.527785,
+          "value": 133.182375
+        },
+        "measured_prf_hz": {
+          "error": 796.148371,
+          "max": 32642.083203,
+          "min": 31049.786461,
+          "value": 31845.934832
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 0.78503,
+          "max": 32.186212,
+          "min": 30.616153,
+          "value": 31.401182
+        },
+        "measured_pulse_width_us": {
+          "error": 0.07463,
+          "max": 1.0075,
+          "min": 0.85824,
+          "value": 0.93287
+        },
+        "observed_scan_type": "sector",
+        "observed_waveform": "doppler_filtering"
       },
       "estimated_emitter_location": {
-        "area": "Baltic Sea",
+        "area": "Sea of Japan",
         "error_box": {
-          "max_latitude_deg": 55.527539,
-          "max_longitude_deg": 19.660613,
-          "min_latitude_deg": 55.109157,
-          "min_longitude_deg": 19.401127
+          "max_latitude_deg": 41.089373,
+          "max_longitude_deg": 136.237636,
+          "min_latitude_deg": 40.639335,
+          "min_longitude_deg": 135.982784
         },
-        "estimated_latitude_deg": 55.318348,
-        "estimated_longitude_deg": 19.53087
+        "estimated_latitude_deg": 40.864354,
+        "estimated_longitude_deg": 136.11021
       },
       "ground_truth_label": {
         "aircraft_family": "Typhoon",
@@ -2356,7 +1973,7 @@
         "radar": "CAPTOR-M",
         "radar_id": "radar:captor_m"
       },
-      "observation_id": "esm_obs_00020",
+      "observation_id": "esm_obs_00017",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
@@ -2366,242 +1983,32 @@
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 233.4,
-        "altitude_m": 3182.6,
-        "altitude_max_m": 3416.1,
-        "altitude_min_m": 2949.2,
-        "ground_speed_error_kph": 35.7,
-        "ground_speed_kph": 1439.4,
-        "ground_speed_max_kph": 1475.1,
-        "ground_speed_min_kph": 1403.7,
-        "heading_deg": 335.1,
-        "heading_error_deg": 10.3
+        "altitude_error_m": 201.6,
+        "altitude_m": 5457.4,
+        "altitude_max_m": 5659.0,
+        "altitude_min_m": 5255.9,
+        "ground_speed_error_kph": 79.4,
+        "ground_speed_kph": 1373.4,
+        "ground_speed_max_kph": 1452.8,
+        "ground_speed_min_kph": 1294.0,
+        "heading_deg": 156.1,
+        "heading_error_deg": 16.7
       },
       "candidate_labels_from_shared_kg_features": [
         {
-          "aircraft_family": "Tejas",
-          "aircraft_id": "aircraft:tejas_mk1",
-          "aircraft_variant": "Tejas Mk1",
-          "operator": "India",
-          "radar": "EL/M-2032"
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29a",
+          "aircraft_variant": "MiG-29A",
+          "operator": "Germany",
+          "radar": "N019 Rubin"
         },
         {
-          "aircraft_family": "Tejas",
-          "aircraft_id": "aircraft:tejas_mk1a",
-          "aircraft_variant": "Tejas Mk1A",
-          "operator": "India",
-          "radar": "EL/M-2052"
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_29s",
+          "aircraft_variant": "MiG-29S",
+          "operator": "Russia",
+          "radar": "N019 Rubin"
         },
-        {
-          "aircraft_family": "Tejas",
-          "aircraft_id": "aircraft:tejas_mk2",
-          "aircraft_variant": "Tejas Mk2",
-          "operator": "India",
-          "radar": "Uttam AESA"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 132.0,
-        "bandwidth_min_mhz": 108.0,
-        "centre_frequency_max_ghz": 10.1796,
-        "centre_frequency_min_ghz": 9.7804,
-        "coherent_processing_interval_max_ms": 26.4,
-        "coherent_processing_interval_min_ms": 21.6,
-        "duty_cycle_max": 0.0352,
-        "duty_cycle_min": 0.0288,
-        "dwell_time_max_ms": 132.0,
-        "dwell_time_min_ms": 108.0,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "measured_bandwidth_mhz": {
-          "error": 9.606094,
-          "max": 129.682273,
-          "min": 110.470084,
-          "value": 120.076178
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.059966,
-          "max": 10.054299,
-          "min": 9.934367,
-          "value": 9.994333
-        },
-        "measured_pulse_width_us": {
-          "error": 0.147031,
-          "max": 1.98,
-          "min": 1.690851,
-          "value": 1.837882
-        },
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "prf_max_hz": 18000,
-        "prf_min_hz": 6000,
-        "pulse_width_max_us": 1.98,
-        "pulse_width_min_us": 1.62,
-        "radar_band": "X",
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_type": "sector",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "North Sea",
-        "error_box": {
-          "max_latitude_deg": 56.688517,
-          "max_longitude_deg": 1.085938,
-          "min_latitude_deg": 56.041411,
-          "min_longitude_deg": 0.67778
-        },
-        "estimated_latitude_deg": 56.364964,
-        "estimated_longitude_deg": 0.881859
-      },
-      "ground_truth_label": {
-        "aircraft_family": "Tejas",
-        "aircraft_id": "aircraft:tejas_mk2",
-        "aircraft_variant": "Tejas Mk2",
-        "mode": "track_while_scan",
-        "mode_id": "radar_mode:uttam_aesa:track_while_scan",
-        "operator": "India",
-        "radar": "Uttam AESA",
-        "radar_id": "radar:uttam_aesa"
-      },
-      "observation_id": "esm_obs_00021",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2024-11-15T07:09:08Z",
-      "timestamp_unix": 1731654548
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 128.5,
-        "altitude_m": 11715.3,
-        "altitude_max_m": 11843.8,
-        "altitude_min_m": 11586.8,
-        "ground_speed_error_kph": 137.4,
-        "ground_speed_kph": 716.7,
-        "ground_speed_max_kph": 854.1,
-        "ground_speed_min_kph": 579.3,
-        "heading_deg": 56.0,
-        "heading_error_deg": 2.2
-      },
-      "candidate_labels_from_shared_kg_features": [
-        {
-          "aircraft_family": "B-2",
-          "aircraft_id": "aircraft:b_2a_spirit",
-          "aircraft_variant": "B-2A Spirit",
-          "operator": "United States",
-          "radar": "AN/APQ-181"
-        }
-      ],
-      "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 132.0,
-        "bandwidth_min_mhz": 108.0,
-        "centre_frequency_max_ghz": 15.8916,
-        "centre_frequency_min_ghz": 15.2684,
-        "coherent_processing_interval_max_ms": 26.4,
-        "coherent_processing_interval_min_ms": 21.6,
-        "duty_cycle_max": 0.0352,
-        "duty_cycle_min": 0.0288,
-        "dwell_time_max_ms": 132.0,
-        "dwell_time_min_ms": 108.0,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "measured_bandwidth_mhz": {
-          "error": 9.292187,
-          "max": 125.444527,
-          "min": 108.0,
-          "value": 116.152339
-        },
-        "measured_centre_frequency_ghz": {
-          "error": 0.093454,
-          "max": 15.669114,
-          "min": 15.482206,
-          "value": 15.57566
-        },
-        "measured_pulse_width_us": {
-          "error": 0.155546,
-          "max": 1.98,
-          "min": 1.788776,
-          "value": 1.944322
-        },
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "prf_max_hz": 18000,
-        "prf_min_hz": 6000,
-        "pulse_width_max_us": 1.98,
-        "pulse_width_min_us": 1.62,
-        "radar_band": "Ku",
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_type": "sector",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      },
-      "estimated_emitter_location": {
-        "area": "Western Pacific",
-        "error_box": {
-          "max_latitude_deg": 24.239198,
-          "max_longitude_deg": 143.865254,
-          "min_latitude_deg": 23.910693,
-          "min_longitude_deg": 143.786428
-        },
-        "estimated_latitude_deg": 24.074945,
-        "estimated_longitude_deg": 143.825841
-      },
-      "ground_truth_label": {
-        "aircraft_family": "B-2",
-        "aircraft_id": "aircraft:b_2a_spirit",
-        "aircraft_variant": "B-2A Spirit",
-        "mode": "track_while_scan",
-        "mode_id": "radar_mode:an_apq_181:track_while_scan",
-        "operator": "United States",
-        "radar": "AN/APQ-181",
-        "radar_id": "radar:an_apq_181"
-      },
-      "observation_id": "esm_obs_00022",
-      "sensor": {
-        "platform": "synthetic_ground_or_airborne_collector",
-        "type": "passive_esm"
-      },
-      "timestamp_iso8601": "2025-01-02T12:22:10Z",
-      "timestamp_unix": 1735820530
-    },
-    {
-      "approximate_kinematics": {
-        "altitude_error_m": 760.1,
-        "altitude_m": 1841.8,
-        "altitude_max_m": 2601.9,
-        "altitude_min_m": 1081.6,
-        "ground_speed_error_kph": 97.8,
-        "ground_speed_kph": 1328.7,
-        "ground_speed_max_kph": 1426.5,
-        "ground_speed_min_kph": 1230.9,
-        "heading_deg": 221.7,
-        "heading_error_deg": 11.7
-      },
-      "candidate_labels_from_shared_kg_features": [
         {
           "aircraft_family": "MiG-29",
           "aircraft_id": "aircraft:mig_29smt",
@@ -2613,8 +2020,15 @@
           "aircraft_family": "MiG-29",
           "aircraft_id": "aircraft:mig_29k",
           "aircraft_variant": "MiG-29K",
-          "operator": "India",
+          "operator": "Russia",
           "radar": "Zhuk-ME"
+        },
+        {
+          "aircraft_family": "MiG-29",
+          "aircraft_id": "aircraft:mig_35",
+          "aircraft_variant": "MiG-35",
+          "operator": "Russia",
+          "radar": "Zhuk-AE"
         },
         {
           "aircraft_family": "MiG-29",
@@ -2625,323 +2039,883 @@
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "slotted planar array",
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 66.0,
-        "bandwidth_min_mhz": 54.0,
-        "centre_frequency_max_ghz": 9.9144,
-        "centre_frequency_min_ghz": 9.5256,
-        "coherent_processing_interval_max_ms": 35.2,
-        "coherent_processing_interval_min_ms": 28.8,
-        "duty_cycle_max": 0.0396,
-        "duty_cycle_min": 0.0324,
-        "dwell_time_max_ms": 176.0,
-        "dwell_time_min_ms": 144.0,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
         "measured_bandwidth_mhz": {
-          "error": 4.42069,
-          "max": 59.679316,
-          "min": 54.0,
-          "value": 55.258626
+          "error": 7.270325,
+          "max": 98.149383,
+          "min": 83.608734,
+          "value": 90.879058
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.058599,
-          "max": 9.825165,
-          "min": 9.707966,
-          "value": 9.766565
+          "error": 0.055585,
+          "max": 9.319764,
+          "min": 9.208594,
+          "value": 9.264179
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.070625,
+          "max": 27.953438,
+          "min": 23.812188,
+          "value": 25.882813
+        },
+        "measured_duty_cycle": {
+          "error": 0.003952,
+          "max": 0.053357,
+          "min": 0.045452,
+          "value": 0.049405
+        },
+        "measured_dwell_time_ms": {
+          "error": 10.288817,
+          "max": 138.899034,
+          "min": 118.3214,
+          "value": 128.610217
+        },
+        "measured_prf_hz": {
+          "error": 1063.015202,
+          "max": 43583.6233,
+          "min": 41457.592895,
+          "value": 42520.608097
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 0.58795,
+          "max": 24.105958,
+          "min": 22.930058,
+          "value": 23.518008
         },
         "measured_pulse_width_us": {
-          "error": 0.100433,
-          "max": 1.32,
-          "min": 1.154981,
-          "value": 1.255415
+          "error": 0.080704,
+          "max": 1.089503,
+          "min": 0.928095,
+          "value": 1.008799
         },
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "prf_max_hz": 30000,
-        "prf_min_hz": 12000,
-        "pulse_width_max_us": 1.32,
-        "pulse_width_min_us": 1.08,
-        "radar_band": "X",
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
+        "observed_scan_type": "sector",
+        "observed_waveform": "doppler_filtering"
       },
       "estimated_emitter_location": {
-        "area": "Eastern Mediterranean",
+        "area": "Baltic Sea",
         "error_box": {
-          "max_latitude_deg": 35.815419,
-          "max_longitude_deg": 31.625015,
-          "min_latitude_deg": 35.296093,
-          "min_longitude_deg": 31.11614
+          "max_latitude_deg": 54.110108,
+          "max_longitude_deg": 18.952343,
+          "min_latitude_deg": 53.785293,
+          "min_longitude_deg": 18.279949
         },
-        "estimated_latitude_deg": 35.555756,
-        "estimated_longitude_deg": 31.370578
+        "estimated_latitude_deg": 53.947701,
+        "estimated_longitude_deg": 18.616146
       },
       "ground_truth_label": {
         "aircraft_family": "MiG-29",
-        "aircraft_id": "aircraft:mig_29upg",
-        "aircraft_variant": "MiG-29UPG",
-        "mode": "single_target_track",
-        "mode_id": "radar_mode:zhuk_me:single_target_track",
-        "operator": "India",
-        "radar": "Zhuk-ME",
-        "radar_id": "radar:zhuk_me"
+        "aircraft_id": "aircraft:mig_29a",
+        "aircraft_variant": "MiG-29A",
+        "mode": "look_down_shoot_down",
+        "mode_id": "radar_mode:n019_rubin:look_down_shoot_down",
+        "operator": "Germany",
+        "radar": "N019 Rubin",
+        "radar_id": "radar:n019_rubin"
+      },
+      "observation_id": "esm_obs_00018",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2024-01-22T13:24:01Z",
+      "timestamp_unix": 1705929841
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 508.4,
+        "altitude_m": 10428.6,
+        "altitude_max_m": 10937.0,
+        "altitude_min_m": 9920.2,
+        "ground_speed_error_kph": 39.1,
+        "ground_speed_kph": 487.9,
+        "ground_speed_max_kph": 527.0,
+        "ground_speed_min_kph": 448.7,
+        "heading_deg": 90.2,
+        "heading_error_deg": 5.6
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "Harrier",
+          "aircraft_id": "aircraft:harrier_gr_9",
+          "aircraft_variant": "Harrier GR.9",
+          "operator": "United Kingdom",
+          "radar": "Blue Fox"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 5.79765,
+          "max": 78.26828,
+          "min": 66.672979,
+          "value": 72.470629
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.055022,
+          "max": 9.225413,
+          "min": 9.115368,
+          "value": 9.17039
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.16112,
+          "max": 15.67512,
+          "min": 13.35288,
+          "value": 14.514
+        },
+        "measured_duty_cycle": {
+          "error": 0.001753,
+          "max": 0.023662,
+          "min": 0.020156,
+          "value": 0.021909
+        },
+        "measured_dwell_time_ms": {
+          "error": 5.959077,
+          "max": 80.447542,
+          "min": 68.529388,
+          "value": 74.488465
+        },
+        "measured_prf_hz": {
+          "error": 107.527844,
+          "max": 4408.641588,
+          "min": 4193.585901,
+          "value": 4301.113744
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 5.812448,
+          "max": 238.310368,
+          "min": 226.685472,
+          "value": 232.49792
+        },
+        "measured_pulse_width_us": {
+          "error": 0.208084,
+          "max": 2.809138,
+          "min": 2.392969,
+          "value": 2.601053
+        },
+        "observed_scan_type": "mechanical_or_electronic",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "North Sea",
+        "error_box": {
+          "max_latitude_deg": 56.954813,
+          "max_longitude_deg": 1.944572,
+          "min_latitude_deg": 56.667391,
+          "min_longitude_deg": 1.487922
+        },
+        "estimated_latitude_deg": 56.811102,
+        "estimated_longitude_deg": 1.716247
+      },
+      "ground_truth_label": {
+        "aircraft_family": "Harrier",
+        "aircraft_id": "aircraft:harrier_gr_9",
+        "aircraft_variant": "Harrier GR.9",
+        "mode": "range_while_search",
+        "mode_id": "radar_mode:blue_fox:range_while_search",
+        "operator": "United Kingdom",
+        "radar": "Blue Fox",
+        "radar_id": "radar:blue_fox"
+      },
+      "observation_id": "esm_obs_00019",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2024-05-28T16:55:07Z",
+      "timestamp_unix": 1716915307
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 274.5,
+        "altitude_m": 5863.8,
+        "altitude_max_m": 6138.4,
+        "altitude_min_m": 5589.3,
+        "ground_speed_error_kph": 131.1,
+        "ground_speed_kph": 765.9,
+        "ground_speed_max_kph": 897.0,
+        "ground_speed_min_kph": 634.8,
+        "heading_deg": 359.4,
+        "heading_error_deg": 18.0
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "Mirage 2000",
+          "aircraft_id": "aircraft:mirage_2000i",
+          "aircraft_variant": "Mirage 2000I",
+          "operator": "India",
+          "radar": "RDY-2"
+        },
+        {
+          "aircraft_family": "Mirage 2000",
+          "aircraft_id": "aircraft:mirage_2000c",
+          "aircraft_variant": "Mirage 2000C",
+          "operator": "France",
+          "radar": "RDI"
+        },
+        {
+          "aircraft_family": "Mirage 2000",
+          "aircraft_id": "aircraft:mirage_2000_5",
+          "aircraft_variant": "Mirage 2000-5",
+          "operator": "France",
+          "radar": "RDY-2"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 8.046956,
+          "max": 108.63391,
+          "min": 92.539998,
+          "value": 100.586954
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.055906,
+          "max": 9.373518,
+          "min": 9.261707,
+          "value": 9.317612
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.302033,
+          "max": 31.077449,
+          "min": 26.473383,
+          "value": 28.775416
+        },
+        "measured_duty_cycle": {
+          "error": 0.003695,
+          "max": 0.049876,
+          "min": 0.042487,
+          "value": 0.046182
+        },
+        "measured_dwell_time_ms": {
+          "error": 11.266347,
+          "max": 152.095679,
+          "min": 129.562986,
+          "value": 140.829332
+        },
+        "measured_prf_hz": {
+          "error": 494.796376,
+          "max": 20286.651414,
+          "min": 19297.058662,
+          "value": 19791.855038
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.263146,
+          "max": 51.788981,
+          "min": 49.262689,
+          "value": 50.525835
+        },
+        "measured_pulse_width_us": {
+          "error": 0.075268,
+          "max": 1.016122,
+          "min": 0.865585,
+          "value": 0.940853
+        },
+        "observed_scan_type": "sector",
+        "observed_waveform": "doppler_filtering"
+      },
+      "estimated_emitter_location": {
+        "area": "Baltic Sea",
+        "error_box": {
+          "max_latitude_deg": 54.737338,
+          "max_longitude_deg": 19.541172,
+          "min_latitude_deg": 54.158613,
+          "min_longitude_deg": 18.903458
+        },
+        "estimated_latitude_deg": 54.447975,
+        "estimated_longitude_deg": 19.222315
+      },
+      "ground_truth_label": {
+        "aircraft_family": "Mirage 2000",
+        "aircraft_id": "aircraft:mirage_2000c",
+        "aircraft_variant": "Mirage 2000C",
+        "mode": "look_down_shoot_down",
+        "mode_id": "radar_mode:rdi:look_down_shoot_down",
+        "operator": "France",
+        "radar": "RDI",
+        "radar_id": "radar:rdi"
+      },
+      "observation_id": "esm_obs_00020",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2025-05-06T16:05:54Z",
+      "timestamp_unix": 1746547554
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 374.8,
+        "altitude_m": 13127.7,
+        "altitude_max_m": 13502.5,
+        "altitude_min_m": 12752.9,
+        "ground_speed_error_kph": 98.0,
+        "ground_speed_kph": 811.3,
+        "ground_speed_max_kph": 909.3,
+        "ground_speed_min_kph": 713.3,
+        "heading_deg": 359.5,
+        "heading_error_deg": 17.0
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "F-15",
+          "aircraft_id": "aircraft:f_15c",
+          "aircraft_variant": "F-15C",
+          "operator": "Japan",
+          "radar": "AN/APG-63"
+        },
+        {
+          "aircraft_family": "F-15",
+          "aircraft_id": "aircraft:f_15sa",
+          "aircraft_variant": "F-15SA",
+          "operator": "Saudi Arabia",
+          "radar": "AN/APG-63(V)3"
+        },
+        {
+          "aircraft_family": "F-15",
+          "aircraft_id": "aircraft:f_15e_strike_eagle",
+          "aircraft_variant": "F-15E Strike Eagle",
+          "operator": "United States",
+          "radar": "AN/APG-70"
+        },
+        {
+          "aircraft_family": "F-15",
+          "aircraft_id": "aircraft:f_15ex_eagle_ii",
+          "aircraft_variant": "F-15EX Eagle II",
+          "operator": "United States",
+          "radar": "AN/APG-82(V)1"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 9.384766,
+          "max": 126.69434,
+          "min": 107.924809,
+          "value": 117.309575
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.056533,
+          "max": 9.47871,
+          "min": 9.365644,
+          "value": 9.422177
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.998658,
+          "max": 26.981885,
+          "min": 22.984569,
+          "value": 24.983227
+        },
+        "measured_duty_cycle": {
+          "error": 0.002582,
+          "max": 0.034859,
+          "min": 0.029695,
+          "value": 0.032277
+        },
+        "measured_dwell_time_ms": {
+          "error": 9.02524,
+          "max": 121.84074,
+          "min": 103.79026,
+          "value": 112.8155
+        },
+        "measured_prf_hz": {
+          "error": 280.43917,
+          "max": 11498.005973,
+          "min": 10937.127633,
+          "value": 11217.566803
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 2.228647,
+          "max": 91.374539,
+          "min": 86.917245,
+          "value": 89.145892
+        },
+        "measured_pulse_width_us": {
+          "error": 0.156706,
+          "max": 2.115535,
+          "min": 1.802122,
+          "value": 1.958829
+        },
+        "observed_scan_type": "sector",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "North Sea",
+        "error_box": {
+          "max_latitude_deg": 55.182599,
+          "max_longitude_deg": 2.752412,
+          "min_latitude_deg": 54.893742,
+          "min_longitude_deg": 2.166988
+        },
+        "estimated_latitude_deg": 55.038171,
+        "estimated_longitude_deg": 2.4597
+      },
+      "ground_truth_label": {
+        "aircraft_family": "F-15",
+        "aircraft_id": "aircraft:f_15c",
+        "aircraft_variant": "F-15C",
+        "mode": "track_while_scan",
+        "mode_id": "radar_mode:an_apg_63:track_while_scan",
+        "operator": "Japan",
+        "radar": "AN/APG-63",
+        "radar_id": "radar:an_apg_63"
+      },
+      "observation_id": "esm_obs_00021",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2025-07-18T08:22:04Z",
+      "timestamp_unix": 1752826924
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 361.5,
+        "altitude_m": 9373.7,
+        "altitude_max_m": 9735.1,
+        "altitude_min_m": 9012.2,
+        "ground_speed_error_kph": 112.9,
+        "ground_speed_kph": 1401.5,
+        "ground_speed_max_kph": 1514.4,
+        "ground_speed_min_kph": 1288.6,
+        "heading_deg": 168.1,
+        "heading_error_deg": 11.3
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "MiG-31",
+          "aircraft_id": "aircraft:mig_31b",
+          "aircraft_variant": "MiG-31B",
+          "operator": "Kazakhstan",
+          "radar": "Zaslon"
+        },
+        {
+          "aircraft_family": "MiG-31",
+          "aircraft_id": "aircraft:mig_31bm",
+          "aircraft_variant": "MiG-31BM",
+          "operator": "Kazakhstan",
+          "radar": "Zaslon-M"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 6.46614,
+          "max": 87.292884,
+          "min": 74.360605,
+          "value": 80.826744
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.054179,
+          "max": 9.083955,
+          "min": 8.975598,
+          "value": 9.029776
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 1.199241,
+          "max": 16.189757,
+          "min": 13.791275,
+          "value": 14.990516
+        },
+        "measured_duty_cycle": {
+          "error": 0.001487,
+          "max": 0.020073,
+          "min": 0.017099,
+          "value": 0.018586
+        },
+        "measured_dwell_time_ms": {
+          "error": 6.02101,
+          "max": 81.283634,
+          "min": 69.241614,
+          "value": 75.262624
+        },
+        "measured_prf_hz": {
+          "error": 139.35304,
+          "max": 5713.474654,
+          "min": 5434.768573,
+          "value": 5574.121613
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 4.485012,
+          "max": 183.885475,
+          "min": 174.915452,
+          "value": 179.400463
+        },
+        "measured_pulse_width_us": {
+          "error": 0.20275,
+          "max": 2.737121,
+          "min": 2.331621,
+          "value": 2.534371
+        },
+        "observed_scan_type": "mechanical_or_electronic",
+        "observed_waveform": "pulse_doppler"
+      },
+      "estimated_emitter_location": {
+        "area": "Baltic Sea",
+        "error_box": {
+          "max_latitude_deg": 56.781383,
+          "max_longitude_deg": 19.830499,
+          "min_latitude_deg": 56.660425,
+          "min_longitude_deg": 19.730855
+        },
+        "estimated_latitude_deg": 56.720904,
+        "estimated_longitude_deg": 19.780677
+      },
+      "ground_truth_label": {
+        "aircraft_family": "MiG-31",
+        "aircraft_id": "aircraft:mig_31b",
+        "aircraft_variant": "MiG-31B",
+        "mode": "range_while_search",
+        "mode_id": "radar_mode:zaslon:range_while_search",
+        "operator": "Kazakhstan",
+        "radar": "Zaslon",
+        "radar_id": "radar:zaslon"
+      },
+      "observation_id": "esm_obs_00022",
+      "sensor": {
+        "platform": "synthetic_ground_or_airborne_collector",
+        "type": "passive_esm"
+      },
+      "timestamp_iso8601": "2024-01-19T21:04:21Z",
+      "timestamp_unix": 1705698261
+    },
+    {
+      "approximate_kinematics": {
+        "altitude_error_m": 827.0,
+        "altitude_m": 13163.8,
+        "altitude_max_m": 13990.8,
+        "altitude_min_m": 12336.8,
+        "ground_speed_error_kph": 125.7,
+        "ground_speed_kph": 534.8,
+        "ground_speed_max_kph": 660.5,
+        "ground_speed_min_kph": 409.1,
+        "heading_deg": 338.3,
+        "heading_error_deg": 12.3
+      },
+      "candidate_labels_from_shared_kg_features": [
+        {
+          "aircraft_family": "Mirage 2000",
+          "aircraft_id": "aircraft:mirage_2000i",
+          "aircraft_variant": "Mirage 2000I",
+          "operator": "India",
+          "radar": "RDY-2"
+        },
+        {
+          "aircraft_family": "Mirage 2000",
+          "aircraft_id": "aircraft:mirage_2000c",
+          "aircraft_variant": "Mirage 2000C",
+          "operator": "France",
+          "radar": "RDI"
+        },
+        {
+          "aircraft_family": "Mirage 2000",
+          "aircraft_id": "aircraft:mirage_2000_5",
+          "aircraft_variant": "Mirage 2000-5",
+          "operator": "France",
+          "radar": "RDY-2"
+        }
+      ],
+      "esm_radar_parameters": {
+        "measured_bandwidth_mhz": {
+          "error": 13.314637,
+          "max": 179.7476,
+          "min": 153.118326,
+          "value": 166.432963
+        },
+        "measured_centre_frequency_ghz": {
+          "error": 0.054714,
+          "max": 9.173641,
+          "min": 9.064214,
+          "value": 9.118928
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 5.365078,
+          "max": 72.428556,
+          "min": 61.6984,
+          "value": 67.063478
+        },
+        "measured_duty_cycle": {
+          "error": 0.003963,
+          "max": 0.053503,
+          "min": 0.045576,
+          "value": 0.04954
+        },
+        "measured_dwell_time_ms": {
+          "error": 19.621208,
+          "max": 264.886313,
+          "min": 225.643896,
+          "value": 245.265105
+        },
+        "measured_prf_hz": {
+          "error": 109.426287,
+          "max": 4486.477766,
+          "min": 4267.625192,
+          "value": 4377.051479
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 5.711607,
+          "max": 234.175907,
+          "min": 222.752692,
+          "value": 228.464299
+        },
+        "measured_pulse_width_us": {
+          "error": 0.749003,
+          "max": 10.111541,
+          "min": 8.613535,
+          "value": 9.362538
+        },
+        "observed_scan_type": "ground",
+        "observed_waveform": "synthetic_aperture_or_real_beam"
+      },
+      "estimated_emitter_location": {
+        "area": "Arabian Gulf",
+        "error_box": {
+          "max_latitude_deg": 26.348169,
+          "max_longitude_deg": 51.667988,
+          "min_latitude_deg": 25.781065,
+          "min_longitude_deg": 51.400822
+        },
+        "estimated_latitude_deg": 26.064617,
+        "estimated_longitude_deg": 51.534405
+      },
+      "ground_truth_label": {
+        "aircraft_family": "Mirage 2000",
+        "aircraft_id": "aircraft:mirage_2000c",
+        "aircraft_variant": "Mirage 2000C",
+        "mode": "air_to_ground_mapping",
+        "mode_id": "radar_mode:rdi:air_to_ground_mapping",
+        "operator": "France",
+        "radar": "RDI",
+        "radar_id": "radar:rdi"
       },
       "observation_id": "esm_obs_00023",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2024-07-08T21:11:19Z",
-      "timestamp_unix": 1720473079
+      "timestamp_iso8601": "2024-10-16T20:05:37Z",
+      "timestamp_unix": 1729109137
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 207.1,
-        "altitude_m": 15187.4,
-        "altitude_max_m": 15394.6,
-        "altitude_min_m": 14980.3,
-        "ground_speed_error_kph": 127.1,
-        "ground_speed_kph": 666.3,
-        "ground_speed_max_kph": 793.4,
-        "ground_speed_min_kph": 539.2,
-        "heading_deg": 86.2,
-        "heading_error_deg": 15.1
+        "altitude_error_m": 108.5,
+        "altitude_m": 6523.3,
+        "altitude_max_m": 6631.7,
+        "altitude_min_m": 6414.8,
+        "ground_speed_error_kph": 78.9,
+        "ground_speed_kph": 520.6,
+        "ground_speed_max_kph": 599.5,
+        "ground_speed_min_kph": 441.6,
+        "heading_deg": 128.0,
+        "heading_error_deg": 13.5
       },
       "candidate_labels_from_shared_kg_features": [
         {
-          "aircraft_family": "JF-17",
-          "aircraft_id": "aircraft:jf_17_block_i",
-          "aircraft_variant": "JF-17 Block I",
-          "operator": "Pakistan",
-          "radar": "KLJ-7"
+          "aircraft_family": "J-10",
+          "aircraft_id": "aircraft:j_10b",
+          "aircraft_variant": "J-10B",
+          "operator": "China",
+          "radar": "Type 1473"
         },
         {
-          "aircraft_family": "JF-17",
-          "aircraft_id": "aircraft:jf_17_block_iii",
-          "aircraft_variant": "JF-17 Block III",
-          "operator": "i",
-          "radar": "KLJ-7A"
+          "aircraft_family": "J-11",
+          "aircraft_id": "aircraft:j_11b",
+          "aircraft_variant": "J-11B",
+          "operator": "China",
+          "radar": "Type 1473"
+        },
+        {
+          "aircraft_family": "J-15",
+          "aircraft_id": "aircraft:j_15",
+          "aircraft_variant": "J-15",
+          "operator": "China",
+          "radar": "Type 1473"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 176.0,
-        "bandwidth_min_mhz": 144.0,
-        "centre_frequency_max_ghz": 9.894,
-        "centre_frequency_min_ghz": 9.506,
-        "coherent_processing_interval_max_ms": 70.4,
-        "coherent_processing_interval_min_ms": 57.6,
-        "duty_cycle_max": 0.055,
-        "duty_cycle_min": 0.045,
-        "dwell_time_max_ms": 275.0,
-        "dwell_time_min_ms": 225.0,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
         "measured_bandwidth_mhz": {
-          "error": 11.869352,
-          "max": 160.236255,
-          "min": 144.0,
-          "value": 148.366902
+          "error": 5.034658,
+          "max": 67.967876,
+          "min": 57.898561,
+          "value": 62.933219
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.058402,
-          "max": 9.79202,
-          "min": 9.675216,
-          "value": 9.733618
+          "error": 0.05867,
+          "max": 9.836937,
+          "min": 9.719598,
+          "value": 9.778268
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.763031,
+          "max": 37.30092,
+          "min": 31.774857,
+          "value": 34.537888
+        },
+        "measured_duty_cycle": {
+          "error": 0.002826,
+          "max": 0.038146,
+          "min": 0.032495,
+          "value": 0.035321
+        },
+        "measured_dwell_time_ms": {
+          "error": 13.772394,
+          "max": 185.927323,
+          "min": 158.382534,
+          "value": 172.154928
+        },
+        "measured_prf_hz": {
+          "error": 650.094591,
+          "max": 26653.878241,
+          "min": 25353.689059,
+          "value": 26003.78365
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 0.961399,
+          "max": 39.417341,
+          "min": 37.494544,
+          "value": 38.455942
         },
         "measured_pulse_width_us": {
-          "error": 0.866372,
-          "max": 11.0,
-          "min": 9.963275,
-          "value": 10.829647
+          "error": 0.102041,
+          "max": 1.377555,
+          "min": 1.173473,
+          "value": 1.275514
         },
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "prf_max_hz": 5000,
-        "prf_min_hz": 1000,
-        "pulse_width_max_us": 11.0,
-        "pulse_width_min_us": 9.0,
-        "radar_band": "X",
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_type": "ground",
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
+        "observed_scan_type": "focused",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
         "area": "Bay of Bengal",
         "error_box": {
-          "max_latitude_deg": 16.338829,
-          "max_longitude_deg": 87.772907,
-          "min_latitude_deg": 16.077236,
-          "min_longitude_deg": 87.122336
+          "max_latitude_deg": 15.961648,
+          "max_longitude_deg": 89.05693,
+          "min_latitude_deg": 15.641971,
+          "min_longitude_deg": 88.534444
         },
-        "estimated_latitude_deg": 16.208033,
-        "estimated_longitude_deg": 87.447621
+        "estimated_latitude_deg": 15.801809,
+        "estimated_longitude_deg": 88.795687
       },
       "ground_truth_label": {
-        "aircraft_family": "JF-17",
-        "aircraft_id": "aircraft:jf_17_block_iii",
-        "aircraft_variant": "JF-17 Block III",
-        "mode": "air_to_ground_mapping",
-        "mode_id": "radar_mode:klj_7a:air_to_ground_mapping",
-        "operator": "i",
-        "radar": "KLJ-7A",
-        "radar_id": "radar:klj_7a"
+        "aircraft_family": "J-10",
+        "aircraft_id": "aircraft:j_10b",
+        "aircraft_variant": "J-10B",
+        "mode": "single_target_track",
+        "mode_id": "radar_mode:type_1473:single_target_track",
+        "operator": "China",
+        "radar": "Type 1473",
+        "radar_id": "radar:type_1473"
       },
       "observation_id": "esm_obs_00024",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2025-04-20T03:07:19Z",
-      "timestamp_unix": 1745118439
+      "timestamp_iso8601": "2024-08-05T02:33:05Z",
+      "timestamp_unix": 1722825185
     },
     {
       "approximate_kinematics": {
-        "altitude_error_m": 389.1,
-        "altitude_m": 5855.4,
-        "altitude_max_m": 6244.5,
-        "altitude_min_m": 5466.4,
-        "ground_speed_error_kph": 119.4,
-        "ground_speed_kph": 1015.1,
-        "ground_speed_max_kph": 1134.5,
-        "ground_speed_min_kph": 895.7,
-        "heading_deg": 253.7,
-        "heading_error_deg": 13.4
+        "altitude_error_m": 421.2,
+        "altitude_m": 11894.8,
+        "altitude_max_m": 12316.1,
+        "altitude_min_m": 11473.6,
+        "ground_speed_error_kph": 54.5,
+        "ground_speed_kph": 1065.4,
+        "ground_speed_max_kph": 1119.9,
+        "ground_speed_min_kph": 1010.9,
+        "heading_deg": 18.2,
+        "heading_error_deg": 5.5
       },
       "candidate_labels_from_shared_kg_features": [
         {
-          "aircraft_family": "Tejas",
-          "aircraft_id": "aircraft:tejas_mk1",
-          "aircraft_variant": "Tejas Mk1",
+          "aircraft_family": "Su-27",
+          "aircraft_id": "aircraft:su_30mki",
+          "aircraft_variant": "Su-30MKI",
           "operator": "India",
-          "radar": "EL/M-2032"
+          "radar": "N011M Bars"
         },
         {
-          "aircraft_family": "Tejas",
-          "aircraft_id": "aircraft:tejas_mk1a",
-          "aircraft_variant": "Tejas Mk1A",
-          "operator": "India",
-          "radar": "EL/M-2052"
-        },
-        {
-          "aircraft_family": "Tejas",
-          "aircraft_id": "aircraft:tejas_mk2",
-          "aircraft_variant": "Tejas Mk2",
-          "operator": "India",
-          "radar": "Uttam AESA"
-        },
-        {
-          "aircraft_family": "Jaguar",
-          "aircraft_id": "aircraft:jaguar_is_darin_iii",
-          "aircraft_variant": "Jaguar IS DARIN III",
-          "operator": "India",
-          "radar": "EL/M-2052"
+          "aircraft_family": "Su-27",
+          "aircraft_id": "aircraft:su_30sm",
+          "aircraft_variant": "Su-30SM",
+          "operator": "Russia",
+          "radar": "N011M Bars"
         }
       ],
       "esm_radar_parameters": {
-        "antenna_hint": "AESA",
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 88.0,
-        "bandwidth_min_mhz": 72.0,
-        "centre_frequency_max_ghz": 9.996,
-        "centre_frequency_min_ghz": 9.604,
-        "coherent_processing_interval_max_ms": 17.6,
-        "coherent_processing_interval_min_ms": 14.4,
-        "duty_cycle_max": 0.022,
-        "duty_cycle_min": 0.018,
-        "dwell_time_max_ms": 88.0,
-        "dwell_time_min_ms": 72.0,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
         "measured_bandwidth_mhz": {
-          "error": 6.299687,
-          "max": 85.045777,
-          "min": 72.446402,
-          "value": 78.74609
+          "error": 4.527406,
+          "max": 61.11998,
+          "min": 52.065168,
+          "value": 56.592574
         },
         "measured_centre_frequency_ghz": {
-          "error": 0.059581,
-          "max": 9.989791,
-          "min": 9.870629,
-          "value": 9.93021
+          "error": 0.057851,
+          "max": 9.69965,
+          "min": 9.583948,
+          "value": 9.641799
+        },
+        "measured_coherent_processing_interval_ms": {
+          "error": 2.567525,
+          "max": 34.661593,
+          "min": 29.526543,
+          "value": 32.094068
+        },
+        "measured_duty_cycle": {
+          "error": 0.002636,
+          "max": 0.035589,
+          "min": 0.030317,
+          "value": 0.032953
+        },
+        "measured_dwell_time_ms": {
+          "error": 12.793843,
+          "max": 172.716883,
+          "min": 147.129197,
+          "value": 159.92304
+        },
+        "measured_prf_hz": {
+          "error": 482.759086,
+          "max": 19793.122514,
+          "min": 18827.604343,
+          "value": 19310.363429
+        },
+        "measured_pulse_repetition_interval_us": {
+          "error": 1.294642,
+          "max": 53.080306,
+          "min": 50.491023,
+          "value": 51.785664
         },
         "measured_pulse_width_us": {
-          "error": 0.211597,
-          "max": 2.75,
-          "min": 2.43337,
-          "value": 2.644968
+          "error": 0.089894,
+          "max": 1.213564,
+          "min": 1.033777,
+          "value": 1.123671
         },
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "prf_max_hz": 8000,
-        "prf_min_hz": 3000,
-        "pulse_width_max_us": 2.75,
-        "pulse_width_min_us": 2.25,
-        "radar_band": "X",
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
+        "observed_scan_type": "focused",
+        "observed_waveform": "pulse_doppler"
       },
       "estimated_emitter_location": {
-        "area": "Baltic Sea",
+        "area": "Arabian Gulf",
         "error_box": {
-          "max_latitude_deg": 54.637572,
-          "max_longitude_deg": 18.944716,
-          "min_latitude_deg": 54.066303,
-          "min_longitude_deg": 18.82324
+          "max_latitude_deg": 26.69738,
+          "max_longitude_deg": 53.572522,
+          "min_latitude_deg": 26.010124,
+          "min_longitude_deg": 53.497917
         },
-        "estimated_latitude_deg": 54.351937,
-        "estimated_longitude_deg": 18.883978
+        "estimated_latitude_deg": 26.353752,
+        "estimated_longitude_deg": 53.535219
       },
       "ground_truth_label": {
-        "aircraft_family": "Tejas",
-        "aircraft_id": "aircraft:tejas_mk1a",
-        "aircraft_variant": "Tejas Mk1A",
-        "mode": "range_while_search",
-        "mode_id": "radar_mode:el_m_2052:range_while_search",
+        "aircraft_family": "Su-27",
+        "aircraft_id": "aircraft:su_30mki",
+        "aircraft_variant": "Su-30MKI",
+        "mode": "single_target_track",
+        "mode_id": "radar_mode:n011m_bars:single_target_track",
         "operator": "India",
-        "radar": "EL/M-2052",
-        "radar_id": "radar:el_m_2052"
+        "radar": "N011M Bars",
+        "radar_id": "radar:n011m_bars"
       },
       "observation_id": "esm_obs_00025",
       "sensor": {
         "platform": "synthetic_ground_or_airborne_collector",
         "type": "passive_esm"
       },
-      "timestamp_iso8601": "2024-12-03T17:12:28Z",
-      "timestamp_unix": 1733245948
+      "timestamp_iso8601": "2025-06-01T08:53:02Z",
+      "timestamp_unix": 1748767982
     }
   ]
 }

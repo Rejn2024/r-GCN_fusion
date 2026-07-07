@@ -34,3 +34,27 @@ def test_observations_reference_existing_kg_nodes_and_plausible_ranges():
         esm = obs["esm_radar_parameters"]
         freq = esm["measured_centre_frequency_ghz"]
         assert freq["min"] <= freq["value"] <= freq["max"]
+
+
+def test_esm_radar_parameters_only_contains_measured_or_observed_values():
+    data = generate_observations(20, seed=23)
+    expected_keys = {
+        "observed_waveform",
+        "observed_scan_type",
+        "measured_centre_frequency_ghz",
+        "measured_bandwidth_mhz",
+        "measured_prf_hz",
+        "measured_pulse_repetition_interval_us",
+        "measured_pulse_width_us",
+        "measured_duty_cycle",
+        "measured_coherent_processing_interval_ms",
+        "measured_dwell_time_ms",
+    }
+    for obs in data["observations"]:
+        esm = obs["esm_radar_parameters"]
+        assert set(esm) == expected_keys
+        assert not any(key.endswith(("_min", "_max")) or "_min_" in key or "_max_" in key for key in esm)
+        for key, measurement in esm.items():
+            if key.startswith("measured_"):
+                assert measurement["min"] <= measurement["value"] <= measurement["max"]
+
