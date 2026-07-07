@@ -40,6 +40,39 @@ Custom output paths can be supplied:
 python kg_generator.py --json /tmp/kg.json --triples /tmp/triples.csv
 ```
 
+
+## Synthetic ESM Observation Generator
+
+The repository also includes `esm_observation_generator.py`, which creates
+synthetic passive-ESM observations whose radar parameters are sampled from the
+radar-mode bounds already present in the KG. Each observation includes:
+
+- ESM-deducible radar features such as PRF ranges, centre frequency, bandwidth,
+  waveform, scan type, pulse width, duty cycle, CPI, dwell time, coverage,
+  resolution, power/noise estimates, and track-capacity hints where present;
+- an estimated emitter latitude/longitude with an error box;
+- approximate kinematic estimates for speed, altitude, and heading with errors;
+- Unix and ISO-8601 UTC timestamps;
+- a ground-truth aircraft variant/operator/radar/mode label;
+- additional candidate labels sharing KG features, so some observations are
+  intentionally compatible with multiple aircraft or variants.
+
+Generate a reproducible sample with:
+
+```bash
+python esm_observation_generator.py --count 100 --seed 7 --output generated/esm_observations.json
+```
+
+Date bounds can be customized with UTC ISO-8601 timestamps:
+
+```bash
+python esm_observation_generator.py --start 2025-01-01T00:00:00Z --end 2025-02-01T00:00:00Z
+```
+
+A Jupyter walkthrough at `notebooks/esm_observation_generation_demo.ipynb`
+demonstrates in-memory generation, inspection of uncertainty fields, KG label
+validation, ambiguity candidates, and JSON export for downstream experiments.
+
 ## Neo4j Notebook
 
 A Jupyter notebook at `notebooks/neo4j_kg_creation.ipynb` demonstrates how to
