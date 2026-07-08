@@ -87,3 +87,132 @@ def test_ds_masses_are_normalized():
     assert len(masses) == 3
     assert sum(masses) == 1.0
     assert masses[1] > masses[0]
+
+
+def test_score_candidates_ignores_ground_truth_labels_for_scoring():
+    rows = [
+        {
+            "mode_id": "radar_mode:a",
+            "mode_props": {
+                "waveform": "pulse_doppler",
+                "scan_type": "sector",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:a",
+            "aircraft_id": "aircraft:a",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "operator": "Testland",
+        },
+        {
+            "mode_id": "radar_mode:b",
+            "mode_props": {
+                "waveform": "pulse_doppler",
+                "scan_type": "sector",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:b",
+            "aircraft_id": "aircraft:b",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "operator": "Other",
+        },
+    ]
+    obs = _observation()
+    leaked_obs = {
+        **obs,
+        "ground_truth_label": {
+            "operator": "Other",
+            "radar_id": "radar:b",
+            "mode_id": "radar_mode:b",
+            "aircraft_id": "aircraft:b",
+        },
+    }
+
+    baseline = score_candidates(obs, rows, max_candidates=2)
+    with_conflicting_truth = score_candidates(leaked_obs, rows, max_candidates=2)
+
+    assert [(c.mode_id, c.total_score) for c in baseline] == [
+        (c.mode_id, c.total_score) for c in with_conflicting_truth
+    ]
+
+
+def test_score_candidates_uses_external_operator_context_for_prior():
+    rows = [
+        {
+            "mode_id": "radar_mode:a",
+            "mode_props": {
+                "waveform": "pulse_doppler",
+                "scan_type": "sector",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:a",
+            "aircraft_id": "aircraft:a",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "operator": "Testland",
+        },
+        {
+            "mode_id": "radar_mode:b",
+            "mode_props": {
+                "waveform": "pulse_doppler",
+                "scan_type": "sector",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:b",
+            "aircraft_id": "aircraft:b",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "operator": "Other",
+        },
+    ]
+    obs = {
+        **_observation(),
+        "external_context": {"operator_priors": {"Other": 1.0, "Testland": 0.0}},
+    }
+
+    candidates = score_candidates(obs, rows, max_candidates=2)
+
+    assert candidates[0].operator == "Other"
+    assert candidates[0].total_score > candidates[1].total_score
+
+
+def test_score_candidates_uses_kg_aircraft_radar_compatibility():
+    rows = [
+        {
+            "mode_id": "radar_mode:linked",
+            "mode_props": {
+                "waveform": "pulse_doppler",
+                "scan_type": "sector",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:linked",
+            "radar_props": {"name": "Linked Radar"},
+            "aircraft_id": "aircraft:linked",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "aircraft_uses_radar": True,
+            "operator": "Testland",
+        },
+        {
+            "mode_id": "radar_mode:unlinked",
+            "mode_props": {
+                "waveform": "pulse_doppler",
+                "scan_type": "sector",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:unlinked",
+            "radar_props": {"name": "Unlinked Radar"},
+            "aircraft_id": "aircraft:unlinked",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "aircraft_uses_radar": False,
+            "operator": "Testland",
+        },
+    ]
+
+    candidates = score_candidates(_observation(), rows, max_candidates=2)
+
+    assert candidates[0].aircraft_id == "aircraft:linked"
+    assert candidates[0].aircraft_score > candidates[1].aircraft_score
+    assert candidates[0].total_score > candidates[1].total_score

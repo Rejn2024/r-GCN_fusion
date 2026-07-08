@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +12,20 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import yaml
+try:
+    from torch.utils.tensorboard import SummaryWriter
+except ImportError:  # pragma: no cover - optional dependency guard
+    SummaryWriter = None
+try:
+    from tqdm.auto import tqdm
+except ImportError:  # pragma: no cover - optional dependency guard
+    def tqdm(iterable, desc=None):
+        total = len(iterable) if hasattr(iterable, "__len__") else None
+        label = desc or "Progress"
+        print(f"{label}: starting" + (f" ({total} steps)" if total else ""))
+        for item in iterable:
+            yield item
+        print(f"{label}: done")
 
 from .dempster_shafer import belief_plausibility, validate_masses
 from .model import RGCNEvidenceModel
@@ -142,28 +157,153 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
 
     classification_loss_weight = float(train_cfg.get("classification_loss_weight", 1.0))
     epochs = int(train_cfg.get("epochs", 200))
-    history: list[dict[str, float]] = []
-    for epoch in range(1, epochs + 1):
-        model.train()
-        optimizer.zero_grad(set_to_none=True)
-        outputs = model(x, edge_index, edge_type)
-        masses = outputs["masses"]
-        mass_loss = F.kl_div(torch.log(masses.clamp_min(1e-9)), targets, reduction="batchmean")
+    seed = int(train_cfg.get("seed", 42))
+    train_fraction = float(train_cfg.get("train_fraction", 0.5))
+    test_fraction = float(train_cfg.get("test_fraction", 0.3))
+    val_fraction = float(train_cfg.get("val_fraction", 0.2))
+    if not math.isclose(train_fraction + test_fraction + val_fraction, 1.0, rel_tol=0.0, abs_tol=1e-9):
+        raise ValueError("train_fraction, test_fraction, and val_fraction must sum to 1.0")
+
+    output_dir = Path(output_cfg.get("directory", "artifacts"))
+    output_dir.mkdir(parents=True, exist_ok=True)
+    tensorboard_log_dir = output_dir / "tensorboard"
+    ckpt_path = output_dir / "best_rgcn_evidence_model.pt"
+
+    perm = np.random.default_rng(seed).permutation(len(graph.node_ids))
+    n_train = int(round(train_fraction * len(perm)))
+    n_test = int(round(test_fraction * len(perm)))
+    split_indices = {
+        "train": torch.as_tensor(perm[:n_train], dtype=torch.long, device=device),
+        "test": torch.as_tensor(perm[n_train:n_train + n_test], dtype=torch.long, device=device),
+        "val": torch.as_tensor(perm[n_train + n_test:], dtype=torch.long, device=device),
+    }
+    print({name: int(indices.numel()) for name, indices in split_indices.items()})
+
+    def _classification_loss(outputs: dict[str, Any], indices: torch.Tensor) -> torch.Tensor:
         class_loss = torch.zeros((), dtype=torch.float32, device=device)
         for task_name, labels in class_targets.items():
-            if not torch.any(labels != IGNORE_CLASS_INDEX):
+            split_labels = labels[indices]
+            if not torch.any(split_labels != IGNORE_CLASS_INDEX):
                 continue
-            logits = outputs["classification_logits"][task_name]
-            class_loss = class_loss + F.cross_entropy(logits, labels, ignore_index=IGNORE_CLASS_INDEX)
-        loss = mass_loss + classification_loss_weight * class_loss
-        loss.backward()
-        optimizer.step()
-        history.append({
-            "epoch": epoch,
-            "loss": float(loss.detach().cpu()),
-            "mass_loss": float(mass_loss.detach().cpu()),
-            "classification_loss": float(class_loss.detach().cpu()),
-        })
+            logits = outputs["classification_logits"][task_name][indices]
+            class_loss = class_loss + F.cross_entropy(logits, split_labels, ignore_index=IGNORE_CLASS_INDEX)
+        return class_loss
+
+    def _classification_accuracy(logits: torch.Tensor, labels: torch.Tensor) -> float:
+        valid = labels != IGNORE_CLASS_INDEX
+        if not torch.any(valid):
+            return float("nan")
+        predictions = torch.argmax(logits[valid], dim=1)
+        return float((predictions == labels[valid]).float().mean().cpu())
+
+    def split_losses_and_metrics(split: str) -> dict[str, float]:
+        model.eval()
+        indices = split_indices[split]
+        with torch.no_grad():
+            outputs = model(x, edge_index, edge_type)
+            masses = outputs["masses"]
+            mass_loss = F.kl_div(
+                torch.log(masses[indices].clamp_min(1e-9)),
+                targets[indices],
+                reduction="batchmean",
+            )
+            class_loss = _classification_loss(outputs, indices)
+            metrics = {
+                "loss": float((mass_loss + classification_loss_weight * class_loss).cpu()),
+                "mass_loss": float(mass_loss.cpu()),
+                "classification_loss": float(class_loss.cpu()),
+            }
+            for task_name, labels in class_targets.items():
+                metrics[f"{task_name}_acc"] = _classification_accuracy(
+                    outputs["classification_logits"][task_name][indices],
+                    labels[indices],
+                )
+            return metrics
+
+    if SummaryWriter is None:
+        raise ImportError("TensorBoard tracking requires the tensorboard package. Install dependencies with `pip install -r requirements.txt`.")
+    writer = SummaryWriter(log_dir=str(tensorboard_log_dir))
+    writer.add_text("run/config", json.dumps({
+        "epochs": epochs,
+        "learning_rate": float(train_cfg.get("learning_rate", 1e-3)),
+        "weight_decay": float(train_cfg.get("weight_decay", 1e-4)),
+        "hidden_features": int(model_cfg.get("hidden_features", 64)),
+        "dropout": float(model_cfg.get("dropout", 0.1)),
+        "train_fraction": train_fraction,
+        "test_fraction": test_fraction,
+        "val_fraction": val_fraction,
+        "classification_loss_weight": classification_loss_weight,
+        "seed": seed,
+    }, indent=2))
+
+    best_val = math.inf
+    bad_epochs = 0
+    patience = int(train_cfg.get("patience", epochs + 1))
+    history: list[dict[str, float]] = []
+    try:
+        for epoch in tqdm(range(1, epochs + 1), desc="Training r-GCN"):
+            model.train()
+            optimizer.zero_grad(set_to_none=True)
+            outputs = model(x, edge_index, edge_type)
+            train_indices = split_indices["train"]
+            masses = outputs["masses"]
+            mass_loss = F.kl_div(
+                torch.log(masses[train_indices].clamp_min(1e-9)),
+                targets[train_indices],
+                reduction="batchmean",
+            )
+            class_loss = _classification_loss(outputs, train_indices)
+            loss = mass_loss + classification_loss_weight * class_loss
+            loss.backward()
+            optimizer.step()
+
+            train_metrics = split_losses_and_metrics("train")
+            val_metrics = split_losses_and_metrics("val")
+            history_row = {
+                "epoch": epoch,
+                **{f"train_{key}": value for key, value in train_metrics.items()},
+                **{f"val_{key}": value for key, value in val_metrics.items()},
+            }
+            history.append(history_row)
+            writer.add_scalar("loss/train_total", train_metrics["loss"], epoch)
+            writer.add_scalar("loss/train_mass", train_metrics["mass_loss"], epoch)
+            writer.add_scalar("loss/train_classification", train_metrics["classification_loss"], epoch)
+            writer.add_scalar("loss/validation_total", val_metrics["loss"], epoch)
+            writer.add_scalar("loss/validation_mass", val_metrics["mass_loss"], epoch)
+            writer.add_scalar("loss/validation_classification", val_metrics["classification_loss"], epoch)
+            for task_name in class_targets:
+                writer.add_scalar(f"accuracy_train/{task_name}", train_metrics[f"{task_name}_acc"], epoch)
+                writer.add_scalar(f"accuracy_validation/{task_name}", val_metrics[f"{task_name}_acc"], epoch)
+            writer.add_scalar("optimizer/learning_rate", optimizer.param_groups[0]["lr"], epoch)
+            if val_metrics["loss"] < best_val:
+                best_val = val_metrics["loss"]
+                bad_epochs = 0
+                torch.save(
+                    {
+                        "model_state": model.state_dict(),
+                        "config": config,
+                        "relations": graph.relation_names,
+                        "class_vocabularies": class_vocabularies,
+                        "split_indices": {name: indices.detach().cpu().tolist() for name, indices in split_indices.items()},
+                        "best_val_loss": best_val,
+                    },
+                    ckpt_path,
+                )
+            else:
+                bad_epochs += 1
+            if bad_epochs >= patience:
+                print(f"Early stopping at epoch {epoch}")
+                break
+    finally:
+        writer.flush()
+        writer.close()
+
+    checkpoint = torch.load(ckpt_path, map_location=device)
+    model.load_state_dict(checkpoint["model_state"])
+    train_metrics = split_losses_and_metrics("train")
+    test_metrics = split_losses_and_metrics("test")
+    print("Train metrics:", train_metrics)
+    print("Test metrics:", test_metrics)
 
     model.eval()
     with torch.no_grad():
@@ -174,14 +314,15 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
             for task_name, logits in outputs["classification_logits"].items()
         }
 
-    output_dir = Path(output_cfg.get("directory", "artifacts"))
-    output_dir.mkdir(parents=True, exist_ok=True)
     torch.save(
         {
             "model_state": model.state_dict(),
             "config": config,
             "relations": graph.relation_names,
             "class_vocabularies": class_vocabularies,
+            "split_indices": {name: indices.detach().cpu().tolist() for name, indices in split_indices.items()},
+            "train_metrics": train_metrics,
+            "test_metrics": test_metrics,
         },
         output_dir / "rgcn_evidence_model.pt",
     )
@@ -205,9 +346,10 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         })
     (output_dir / "node_evidence.json").write_text(json.dumps(rows, indent=2), encoding="utf-8")
     (output_dir / "history.json").write_text(json.dumps(history, indent=2), encoding="utf-8")
+    (output_dir / "metrics.json").write_text(json.dumps({"train": train_metrics, "test": test_metrics}, indent=2), encoding="utf-8")
     return {
         "output_dir": str(output_dir),
-        "final_loss": history[-1]["loss"],
+        "final_loss": history[-1]["val_loss"],
         "nodes": len(graph.node_ids),
         "classification_tasks": list(class_vocabularies),
     }
