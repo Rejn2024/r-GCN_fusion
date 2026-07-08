@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import numpy as np
 
 from rgcn_fusion.neo4j_loader import GraphData
@@ -23,3 +26,15 @@ def test_encode_classification_targets_preserves_missing_values():
 
     assert vocabularies == {"radar_type": ["r1", "r2"]}
     assert encoded["radar_type"].tolist() == [0, -1, 1]
+
+
+def test_observation_etl_notebook_node_query_keeps_node_variable_for_projection():
+    notebook = json.loads(Path("notebooks/observation_etl_rgcn_end_to_end.ipynb").read_text())
+    source = "".join(
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "code"
+    )
+
+    assert "WITH n, n {.*, aircraft_type: coalesce(family.id, n.aircraft_id)} AS props" in source
+    assert "WITH n {.*, aircraft_type: coalesce(family.id, n.aircraft_id)} AS props" not in source
