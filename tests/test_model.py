@@ -30,12 +30,29 @@ def test_rgcn_evidence_model_emits_ds_derived_classification_scores():
     assert torch.allclose(outputs["classification_logits"]["operator"], expected_scores)
 
 
-def test_rgcn_evidence_model_rejects_classification_tasks_not_matching_hypotheses():
-    with pytest.raises(ValueError, match="one class per hypothesis"):
+def test_rgcn_evidence_model_adds_auxiliary_heads_for_non_hypothesis_class_counts():
+    model = RGCNEvidenceModel(
+        in_features=3,
+        hidden_features=5,
+        num_relations=2,
+        num_hypotheses=2,
+        classification_tasks={"radar_type": 4},
+    )
+    x = torch.randn(7, 3)
+    edge_index = torch.tensor([[0, 1, 2], [1, 2, 3]])
+    edge_type = torch.tensor([0, 1, 0])
+
+    outputs = model(x, edge_index, edge_type)
+
+    assert outputs["classification_logits"]["radar_type"].shape == (7, 4)
+
+
+def test_rgcn_evidence_model_rejects_classification_tasks_with_too_few_classes():
+    with pytest.raises(ValueError, match="at least two classes"):
         RGCNEvidenceModel(
             in_features=3,
             hidden_features=5,
             num_relations=2,
             num_hypotheses=2,
-            classification_tasks={"radar_type": 4},
+            classification_tasks={"radar_type": 1},
         )

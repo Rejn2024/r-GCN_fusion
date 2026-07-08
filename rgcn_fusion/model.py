@@ -1,4 +1,4 @@
-"""Minimal PyTorch r-GCN for evidential mass prediction and DS-derived classification."""
+"""Minimal PyTorch r-GCN for evidential mass prediction and node classification."""
 
 from __future__ import annotations
 
@@ -35,12 +35,15 @@ class RGCNLayer(nn.Module):
 
 
 class RGCNEvidenceModel(nn.Module):
-    """r-GCN with an evidential mass head and optional DS-derived classification scores.
+    """r-GCN with an evidential mass head and optional node classification heads.
 
-    Classification tasks share the same graph encoder and Dempster-Shafer mass
-    head as evidential prediction.  Instead of dedicated classification heads,
-    each task receives scores from the midpoint of each singleton hypothesis'
-    belief-plausibility interval: ``(belief + plausibility) / 2``.
+    Classification tasks share the same graph encoder as evidential prediction.
+    Tasks whose class count matches the configured hypotheses are scored from
+    the midpoint of each singleton hypothesis' belief-plausibility interval:
+    ``(belief + plausibility) / 2``. Tasks with a different class count use a
+    lightweight linear classifier over the shared r-GCN node embedding, allowing
+    metadata targets such as radar type or aircraft variant to have their own
+    vocabularies without constraining them to the hypothesis set.
     """
 
     def __init__(
@@ -63,13 +66,22 @@ class RGCNEvidenceModel(nn.Module):
         self.head = nn.Linear(hidden_features, self.num_masses)
 
         classification_tasks = classification_tasks or {}
-        invalid_tasks = [name for name, num_classes in classification_tasks.items() if num_classes != num_hypotheses]
+        invalid_tasks = [name for name, num_classes in classification_tasks.items() if num_classes < 2]
         if invalid_tasks:
-            raise ValueError(
-                "DS-derived classification tasks must have exactly one class per hypothesis: "
-                f"{invalid_tasks}"
-            )
+            raise ValueError(f"classification tasks must have at least two classes: {invalid_tasks}")
+        if any("." in name for name in classification_tasks):
+            raise ValueError("classification task names must not contain '.'")
         self.classification_tasks = tuple(classification_tasks)
+        self.ds_classification_tasks = tuple(
+            name for name, num_classes in classification_tasks.items() if num_classes == num_hypotheses
+        )
+        self.classification_heads = nn.ModuleDict(
+            {
+                name: nn.Linear(hidden_features, int(num_classes))
+                for name, num_classes in classification_tasks.items()
+                if num_classes != num_hypotheses
+            }
+        )
         masks = torch.arange(1, self.num_masses + 1, dtype=torch.long)
         singleton_masks = 1 << torch.arange(num_hypotheses, dtype=torch.long)
         self.register_buffer("_singleton_indices", singleton_masks - 1, persistent=False)
@@ -93,8 +105,12 @@ class RGCNEvidenceModel(nn.Module):
         embeddings = self.encode(x, edge_index, edge_type)
         logits = self.head(embeddings)
         masses = F.softmax(logits, dim=-1)
-        classification_scores = self.interval_midpoints(masses)
+        midpoint_scores = self.interval_midpoints(masses)
+        classification_scores = {
+            name: midpoint_scores if name in self.ds_classification_tasks else self.classification_heads[name](embeddings)
+            for name in self.classification_tasks
+        }
         return {
             "masses": masses,
-            "classification_logits": {name: classification_scores for name in self.classification_tasks},
+            "classification_logits": classification_scores,
         }
