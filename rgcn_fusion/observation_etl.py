@@ -1,0 +1,353 @@
+"""ETL utilities for turning ESM observations into Neo4j r-GCN evidence nodes.
+
+The ETL compares each observation's measured radar parameters with RadarMode
+nodes already loaded in Neo4j, writes observation/candidate nodes labelled
+``EvidenceEntity``, and connects them with typed candidate relationships that can
+be consumed by :mod:`rgcn_fusion.train`.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any, Iterable
+
+from neo4j import GraphDatabase
+
+MEASURED_TO_KG_FIELDS = {
+    "measured_centre_frequency_ghz": ("centre_frequency_min_ghz", "centre_frequency_max_ghz"),
+    "measured_bandwidth_mhz": ("bandwidth_min_mhz", "bandwidth_max_mhz"),
+    "measured_prf_hz": ("prf_min_hz", "prf_max_hz"),
+    "measured_pulse_width_us": ("pulse_width_min_us", "pulse_width_max_us"),
+    "measured_duty_cycle": ("duty_cycle_min", "duty_cycle_max"),
+    "measured_coherent_processing_interval_ms": (
+        "coherent_processing_interval_min_ms",
+        "coherent_processing_interval_max_ms",
+    ),
+    "measured_dwell_time_ms": ("dwell_time_min_ms", "dwell_time_max_ms"),
+}
+
+DEFAULT_FEATURE_PROPERTIES = ("degree_score", "text_score", "recency_score")
+DEFAULT_LABEL_PROPERTY = "ds_masses"
+DEFAULT_MAX_CANDIDATES = 5
+
+
+@dataclass(frozen=True)
+class CandidateScore:
+    """A scored KG candidate for one ESM observation."""
+
+    mode_id: str
+    radar_id: str | None
+    aircraft_id: str | None
+    operator: str | None
+    mode_score: float
+    aircraft_score: float
+    total_score: float
+    matched_fields: int
+    compared_fields: int
+
+
+def load_observations(path: str | Path) -> list[dict[str, Any]]:
+    """Load observations from the JSON schema emitted by ``esm_observation_generator.py``."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    observations = data.get("observations", data if isinstance(data, list) else None)
+    if not isinstance(observations, list):
+        raise ValueError("observation file must contain an 'observations' list or be a list of observations")
+    return observations
+
+
+def _interval_overlap_score(obs_min: float, obs_max: float, kg_min: float, kg_max: float) -> float:
+    if obs_max < obs_min:
+        obs_min, obs_max = obs_max, obs_min
+    if kg_max < kg_min:
+        kg_min, kg_max = kg_max, kg_min
+    obs_width = max(obs_max - obs_min, 1e-12)
+    overlap = max(0.0, min(obs_max, kg_max) - max(obs_min, kg_min))
+    if overlap > 0.0:
+        return min(1.0, overlap / obs_width)
+    obs_center = (obs_min + obs_max) / 2.0
+    kg_center = (kg_min + kg_max) / 2.0
+    scale = max(abs(kg_center), abs(obs_center), kg_max - kg_min, 1.0)
+    distance = min(abs(obs_center - kg_min), abs(obs_center - kg_max), abs(obs_center - kg_center))
+    return max(0.0, 1.0 - distance / scale)
+
+
+def _measurement_interval(measurement: dict[str, Any]) -> tuple[float, float] | None:
+    if not isinstance(measurement, dict):
+        return None
+    if "min" in measurement and "max" in measurement:
+        return float(measurement["min"]), float(measurement["max"])
+    if "value" in measurement:
+        value = float(measurement["value"])
+        error = float(measurement.get("error", 0.0))
+        return value - error, value + error
+    return None
+
+
+def _mode_score(observation: dict[str, Any], mode_props: dict[str, Any]) -> tuple[float, int, int]:
+    esm = observation.get("esm_radar_parameters", {})
+    scores: list[float] = []
+    matched_fields = 0
+    for obs_field, (kg_min_field, kg_max_field) in MEASURED_TO_KG_FIELDS.items():
+        interval = _measurement_interval(esm.get(obs_field))
+        if interval is None or mode_props.get(kg_min_field) is None or mode_props.get(kg_max_field) is None:
+            continue
+        score = _interval_overlap_score(interval[0], interval[1], float(mode_props[kg_min_field]), float(mode_props[kg_max_field]))
+        scores.append(score)
+        matched_fields += int(score >= 0.5)
+
+    for obs_field, kg_field in (("observed_waveform", "waveform"), ("observed_scan_type", "scan_type")):
+        if obs_field in esm and kg_field in mode_props:
+            score = 1.0 if esm[obs_field] == mode_props[kg_field] else 0.0
+            scores.append(score)
+            matched_fields += int(score >= 0.5)
+
+    if not scores:
+        return 0.0, 0, 0
+    return sum(scores) / len(scores), matched_fields, len(scores)
+
+
+def _kinematic_score(observation: dict[str, Any], aircraft_props: dict[str, Any] | None) -> float:
+    if not aircraft_props:
+        return 0.5
+    kin = observation.get("approximate_kinematics", {})
+    speed_max = float(kin.get("ground_speed_max_kph", kin.get("ground_speed_kph", 0.0)))
+    altitude_max = float(kin.get("altitude_max_m", kin.get("altitude_m", 0.0)))
+    aircraft_speed = float(aircraft_props.get("max_speed_mach", 0.0)) * 1060.0
+    aircraft_ceiling = float(aircraft_props.get("service_ceiling_m", 0.0))
+    speed_ok = 1.0 if not aircraft_speed or speed_max <= aircraft_speed * 1.05 else max(0.0, aircraft_speed / speed_max)
+    altitude_ok = 1.0 if not aircraft_ceiling or altitude_max <= aircraft_ceiling * 1.05 else max(0.0, aircraft_ceiling / altitude_max)
+    return (speed_ok + altitude_ok) / 2.0
+
+
+def _recency_score(observation: dict[str, Any], *, now: datetime | None = None, half_life_days: float = 30.0) -> float:
+    now = now or datetime.now(UTC)
+    timestamp = observation.get("timestamp_iso8601")
+    if not timestamp:
+        return 0.0
+    observed_at = datetime.fromisoformat(str(timestamp).replace("Z", "+00:00")).astimezone(UTC)
+    age_days = max(0.0, (now - observed_at).total_seconds() / 86400.0)
+    return math.exp(-math.log(2.0) * age_days / half_life_days)
+
+
+def ds_masses_from_score(score: float, ambiguity: float) -> list[float]:
+    """Build a two-hypothesis DS mass vector: [non_match, match, uncertain]."""
+    uncertainty = min(0.6, max(0.05, ambiguity))
+    committed = 1.0 - uncertainty
+    match = committed * max(0.0, min(1.0, score))
+    non_match = committed - match
+    return [round(non_match, 6), round(match, 6), round(uncertainty, 6)]
+
+
+def score_candidates(observation: dict[str, Any], kg_rows: Iterable[dict[str, Any]], max_candidates: int = DEFAULT_MAX_CANDIDATES) -> list[CandidateScore]:
+    """Score KG radar-mode/aircraft/operator rows against one observation."""
+    scored: list[CandidateScore] = []
+    label = observation.get("ground_truth_label", {})
+    for row in kg_rows:
+        mode_score, matched_fields, compared_fields = _mode_score(observation, row["mode_props"])
+        aircraft_score = _kinematic_score(observation, row.get("aircraft_props"))
+        operator_score = 1.0 if label.get("operator") and label.get("operator") == row.get("operator") else 0.5
+        total = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
+        scored.append(CandidateScore(
+            mode_id=row["mode_id"],
+            radar_id=row.get("radar_id"),
+            aircraft_id=row.get("aircraft_id"),
+            operator=row.get("operator"),
+            mode_score=round(mode_score, 6),
+            aircraft_score=round(aircraft_score, 6),
+            total_score=round(total, 6),
+            matched_fields=matched_fields,
+            compared_fields=compared_fields,
+        ))
+    return sorted(scored, key=lambda item: item.total_score, reverse=True)[:max_candidates]
+
+
+class ObservationNeo4jETL:
+    """Insert observations and scored candidate evidence into Neo4j."""
+
+    def __init__(self, uri: str, user: str, password: str, database: str | None = None):
+        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+        self.database = database
+
+    def close(self) -> None:
+        self.driver.close()
+
+    def fetch_kg_candidate_rows(self) -> list[dict[str, Any]]:
+        """Fetch RadarMode rows with associated Radar, AircraftVariant, and Operator context."""
+        query = """
+        MATCH (radar:Radar)-[:HAS_MODE]->(mode:RadarMode)
+        OPTIONAL MATCH (aircraft:AircraftVariant)-[:USES_RADAR]->(radar)
+        OPTIONAL MATCH (operator:Operator)-[:OPERATES]->(aircraft)
+        RETURN mode.id AS mode_id,
+               properties(mode) AS mode_props,
+               radar.id AS radar_id,
+               properties(radar) AS radar_props,
+               aircraft.id AS aircraft_id,
+               properties(aircraft) AS aircraft_props,
+               operator.name AS operator
+        """
+        with self.driver.session(database=self.database) as session:
+            return [dict(record) for record in session.run(query)]
+
+    def ensure_constraints(self) -> None:
+        statements = [
+            "CREATE CONSTRAINT evidence_entity_id IF NOT EXISTS FOR (n:EvidenceEntity) REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT observation_id IF NOT EXISTS FOR (n:Observation) REQUIRE n.id IS UNIQUE",
+            "CREATE CONSTRAINT candidate_evidence_id IF NOT EXISTS FOR (n:CandidateEvidence) REQUIRE n.id IS UNIQUE",
+        ]
+        with self.driver.session(database=self.database) as session:
+            for statement in statements:
+                session.run(statement)
+
+    def ingest(self, observations: list[dict[str, Any]], *, max_candidates: int = DEFAULT_MAX_CANDIDATES) -> dict[str, int]:
+        self.ensure_constraints()
+        kg_rows = self.fetch_kg_candidate_rows()
+        obs_rows: list[dict[str, Any]] = []
+        candidate_rows: list[dict[str, Any]] = []
+        candidate_edges: list[dict[str, Any]] = []
+        truth_edges: list[dict[str, Any]] = []
+        similarity_edges: list[dict[str, Any]] = []
+        by_best_mode: dict[str, list[str]] = {}
+
+        now = datetime.now(UTC)
+        for observation in observations:
+            candidates = score_candidates(observation, kg_rows, max_candidates=max_candidates)
+            if not candidates:
+                continue
+            best = candidates[0]
+            second_score = candidates[1].total_score if len(candidates) > 1 else 0.0
+            ambiguity = max(0.05, 1.0 - (best.total_score - second_score)) if len(candidates) > 1 else 0.1
+            obs_id = observation["observation_id"]
+            label = observation.get("ground_truth_label", {})
+            obs_node_id = f"evidence:observation:{obs_id}"
+            recency = _recency_score(observation, now=now)
+            obs_rows.append({
+                "id": obs_node_id,
+                "observation_id": obs_id,
+                "timestamp_iso8601": observation.get("timestamp_iso8601"),
+                "degree_score": round(len(candidates) / max_candidates, 6),
+                "text_score": best.total_score,
+                "recency_score": round(recency, 6),
+                DEFAULT_LABEL_PROPERTY: ds_masses_from_score(best.total_score, ambiguity),
+                "radar_id": label.get("radar_id"),
+                "mode_id": label.get("mode_id"),
+                "aircraft_id": label.get("aircraft_id"),
+                "operator": label.get("operator"),
+                "best_candidate_mode_id": best.mode_id,
+                "best_candidate_aircraft_id": best.aircraft_id,
+                "best_candidate_score": best.total_score,
+            })
+            by_best_mode.setdefault(best.mode_id, []).append(obs_node_id)
+
+            for rank, candidate in enumerate(candidates, start=1):
+                candidate_id = f"evidence:candidate:{obs_id}:{rank}"
+                candidate_rows.append({
+                    "id": candidate_id,
+                    "observation_id": obs_id,
+                    "rank": rank,
+                    "degree_score": round(candidate.matched_fields / max(candidate.compared_fields, 1), 6),
+                    "text_score": candidate.total_score,
+                    "recency_score": round(recency, 6),
+                    DEFAULT_LABEL_PROPERTY: ds_masses_from_score(candidate.total_score, 0.2 if rank == 1 else 0.35),
+                    "radar_id": candidate.radar_id,
+                    "mode_id": candidate.mode_id,
+                    "aircraft_id": candidate.aircraft_id,
+                    "operator": candidate.operator,
+                    "mode_score": candidate.mode_score,
+                    "aircraft_score": candidate.aircraft_score,
+                })
+                candidate_edges.append({"source": obs_node_id, "target": candidate_id, "score": candidate.total_score, "rank": rank})
+                if candidate.mode_id == label.get("mode_id") and candidate.aircraft_id == label.get("aircraft_id"):
+                    truth_edges.append({"source": obs_node_id, "target": candidate_id})
+
+        for ids in by_best_mode.values():
+            for left, right in zip(ids, ids[1:]):
+                similarity_edges.append({"source": left, "target": right})
+                similarity_edges.append({"source": right, "target": left})
+
+        with self.driver.session(database=self.database) as session:
+            session.execute_write(_write_evidence_rows, obs_rows, candidate_rows, candidate_edges, truth_edges, similarity_edges)
+        return {
+            "observations": len(obs_rows),
+            "candidates": len(candidate_rows),
+            "candidate_edges": len(candidate_edges),
+            "truth_edges": len(truth_edges),
+            "similarity_edges": len(similarity_edges),
+        }
+
+
+def _write_evidence_rows(tx, obs_rows, candidate_rows, candidate_edges, truth_edges, similarity_edges):
+    tx.run(
+        """
+        UNWIND $rows AS row
+        MERGE (n:EvidenceEntity:Observation {id: row.id})
+        SET n += row
+        """,
+        rows=obs_rows,
+    )
+    tx.run(
+        """
+        UNWIND $rows AS row
+        MERGE (n:EvidenceEntity:CandidateEvidence {id: row.id})
+        SET n += row
+        """,
+        rows=candidate_rows,
+    )
+    tx.run(
+        """
+        UNWIND $rows AS row
+        MATCH (source:EvidenceEntity {id: row.source})
+        MATCH (target:EvidenceEntity {id: row.target})
+        MERGE (source)-[r:HAS_CANDIDATE]->(target)
+        SET r.score = row.score, r.rank = row.rank
+        """,
+        rows=candidate_edges,
+    )
+    tx.run(
+        """
+        UNWIND $rows AS row
+        MATCH (source:EvidenceEntity {id: row.source})
+        MATCH (target:EvidenceEntity {id: row.target})
+        MERGE (source)-[:GROUND_TRUTH_CANDIDATE]->(target)
+        """,
+        rows=truth_edges,
+    )
+    tx.run(
+        """
+        UNWIND $rows AS row
+        MATCH (source:EvidenceEntity {id: row.source})
+        MATCH (target:EvidenceEntity {id: row.target})
+        MERGE (source)-[:SHARES_BEST_MODE]->(target)
+        """,
+        rows=similarity_edges,
+    )
+
+
+def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Load ESM observations into Neo4j as r-GCN evidence nodes.")
+    parser.add_argument("--observations", type=Path, default=Path("generated/esm_observations.json"))
+    parser.add_argument("--neo4j-uri", default="bolt://localhost:7687")
+    parser.add_argument("--neo4j-user", default="neo4j")
+    parser.add_argument("--neo4j-password", default="password")
+    parser.add_argument("--neo4j-database", default="neo4j")
+    parser.add_argument("--max-candidates", type=int, default=DEFAULT_MAX_CANDIDATES)
+    return parser.parse_args(argv)
+
+
+def main(argv: Iterable[str] | None = None) -> None:
+    args = parse_args(argv)
+    observations = load_observations(args.observations)
+    etl = ObservationNeo4jETL(args.neo4j_uri, args.neo4j_user, args.neo4j_password, args.neo4j_database)
+    try:
+        result = etl.ingest(observations, max_candidates=args.max_candidates)
+    finally:
+        etl.close()
+    print(json.dumps(result, indent=2))
+
+
+if __name__ == "__main__":
+    main()

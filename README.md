@@ -74,6 +74,35 @@ demonstrates in-memory generation, inspection of uncertainty fields, KG label
 validation, ambiguity candidates, and JSON export for downstream experiments.
 
 
+## Observation-to-Neo4j ETL
+
+`rgcn_fusion.observation_etl` fills the bridge between synthetic ESM
+observations and r-GCN training. It compares each observation against the
+`RadarMode` nodes already loaded in Neo4j, scores interval overlap for measured
+radar parameters plus waveform/scan-type and kinematic consistency, and writes
+an `EvidenceEntity` subgraph for training.
+
+Run the ETL after loading the base KG into Neo4j:
+
+```bash
+rgcn-fusion-load-observations --observations generated/esm_observations.json \
+  --neo4j-uri bolt://localhost:7687 --neo4j-user neo4j --neo4j-password password
+```
+
+The ETL creates `Observation` and `CandidateEvidence` nodes, both labelled
+`EvidenceEntity`, with `degree_score`, `text_score`, `recency_score`,
+`ds_masses`, and optional class-label properties (`radar_id`, `mode_id`,
+`aircraft_id`, and `operator`). It also creates `HAS_CANDIDATE`,
+`GROUND_TRUTH_CANDIDATE`, and `SHARES_BEST_MODE` relationships so
+`rgcn_fusion.train` can load the evidence subgraph with the example
+`EvidenceEntity` Cypher queries.
+
+A Jupyter walkthrough at
+`notebooks/observation_etl_rgcn_end_to_end.ipynb` shows the full process:
+base KG loading, observation generation, ETL, evidence-graph inspection, and
+r-GCN training.
+
+
 ## r-GCN Training Targets
 
 The training pipeline supports node classification in addition to
