@@ -107,8 +107,7 @@ r-GCN training.
 
 The training pipeline supports node classification in addition to
 Dempster-Shafer mass prediction. Enable `data.classification` or provide
-`data.classification_label_properties` to train the shared r-GCN and DS mass
-head for classification targets aligned to the configured hypotheses, such as:
+`data.classification_label_properties` to train the shared r-GCN for classification targets such as:
 
 - `radar_type` (for example, a `radar_id` target);
 - `radar_mode` (for example, a `mode_id` target);
@@ -116,11 +115,14 @@ head for classification targets aligned to the configured hypotheses, such as:
 - `operator` (for example, an operator name or id target).
 
 Classification loss is added to the evidential KL-divergence objective and can
-be scaled with `training.classification_loss_weight`. It is computed from the
-midpoint of each singleton hypothesis' Dempster-Shafer belief/plausibility
-interval, so no dedicated classification head is used. The emitted
-`node_evidence.json` includes Dempster-Shafer masses, belief/plausibility
-intervals, and per-task class predictions.
+be scaled with `training.classification_loss_weight`. Tasks whose class count
+matches the configured hypotheses are scored from the midpoint of each singleton
+hypothesis' Dempster-Shafer belief/plausibility interval. Targets with a
+different vocabulary size use lightweight per-task classifier heads on the
+shared r-GCN embedding, so metadata labels such as radar type or aircraft
+variant do not need to match the hypothesis set. The emitted `node_evidence.json`
+includes Dempster-Shafer masses, belief/plausibility intervals, and per-task
+class predictions.
 
 ## Neo4j Notebook
 
