@@ -1,4 +1,4 @@
-"""Minimal PyTorch r-GCN for evidential mass prediction and classification."""
+"""Minimal PyTorch r-GCN for evidential mass prediction and DS-derived classification."""
 
 from __future__ import annotations
 
@@ -35,11 +35,12 @@ class RGCNLayer(nn.Module):
 
 
 class RGCNEvidenceModel(nn.Module):
-    """r-GCN with an evidential mass head and optional classification heads.
+    """r-GCN with an evidential mass head and optional DS-derived classification scores.
 
-    The classification heads share the same graph encoder as the Dempster-Shafer
-    mass predictor.  They can be used for radar type, radar mode, aircraft
-    variant, operator, or any other node-level categorical target.
+    Classification tasks share the same graph encoder and Dempster-Shafer mass
+    head as evidential prediction.  Instead of dedicated classification heads,
+    each task receives scores from the midpoint of each singleton hypothesis'
+    belief-plausibility interval: ``(belief + plausibility) / 2``.
     """
 
     def __init__(
@@ -62,12 +63,17 @@ class RGCNEvidenceModel(nn.Module):
         self.head = nn.Linear(hidden_features, self.num_masses)
 
         classification_tasks = classification_tasks or {}
-        invalid_tasks = [name for name, num_classes in classification_tasks.items() if num_classes < 2]
+        invalid_tasks = [name for name, num_classes in classification_tasks.items() if num_classes != num_hypotheses]
         if invalid_tasks:
-            raise ValueError(f"classification tasks must have at least two classes: {invalid_tasks}")
-        self.classification_heads = nn.ModuleDict(
-            {name: nn.Linear(hidden_features, num_classes) for name, num_classes in classification_tasks.items()}
-        )
+            raise ValueError(
+                "DS-derived classification tasks must have exactly one class per hypothesis: "
+                f"{invalid_tasks}"
+            )
+        self.classification_tasks = tuple(classification_tasks)
+        masks = torch.arange(1, self.num_masses + 1, dtype=torch.long)
+        singleton_masks = 1 << torch.arange(num_hypotheses, dtype=torch.long)
+        self.register_buffer("_singleton_indices", singleton_masks - 1, persistent=False)
+        self.register_buffer("_plausibility_mask", (masks.unsqueeze(0) & singleton_masks.unsqueeze(1)) != 0, persistent=False)
 
     def encode(self, x: torch.Tensor, edge_index: torch.Tensor, edge_type: torch.Tensor) -> torch.Tensor:
         """Return shared r-GCN node embeddings."""
@@ -75,14 +81,20 @@ class RGCNEvidenceModel(nn.Module):
         x = self.dropout(x)
         return F.relu(self.conv2(x, edge_index, edge_type))
 
+    def interval_midpoints(self, masses: torch.Tensor) -> torch.Tensor:
+        """Return singleton belief-plausibility midpoint scores from mass predictions."""
+        belief = masses.index_select(dim=-1, index=self._singleton_indices)
+        plausibility = masses @ self._plausibility_mask.to(dtype=masses.dtype, device=masses.device).T
+        return (belief + plausibility) / 2.0
+
     def forward(
         self, x: torch.Tensor, edge_index: torch.Tensor, edge_type: torch.Tensor
     ) -> dict[str, torch.Tensor | dict[str, torch.Tensor]]:
         embeddings = self.encode(x, edge_index, edge_type)
         logits = self.head(embeddings)
+        masses = F.softmax(logits, dim=-1)
+        classification_scores = self.interval_midpoints(masses)
         return {
-            "masses": F.softmax(logits, dim=-1),
-            "classification_logits": {
-                name: head(embeddings) for name, head in self.classification_heads.items()
-            },
+            "masses": masses,
+            "classification_logits": {name: classification_scores for name in self.classification_tasks},
         }
