@@ -13,6 +13,10 @@ import torch
 import torch.nn.functional as F
 import yaml
 try:
+    import matplotlib.pyplot as plt
+except ImportError:  # pragma: no cover - optional plotting dependency guard
+    plt = None
+try:
     from torch.utils.tensorboard import SummaryWriter
 except ImportError:  # pragma: no cover - optional dependency guard
     SummaryWriter = None
@@ -258,23 +262,46 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
             optimizer.step()
 
             train_metrics = split_losses_and_metrics("train")
+            test_metrics = split_losses_and_metrics("test")
             val_metrics = split_losses_and_metrics("val")
             history_row = {
                 "epoch": epoch,
                 **{f"train_{key}": value for key, value in train_metrics.items()},
+                **{f"test_{key}": value for key, value in test_metrics.items()},
                 **{f"val_{key}": value for key, value in val_metrics.items()},
             }
             history.append(history_row)
             writer.add_scalar("loss/train_total", train_metrics["loss"], epoch)
             writer.add_scalar("loss/train_mass", train_metrics["mass_loss"], epoch)
             writer.add_scalar("loss/train_classification", train_metrics["classification_loss"], epoch)
+            writer.add_scalar("loss/test_total", test_metrics["loss"], epoch)
+            writer.add_scalar("loss/test_mass", test_metrics["mass_loss"], epoch)
+            writer.add_scalar("loss/test_classification", test_metrics["classification_loss"], epoch)
             writer.add_scalar("loss/validation_total", val_metrics["loss"], epoch)
             writer.add_scalar("loss/validation_mass", val_metrics["mass_loss"], epoch)
             writer.add_scalar("loss/validation_classification", val_metrics["classification_loss"], epoch)
             for task_name in class_targets:
                 writer.add_scalar(f"accuracy_train/{task_name}", train_metrics[f"{task_name}_acc"], epoch)
+                writer.add_scalar(f"accuracy_test/{task_name}", test_metrics[f"{task_name}_acc"], epoch)
                 writer.add_scalar(f"accuracy_validation/{task_name}", val_metrics[f"{task_name}_acc"], epoch)
             writer.add_scalar("optimizer/learning_rate", optimizer.param_groups[0]["lr"], epoch)
+
+            diagnostic_parts = [
+                f"epoch={epoch:04d}",
+                f"train_loss={train_metrics['loss']:.6f}",
+                f"test_loss={test_metrics['loss']:.6f}",
+                f"val_loss={val_metrics['loss']:.6f}",
+                f"train_mass_loss={train_metrics['mass_loss']:.6f}",
+                f"test_mass_loss={test_metrics['mass_loss']:.6f}",
+                f"train_classification_loss={train_metrics['classification_loss']:.6f}",
+                f"test_classification_loss={test_metrics['classification_loss']:.6f}",
+            ]
+            for task_name in class_targets:
+                diagnostic_parts.extend([
+                    f"train_{task_name}_acc={train_metrics[f'{task_name}_acc']:.4f}",
+                    f"test_{task_name}_acc={test_metrics[f'{task_name}_acc']:.4f}",
+                ])
+            print(" | ".join(diagnostic_parts))
             if val_metrics["loss"] < best_val:
                 best_val = val_metrics["loss"]
                 bad_epochs = 0
@@ -347,6 +374,41 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     (output_dir / "node_evidence.json").write_text(json.dumps(rows, indent=2), encoding="utf-8")
     (output_dir / "history.json").write_text(json.dumps(history, indent=2), encoding="utf-8")
     (output_dir / "metrics.json").write_text(json.dumps({"train": train_metrics, "test": test_metrics}, indent=2), encoding="utf-8")
+
+    metrics_plot_path = output_dir / "training_metrics.png"
+    if plt is None:
+        print("Training metrics plot skipped because matplotlib is not installed.")
+    elif history:
+        epochs_seen = [row["epoch"] for row in history]
+        fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+        for split in ("train", "test", "val"):
+            axes[0].plot(epochs_seen, [row[f"{split}_loss"] for row in history], label=f"{split} total")
+            axes[0].plot(epochs_seen, [row[f"{split}_mass_loss"] for row in history], linestyle="--", label=f"{split} mass")
+            axes[0].plot(epochs_seen, [row[f"{split}_classification_loss"] for row in history], linestyle=":", label=f"{split} class")
+        axes[0].set_title("Loss by epoch")
+        axes[0].set_xlabel("Epoch")
+        axes[0].set_ylabel("Loss")
+        axes[0].grid(True, alpha=0.3)
+        axes[0].legend(fontsize="small")
+
+        for task_name in class_targets:
+            for split in ("train", "test"):
+                axes[1].plot(
+                    epochs_seen,
+                    [row[f"{split}_{task_name}_acc"] for row in history],
+                    label=f"{split} {task_name}",
+                )
+        axes[1].set_title("Train/test classification accuracy by epoch")
+        axes[1].set_xlabel("Epoch")
+        axes[1].set_ylabel("Accuracy")
+        axes[1].set_ylim(0.0, 1.05)
+        axes[1].grid(True, alpha=0.3)
+        axes[1].legend(fontsize="small")
+        fig.tight_layout()
+        fig.savefig(metrics_plot_path, dpi=150)
+        print(f"Training metrics plot written to {metrics_plot_path}")
+        plt.show()
+
     return {
         "output_dir": str(output_dir),
         "final_loss": history[-1]["val_loss"],
