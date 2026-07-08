@@ -1,4 +1,4 @@
-"""Minimal PyTorch r-GCN for evidential mass prediction."""
+"""Minimal PyTorch r-GCN for evidential mass prediction and classification."""
 
 from __future__ import annotations
 
@@ -35,7 +35,12 @@ class RGCNLayer(nn.Module):
 
 
 class RGCNEvidenceModel(nn.Module):
-    """r-GCN that emits normalized Dempster-Shafer masses for each node."""
+    """r-GCN with an evidential mass head and optional classification heads.
+
+    The classification heads share the same graph encoder as the Dempster-Shafer
+    mass predictor.  They can be used for radar type, radar mode, aircraft
+    variant, operator, or any other node-level categorical target.
+    """
 
     def __init__(
         self,
@@ -44,6 +49,7 @@ class RGCNEvidenceModel(nn.Module):
         num_relations: int,
         num_hypotheses: int,
         dropout: float = 0.1,
+        classification_tasks: dict[str, int] | None = None,
     ):
         super().__init__()
         if num_hypotheses < 1:
@@ -55,9 +61,28 @@ class RGCNEvidenceModel(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.head = nn.Linear(hidden_features, self.num_masses)
 
-    def forward(self, x: torch.Tensor, edge_index: torch.Tensor, edge_type: torch.Tensor) -> torch.Tensor:
+        classification_tasks = classification_tasks or {}
+        invalid_tasks = [name for name, num_classes in classification_tasks.items() if num_classes < 2]
+        if invalid_tasks:
+            raise ValueError(f"classification tasks must have at least two classes: {invalid_tasks}")
+        self.classification_heads = nn.ModuleDict(
+            {name: nn.Linear(hidden_features, num_classes) for name, num_classes in classification_tasks.items()}
+        )
+
+    def encode(self, x: torch.Tensor, edge_index: torch.Tensor, edge_type: torch.Tensor) -> torch.Tensor:
+        """Return shared r-GCN node embeddings."""
         x = F.relu(self.conv1(x, edge_index, edge_type))
         x = self.dropout(x)
-        x = F.relu(self.conv2(x, edge_index, edge_type))
-        logits = self.head(x)
-        return F.softmax(logits, dim=-1)
+        return F.relu(self.conv2(x, edge_index, edge_type))
+
+    def forward(
+        self, x: torch.Tensor, edge_index: torch.Tensor, edge_type: torch.Tensor
+    ) -> dict[str, torch.Tensor | dict[str, torch.Tensor]]:
+        embeddings = self.encode(x, edge_index, edge_type)
+        logits = self.head(embeddings)
+        return {
+            "masses": F.softmax(logits, dim=-1),
+            "classification_logits": {
+                name: head(embeddings) for name, head in self.classification_heads.items()
+            },
+        }

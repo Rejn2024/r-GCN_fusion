@@ -19,6 +19,7 @@ class GraphData:
     edge_type: np.ndarray
     relation_names: list[str]
     labels: np.ndarray | None = None
+    classification_labels: dict[str, np.ndarray] | None = None
 
 
 class Neo4jGraphLoader:
@@ -36,10 +37,11 @@ class Neo4jGraphLoader:
         *,
         feature_properties: list[str],
         label_property: str | None = None,
+        classification_label_properties: dict[str, str] | None = None,
         node_query: str | None = None,
         edge_query: str | None = None,
     ) -> GraphData:
-        """Fetch nodes, directed relationships, optional features, and optional labels."""
+        """Fetch nodes, directed relationships, optional features, mass labels, and categorical labels."""
         node_query = node_query or "MATCH (n) RETURN elementId(n) AS id, properties(n) AS props ORDER BY id"
         edge_query = edge_query or (
             "MATCH (s)-[r]->(t) RETURN elementId(s) AS source, elementId(t) AS target, "
@@ -63,6 +65,13 @@ class Neo4jGraphLoader:
                 value if isinstance(value, list) else [] for value in raw
             ], dtype=np.float32)
 
+        classification_labels = None
+        if classification_label_properties:
+            classification_labels = {
+                task_name: np.asarray([record["props"].get(prop) for record in nodes], dtype=object)
+                for task_name, prop in classification_label_properties.items()
+            }
+
         relation_names = sorted({record["type"] for record in edges})
         rel_to_idx = {name: idx for idx, name in enumerate(relation_names)}
         edge_pairs: list[tuple[int, int]] = []
@@ -81,4 +90,5 @@ class Neo4jGraphLoader:
             edge_type=np.asarray(edge_types, dtype=np.int64),
             relation_names=relation_names,
             labels=labels,
+            classification_labels=classification_labels,
         )

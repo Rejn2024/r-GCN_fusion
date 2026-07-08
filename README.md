@@ -73,6 +73,24 @@ A Jupyter walkthrough at `notebooks/esm_observation_generation_demo.ipynb`
 demonstrates in-memory generation, inspection of uncertainty fields, KG label
 validation, ambiguity candidates, and JSON export for downstream experiments.
 
+
+## r-GCN Training Targets
+
+The training pipeline now supports multi-task node classification in addition to
+Dempster-Shafer mass prediction. Enable `data.classification` or provide
+`data.classification_label_properties` to train shared r-GCN embeddings with
+categorical heads for:
+
+- `radar_type` (for example, a `radar_id` target);
+- `radar_mode` (for example, a `mode_id` target);
+- `aircraft_variant` (for example, an `aircraft_id` target);
+- `operator` (for example, an operator name or id target).
+
+Classification loss is added to the evidential KL-divergence objective and can
+be scaled with `training.classification_loss_weight`. The emitted
+`node_evidence.json` includes Dempster-Shafer masses, belief/plausibility
+intervals, and per-task class predictions.
+
 ## Neo4j Notebook
 
 A Jupyter notebook at `notebooks/neo4j_kg_creation.ipynb` demonstrates how to

@@ -10,6 +10,14 @@ data:
   # Each training node should contain a list of length 2**len(hypotheses)-1.
   # For two hypotheses, order is: {benign}, {suspicious}, {benign,suspicious}.
   label_property: ds_masses
+  # Enable node-level categorical classification alongside evidential masses.
+  # The default tasks include radar type, radar mode, aircraft variant, and operator.
+  classification: true
+  classification_label_properties:
+    radar_type: radar_id
+    radar_mode: mode_id
+    aircraft_variant: aircraft_id
+    operator: operator
   node_query: |
     MATCH (n:EvidenceEntity)
     RETURN elementId(n) AS id, properties(n) AS props
@@ -27,6 +35,7 @@ training:
   epochs: 200
   learning_rate: 0.001
   weight_decay: 0.0001
+  classification_loss_weight: 1.0
   device: cpu
 
 output:
