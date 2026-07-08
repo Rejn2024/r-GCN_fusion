@@ -124,6 +124,60 @@ def _kinematic_score(observation: dict[str, Any], aircraft_props: dict[str, Any]
     return (speed_ok + altitude_ok) / 2.0
 
 
+def _aircraft_radar_score(row: dict[str, Any]) -> float:
+    """Score whether KG context links the candidate aircraft to the candidate radar."""
+    if not row.get("aircraft_id"):
+        return 0.5
+    if row.get("aircraft_uses_radar") is not None:
+        return 1.0 if bool(row["aircraft_uses_radar"]) else 0.0
+    if row.get("radar_id") or row.get("radar_props"):
+        # Rows fetched by ObservationNeo4jETL come from
+        # (aircraft:AircraftVariant)-[:USES_RADAR]->(radar), so a populated
+        # aircraft/radar pair is KG evidence that this aircraft can carry the
+        # candidate radar.
+        return 1.0
+    return 0.5
+
+
+def _aircraft_score(observation: dict[str, Any], row: dict[str, Any]) -> float:
+    """Blend observed kinematics with KG aircraft-to-radar compatibility."""
+    kinematic_score = _kinematic_score(observation, row.get("aircraft_props"))
+    radar_score = _aircraft_radar_score(row)
+    return 0.8 * kinematic_score + 0.2 * radar_score
+
+
+def _external_prior_score(observation: dict[str, Any], prior_name: str, candidate_value: Any) -> float:
+    """Return a neutral-or-context prior without reading supervised truth labels.
+
+    Priors are optional deployment context, not labels.  Accepted shapes are:
+    ``external_context.{prior_name}_priors[value]``,
+    ``external_context.priors.{prior_name}[value]``, or a single
+    ``external_context.{prior_name}`` value that matches the candidate.
+    """
+    if candidate_value is None:
+        return 0.5
+    context = observation.get("external_context") or {}
+    if not isinstance(context, dict):
+        return 0.5
+
+    prior_maps = [
+        context.get(f"{prior_name}_priors"),
+        (context.get("priors") or {}).get(prior_name)
+        if isinstance(context.get("priors"), dict)
+        else None,
+    ]
+    for prior_map in prior_maps:
+        if isinstance(prior_map, dict) and candidate_value in prior_map:
+            return max(0.0, min(1.0, float(prior_map[candidate_value])))
+
+    contextual_value = context.get(prior_name)
+    if contextual_value is None:
+        return 0.5
+    if isinstance(contextual_value, (list, tuple, set)):
+        return 1.0 if candidate_value in contextual_value else 0.0
+    return 1.0 if candidate_value == contextual_value else 0.0
+
+
 def _recency_score(observation: dict[str, Any], *, now: datetime | None = None, half_life_days: float = 30.0) -> float:
     now = now or datetime.now(UTC)
     timestamp = observation.get("timestamp_iso8601")
@@ -143,14 +197,23 @@ def ds_masses_from_score(score: float, ambiguity: float) -> list[float]:
     return [round(non_match, 6), round(match, 6), round(uncertainty, 6)]
 
 
-def score_candidates(observation: dict[str, Any], kg_rows: Iterable[dict[str, Any]], max_candidates: int = DEFAULT_MAX_CANDIDATES) -> list[CandidateScore]:
-    """Score KG radar-mode/aircraft/operator rows against one observation."""
+def score_candidates(
+    observation: dict[str, Any],
+    kg_rows: Iterable[dict[str, Any]],
+    max_candidates: int = DEFAULT_MAX_CANDIDATES,
+) -> list[CandidateScore]:
+    """Score KG rows against one observation without using supervised truth labels.
+
+    Radar-mode scores come from measured ESM fields, aircraft scores blend
+    approximate kinematics with KG aircraft-to-radar compatibility, and any
+    operator prior must be supplied through ``external_context`` rather than
+    ``ground_truth_label``.
+    """
     scored: list[CandidateScore] = []
-    label = observation.get("ground_truth_label", {})
     for row in kg_rows:
         mode_score, matched_fields, compared_fields = _mode_score(observation, row["mode_props"])
-        aircraft_score = _kinematic_score(observation, row.get("aircraft_props"))
-        operator_score = 1.0 if label.get("operator") and label.get("operator") == row.get("operator") else 0.5
+        aircraft_score = _aircraft_score(observation, row)
+        operator_score = _external_prior_score(observation, "operator", row.get("operator"))
         total = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
         scored.append(CandidateScore(
             mode_id=row["mode_id"],
@@ -188,6 +251,7 @@ class ObservationNeo4jETL:
                properties(radar) AS radar_props,
                aircraft.id AS aircraft_id,
                properties(aircraft) AS aircraft_props,
+               aircraft IS NOT NULL AS aircraft_uses_radar,
                operator.name AS operator
         """
         with self.driver.session(database=self.database) as session:
