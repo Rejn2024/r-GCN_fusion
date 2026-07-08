@@ -1,19 +1,18 @@
+import pytest
 import torch
 
 from rgcn_fusion.model import RGCNEvidenceModel
 
 
-def test_rgcn_evidence_model_emits_classification_heads():
+def test_rgcn_evidence_model_emits_ds_derived_classification_scores():
     model = RGCNEvidenceModel(
         in_features=3,
         hidden_features=5,
         num_relations=2,
         num_hypotheses=2,
         classification_tasks={
-            "radar_type": 4,
-            "radar_mode": 3,
-            "aircraft_variant": 6,
-            "operator": 5,
+            "aircraft_variant": 2,
+            "operator": 2,
         },
     )
     x = torch.randn(7, 3)
@@ -21,10 +20,22 @@ def test_rgcn_evidence_model_emits_classification_heads():
     edge_type = torch.tensor([0, 1, 0])
 
     outputs = model(x, edge_index, edge_type)
+    expected_scores = model.interval_midpoints(outputs["masses"])
 
     assert outputs["masses"].shape == (7, 3)
     assert torch.allclose(outputs["masses"].sum(dim=-1), torch.ones(7), atol=1e-6)
-    assert outputs["classification_logits"]["radar_type"].shape == (7, 4)
-    assert outputs["classification_logits"]["radar_mode"].shape == (7, 3)
-    assert outputs["classification_logits"]["aircraft_variant"].shape == (7, 6)
-    assert outputs["classification_logits"]["operator"].shape == (7, 5)
+    assert outputs["classification_logits"]["aircraft_variant"].shape == (7, 2)
+    assert outputs["classification_logits"]["operator"].shape == (7, 2)
+    assert torch.allclose(outputs["classification_logits"]["aircraft_variant"], expected_scores)
+    assert torch.allclose(outputs["classification_logits"]["operator"], expected_scores)
+
+
+def test_rgcn_evidence_model_rejects_classification_tasks_not_matching_hypotheses():
+    with pytest.raises(ValueError, match="one class per hypothesis"):
+        RGCNEvidenceModel(
+            in_features=3,
+            hidden_features=5,
+            num_relations=2,
+            num_hypotheses=2,
+            classification_tasks={"radar_type": 4},
+        )

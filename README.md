@@ -76,10 +76,10 @@ validation, ambiguity candidates, and JSON export for downstream experiments.
 
 ## r-GCN Training Targets
 
-The training pipeline now supports multi-task node classification in addition to
+The training pipeline supports node classification in addition to
 Dempster-Shafer mass prediction. Enable `data.classification` or provide
-`data.classification_label_properties` to train shared r-GCN embeddings with
-categorical heads for:
+`data.classification_label_properties` to train the shared r-GCN and DS mass
+head for classification targets aligned to the configured hypotheses, such as:
 
 - `radar_type` (for example, a `radar_id` target);
 - `radar_mode` (for example, a `mode_id` target);
@@ -87,7 +87,9 @@ categorical heads for:
 - `operator` (for example, an operator name or id target).
 
 Classification loss is added to the evidential KL-divergence objective and can
-be scaled with `training.classification_loss_weight`. The emitted
+be scaled with `training.classification_loss_weight`. It is computed from the
+midpoint of each singleton hypothesis' Dempster-Shafer belief/plausibility
+interval, so no dedicated classification head is used. The emitted
 `node_evidence.json` includes Dempster-Shafer masses, belief/plausibility
 intervals, and per-task class predictions.
 
