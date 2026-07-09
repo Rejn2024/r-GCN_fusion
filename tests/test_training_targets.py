@@ -36,5 +36,5 @@ def test_observation_etl_notebook_node_query_keeps_node_variable_for_projection(
         if cell.get("cell_type") == "code"
     )
 
-    assert "WITH n, n {.*, aircraft_type: coalesce(family.id, n.aircraft_id)} AS props" in source
+    assert "WITH n, n {.*, aircraft_type: coalesce(family.id, n.aircraft_id), operator_country: n.operator} AS props" in source
     assert "WITH n {.*, aircraft_type: coalesce(family.id, n.aircraft_id)} AS props" not in source
