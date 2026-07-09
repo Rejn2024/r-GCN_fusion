@@ -267,7 +267,20 @@ class ObservationNeo4jETL:
             for statement in statements:
                 session.run(statement)
 
-    def ingest(self, observations: list[dict[str, Any]], *, max_candidates: int = DEFAULT_MAX_CANDIDATES) -> dict[str, int]:
+    def ingest(
+        self,
+        observations: list[dict[str, Any]],
+        *,
+        max_candidates: int = DEFAULT_MAX_CANDIDATES,
+        include_ground_truth_labels: bool = False,
+    ) -> dict[str, int]:
+        """Ingest scored observations without leaking truth labels by default.
+
+        ``ground_truth_label`` may be present on input observations for offline
+        evaluation. Unless ``include_ground_truth_labels`` is explicitly enabled,
+        those labels are not copied onto EvidenceEntity nodes where future
+        classification models might consume them as features or targets.
+        """
         self.ensure_constraints()
         kg_rows = self.fetch_kg_candidate_rows()
         obs_rows: list[dict[str, Any]] = []
@@ -289,7 +302,7 @@ class ObservationNeo4jETL:
             label = observation.get("ground_truth_label", {})
             obs_node_id = f"evidence:observation:{obs_id}"
             recency = _recency_score(observation, now=now)
-            obs_rows.append({
+            obs_row = {
                 "id": obs_node_id,
                 "observation_id": obs_id,
                 "timestamp_iso8601": observation.get("timestamp_iso8601"),
@@ -297,14 +310,15 @@ class ObservationNeo4jETL:
                 "text_score": best.total_score,
                 "recency_score": round(recency, 6),
                 DEFAULT_LABEL_PROPERTY: ds_masses_from_score(best.total_score, ambiguity),
-                "radar_id": label.get("radar_id"),
-                "mode_id": label.get("mode_id"),
-                "aircraft_id": label.get("aircraft_id"),
-                "operator": label.get("operator"),
+                "radar_id": label.get("radar_id") if include_ground_truth_labels else None,
+                "mode_id": label.get("mode_id") if include_ground_truth_labels else None,
+                "aircraft_id": label.get("aircraft_id") if include_ground_truth_labels else None,
+                "operator": label.get("operator") if include_ground_truth_labels else None,
                 "best_candidate_mode_id": best.mode_id,
                 "best_candidate_aircraft_id": best.aircraft_id,
                 "best_candidate_score": best.total_score,
-            })
+            }
+            obs_rows.append(obs_row)
             by_best_mode.setdefault(best.mode_id, []).append(obs_node_id)
 
             for rank, candidate in enumerate(candidates, start=1):
@@ -325,7 +339,11 @@ class ObservationNeo4jETL:
                     "aircraft_score": candidate.aircraft_score,
                 })
                 candidate_edges.append({"source": obs_node_id, "target": candidate_id, "score": candidate.total_score, "rank": rank})
-                if candidate.mode_id == label.get("mode_id") and candidate.aircraft_id == label.get("aircraft_id"):
+                if (
+                    include_ground_truth_labels
+                    and candidate.mode_id == label.get("mode_id")
+                    and candidate.aircraft_id == label.get("aircraft_id")
+                ):
                     truth_edges.append({"source": obs_node_id, "target": candidate_id})
 
         for ids in by_best_mode.values():
@@ -399,6 +417,11 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--neo4j-password", default="password")
     parser.add_argument("--neo4j-database", default="neo4j")
     parser.add_argument("--max-candidates", type=int, default=DEFAULT_MAX_CANDIDATES)
+    parser.add_argument(
+        "--include-ground-truth-labels",
+        action="store_true",
+        help="Copy supervised truth labels and truth edges into Neo4j for offline evaluation only",
+    )
     return parser.parse_args(argv)
 
 
@@ -407,7 +430,11 @@ def main(argv: Iterable[str] | None = None) -> None:
     observations = load_observations(args.observations)
     etl = ObservationNeo4jETL(args.neo4j_uri, args.neo4j_user, args.neo4j_password, args.neo4j_database)
     try:
-        result = etl.ingest(observations, max_candidates=args.max_candidates)
+        result = etl.ingest(
+            observations,
+            max_candidates=args.max_candidates,
+            include_ground_truth_labels=args.include_ground_truth_labels,
+        )
     finally:
         etl.close()
     print(json.dumps(result, indent=2))

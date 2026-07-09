@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from esm_observation_series_generator import generate_observation_series
+from esm_observation_series_generator import generate_observation_series, observations_without_ground_truth
 
 
 def test_series_defaults_and_schema_fields():
@@ -33,3 +33,43 @@ def test_series_length_options_and_nominal_spacing():
         assert elapsed == sorted(elapsed)
         intervals = [later - earlier for earlier, later in zip(elapsed, elapsed[1:])]
         assert all(0.42 <= interval <= 0.58 for interval in intervals)
+
+
+def test_series_can_switch_modes_multiple_times_and_records_truth_sequence():
+    data = generate_observation_series(
+        count=8,
+        seed=23,
+        min_duration_s=4.0,
+        max_duration_s=4.0,
+        sample_interval_s=0.5,
+        mode_switch_probability=1.0,
+    )
+
+    multi_shift_entries = [
+        entry for entry in data["observation_series"] if len(entry["mode_shift_sequence_indices"]) > 1
+    ]
+
+    assert multi_shift_entries
+    for entry in multi_shift_entries:
+        observed_modes = [obs["ground_truth_label"]["mode"] for obs in entry["observations"]]
+        sequence_modes = [truth["mode"] for truth in entry["ground_truth_mode_sequence"]]
+        derived_shift_indices = [
+            idx for idx, (before, after) in enumerate(zip(observed_modes, observed_modes[1:]), start=1)
+            if before != after
+        ]
+        assert sequence_modes == observed_modes
+        assert entry["mode_shift_sequence_indices"] == derived_shift_indices
+        assert entry["ground_truth_track_label"]["mode"] == "multiple"
+
+
+def test_observations_without_ground_truth_strips_only_truth_labels():
+    data = generate_observation_series(count=1, seed=31, mode_switch_probability=1.0)
+    entry = data["observation_series"][0]
+
+    inference_rows = observations_without_ground_truth(entry)
+
+    assert len(inference_rows) == len(entry["observations"])
+    assert all("ground_truth_label" not in row for row in inference_rows)
+    assert all("esm_radar_parameters" in row for row in inference_rows)
+    assert all("candidate_labels_from_shared_kg_features" in row for row in inference_rows)
+    assert "ground_truth_label" in entry["observations"][0]
