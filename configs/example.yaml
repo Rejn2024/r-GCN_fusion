@@ -34,7 +34,7 @@ data:
 
 model:
   hidden_features: 128
-  num_layers: 3
+  num_layers: 5
   num_bases: 4
   dropout: 0.2
   residual: true

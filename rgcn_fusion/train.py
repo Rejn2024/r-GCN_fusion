@@ -183,7 +183,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         num_hypotheses=len(hypotheses),
         dropout=float(model_cfg.get("dropout", 0.1)),
         classification_tasks={task_name: len(values) for task_name, values in class_vocabularies.items()},
-        num_layers=int(model_cfg.get("num_layers", 2)),
+        num_layers=int(model_cfg.get("num_layers", 5)),
         num_bases=model_cfg.get("num_bases"),
         residual=bool(model_cfg.get("residual", True)),
         normalization=model_cfg.get("normalization", "layernorm"),
