@@ -47,6 +47,38 @@ def test_rgcn_evidence_model_adds_auxiliary_heads_for_non_hypothesis_class_count
     assert outputs["classification_logits"]["radar_type"].shape == (7, 4)
 
 
+def test_rgcn_evidence_model_supports_residual_basis_gated_dirichlet_stack():
+    model = RGCNEvidenceModel(
+        in_features=3,
+        hidden_features=8,
+        num_relations=3,
+        num_hypotheses=2,
+        num_layers=3,
+        num_bases=2,
+        relation_gates=True,
+        task_head_hidden_features=6,
+        mass_head_type="dirichlet",
+        classification_tasks={"radar_type": 4},
+    )
+    x = torch.randn(7, 3)
+    edge_index = torch.tensor([[0, 1, 2, 3], [1, 2, 3, 4]])
+    edge_type = torch.tensor([0, 1, 2, 0])
+
+    outputs = model(x, edge_index, edge_type)
+
+    assert len(model.layers) == 3
+    assert model.layers[0].conv.num_bases == 2
+    assert model.layers[0].conv.relation_gate_logits is not None
+    assert outputs["masses"].shape == (7, 3)
+    assert torch.allclose(outputs["masses"].sum(dim=-1), torch.ones(7), atol=1e-6)
+    assert outputs["dirichlet_alpha"].shape == (7, 3)
+    assert outputs["dirichlet_evidence"].shape == (7, 3)
+    assert outputs["uncertainty"].shape == (7, 1)
+    assert torch.all(outputs["dirichlet_alpha"] > 1.0)
+    assert torch.all(outputs["uncertainty"] > 0.0)
+    assert outputs["classification_logits"]["radar_type"].shape == (7, 4)
+
+
 def test_rgcn_evidence_model_rejects_classification_tasks_with_too_few_classes():
     with pytest.raises(ValueError, match="at least two classes"):
         RGCNEvidenceModel(

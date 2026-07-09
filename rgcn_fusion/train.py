@@ -42,6 +42,24 @@ DEFAULT_CLASSIFICATION_TARGETS = {
     "aircraft_variant": "aircraft_id",
     "operator": "operator",
 }
+RECOMMENDED_CANDIDATE_FEATURES = [
+    "degree_score",
+    "text_score",
+    "recency_score",
+    "radar_interval_overlap_score",
+    "waveform_match_score",
+    "scan_type_match_score",
+    "center_frequency_residual",
+    "prf_residual",
+    "bandwidth_residual",
+    "pulse_width_residual",
+    "speed_consistency_score",
+    "altitude_consistency_score",
+    "heading_consistency_score",
+    "observation_uncertainty_width",
+    "candidate_ambiguity_count",
+    "missing_feature_count",
+]
 
 
 def _tensor_graph(graph: GraphData, device: torch.device) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -67,6 +85,19 @@ def _classification_label_properties(data_cfg: dict[str, Any]) -> dict[str, str]
     if not isinstance(configured, dict):
         raise TypeError("classification_label_properties must map task names to node property names")
     return {str(task_name): str(property_name) for task_name, property_name in configured.items()}
+
+
+def _feature_properties(data_cfg: dict[str, Any]) -> list[str]:
+    """Return configured numeric node features, optionally using the richer ESM candidate set."""
+    configured = data_cfg.get("feature_properties")
+    if configured is None:
+        configured = RECOMMENDED_CANDIDATE_FEATURES if data_cfg.get("recommended_candidate_features", False) else []
+    features = [str(feature) for feature in configured]
+    if data_cfg.get("recommended_candidate_features", False):
+        features = list(dict.fromkeys([*features, *RECOMMENDED_CANDIDATE_FEATURES]))
+    if not features:
+        raise ValueError("data.feature_properties must contain at least one numeric feature")
+    return features
 
 
 def _encode_classification_targets(
@@ -115,7 +146,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     )
     try:
         graph = loader.load(
-            feature_properties=data_cfg["feature_properties"],
+            feature_properties=_feature_properties(data_cfg),
             label_property=data_cfg.get("label_property"),
             classification_label_properties=classification_label_properties,
             node_query=data_cfg.get("node_query"),
@@ -152,6 +183,13 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         num_hypotheses=len(hypotheses),
         dropout=float(model_cfg.get("dropout", 0.1)),
         classification_tasks={task_name: len(values) for task_name, values in class_vocabularies.items()},
+        num_layers=int(model_cfg.get("num_layers", 2)),
+        num_bases=model_cfg.get("num_bases"),
+        residual=bool(model_cfg.get("residual", True)),
+        normalization=model_cfg.get("normalization", "layernorm"),
+        relation_gates=bool(model_cfg.get("relation_gates", False)),
+        task_head_hidden_features=model_cfg.get("task_head_hidden_features"),
+        mass_head_type=str(model_cfg.get("mass_head_type", "softmax")),
     ).to(device)
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -336,6 +374,8 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     with torch.no_grad():
         outputs = model(x, edge_index, edge_type)
         predictions = outputs["masses"].cpu().numpy()
+        uncertainty = outputs["uncertainty"]
+        uncertainty_values = uncertainty.cpu().numpy() if uncertainty is not None else None
         classification_probabilities = {
             task_name: F.softmax(logits, dim=-1).cpu().numpy()
             for task_name, logits in outputs["classification_logits"].items()
@@ -368,6 +408,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         rows.append({
             "node_id": node_id,
             "masses": mass.tolist(),
+            "uncertainty": float(uncertainty_values[node_index, 0]) if uncertainty_values is not None else None,
             "intervals": intervals,
             "classifications": classifications,
         })

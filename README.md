@@ -124,6 +124,26 @@ variant do not need to match the hypothesis set. The emitted `node_evidence.json
 includes Dempster-Shafer masses, belief/plausibility intervals, and per-task
 class predictions.
 
+The example training config enables the enhanced architecture for noisy
+candidate-evidence graphs:
+
+- `data.recommended_candidate_features: true` appends a richer feature set for
+  ESM/candidate matching signals, including radar interval overlap,
+  waveform/scan-type matches, numeric residuals, kinematic consistency,
+  uncertainty width, ambiguity count, and missing-feature count. Missing Neo4j
+  properties are projected as `0.0`, so the same config can run before every
+  feature has been materialised.
+- `model.num_layers`, `model.residual`, and `model.normalization` build a
+  configurable residual r-GCN stack instead of a fixed two-layer encoder.
+- `model.num_bases` enables r-GCN basis decomposition to share parameters
+  across relations.
+- `model.relation_gates` learns an importance gate for each relation type.
+- `model.task_head_hidden_features` replaces single-linear auxiliary heads with
+  small MLP task heads.
+- `model.mass_head_type: dirichlet` predicts non-negative evidence, Dirichlet
+  concentration parameters, normalized masses, and an uncertainty scalar for
+  each node.
+
 ## Neo4j Notebook
 
 A Jupyter notebook at `notebooks/neo4j_kg_creation.ipynb` demonstrates how to
