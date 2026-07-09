@@ -6,7 +6,12 @@ neo4j:
 
 data:
   hypotheses: [benign, suspicious]
-  feature_properties: [degree_score, text_score, recency_score]
+  # Baseline candidate-level scores plus richer optional ESM/candidate features.
+  recommended_candidate_features: true
+  feature_properties:
+    - degree_score
+    - text_score
+    - recency_score
   # Each training node should contain a list of length 2**len(hypotheses)-1.
   # For two hypotheses, order is: {benign}, {suspicious}, {benign,suspicious}.
   label_property: ds_masses
@@ -28,8 +33,15 @@ data:
     ORDER BY source, target, type
 
 model:
-  hidden_features: 64
-  dropout: 0.1
+  hidden_features: 128
+  num_layers: 3
+  num_bases: 4
+  dropout: 0.2
+  residual: true
+  normalization: layernorm
+  relation_gates: true
+  task_head_hidden_features: 128
+  mass_head_type: dirichlet
 
 training:
   epochs: 200

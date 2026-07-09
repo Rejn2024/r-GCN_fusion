@@ -4,7 +4,13 @@ from pathlib import Path
 import numpy as np
 
 from rgcn_fusion.neo4j_loader import GraphData
-from rgcn_fusion.train import DEFAULT_CLASSIFICATION_TARGETS, _classification_label_properties, _encode_classification_targets
+from rgcn_fusion.train import (
+    DEFAULT_CLASSIFICATION_TARGETS,
+    RECOMMENDED_CANDIDATE_FEATURES,
+    _classification_label_properties,
+    _encode_classification_targets,
+    _feature_properties,
+)
 
 
 def test_default_classification_targets_include_radar_type():
@@ -26,6 +32,19 @@ def test_encode_classification_targets_preserves_missing_values():
 
     assert vocabularies == {"radar_type": ["r1", "r2"]}
     assert encoded["radar_type"].tolist() == [0, -1, 1]
+
+
+def test_feature_properties_can_append_recommended_candidate_features():
+    features = _feature_properties({
+        "recommended_candidate_features": True,
+        "feature_properties": ["degree_score", "custom_score"],
+    })
+
+    assert features[:2] == ["degree_score", "custom_score"]
+    assert "radar_interval_overlap_score" in features
+    assert "candidate_ambiguity_count" in features
+    assert len(features) == len(set(features))
+    assert set(RECOMMENDED_CANDIDATE_FEATURES).issubset(features)
 
 
 def test_observation_etl_notebook_node_query_keeps_node_variable_for_projection():
