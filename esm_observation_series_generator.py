@@ -103,6 +103,71 @@ def _observation_count_for_duration(duration_s: float, sample_interval_s: float)
     return max(2, int(round(duration_s / sample_interval_s)) + 1)
 
 
+def _mode_label(aircraft: Any, operator: str, radar: Any, mode: Any) -> ObservationLabel:
+    return ObservationLabel(
+        aircraft.family,
+        aircraft.variant,
+        f"aircraft:{slug(aircraft.variant)}",
+        operator,
+        radar.name,
+        f"radar:{slug(radar.name)}",
+        mode.name,
+        f"radar_mode:{slug(radar.name)}:{slug(mode.name)}",
+    )
+
+
+def _sample_mode_schedule(
+    rng: random.Random,
+    modes: list[Any],
+    observation_count: int,
+    switch_probability: float,
+    max_switches: int | None,
+) -> tuple[list[Any], list[int]]:
+    """Sample a per-observation radar-mode schedule and transition indices.
+
+    Transition indices are sequence indices where the mode first differs from the
+    previous observation. Index 0 is never a transition.
+    """
+    if not 0.0 <= switch_probability <= 1.0:
+        raise ValueError("mode_switch_probability must be between 0.0 and 1.0")
+    if max_switches is not None and max_switches < 0:
+        raise ValueError("max_mode_switches must be non-negative when provided")
+
+    initial_mode = rng.choice(modes)
+    if len(modes) <= 1 or observation_count <= 1 or switch_probability == 0.0:
+        return [initial_mode] * observation_count, []
+
+    switch_indices = [
+        idx for idx in range(1, observation_count) if rng.random() < switch_probability
+    ]
+    if max_switches is not None and len(switch_indices) > max_switches:
+        switch_indices = sorted(rng.sample(switch_indices, max_switches))
+
+    schedule = []
+    current_mode = initial_mode
+    switch_set = set(switch_indices)
+    for obs_index in range(observation_count):
+        if obs_index in switch_set:
+            current_mode = rng.choice([mode for mode in modes if mode.name != current_mode.name])
+        schedule.append(current_mode)
+    return schedule, switch_indices
+
+
+def observations_without_ground_truth(series_entry: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return observations suitable for inference by removing truth-only fields.
+
+    The generator records per-observation ground truth for evaluation, but callers
+    should pass this stripped view to candidate scoring or classification code to
+    avoid label leakage.
+    """
+    inference_rows = []
+    for observation in series_entry["observations"]:
+        row = dict(observation)
+        row.pop("ground_truth_label", None)
+        inference_rows.append(row)
+    return inference_rows
+
+
 def generate_observation_series(
     count: int = DEFAULT_SERIES_COUNT,
     seed: int = 7,
@@ -111,8 +176,18 @@ def generate_observation_series(
     sample_interval_s: float = DEFAULT_SAMPLE_INTERVAL_SECONDS,
     start: datetime | None = None,
     end: datetime | None = None,
+    mode_switch_probability: float = 0.03,
+    max_mode_switches: int | None = None,
 ) -> dict[str, Any]:
-    """Generate single-emitter ESM observation series."""
+    """Generate single-emitter ESM observation series.
+
+    ``mode_switch_probability`` is applied independently between adjacent
+    observations, so one entry may contain zero, one, or several radar-mode
+    transitions at random sequence indices. Ground-truth mode labels remain in
+    ``ground_truth_label`` for evaluation only; use
+    :func:`observations_without_ground_truth` before passing rows to inference or
+    classification code.
+    """
     if count < 1:
         raise ValueError("count must be positive")
     if min_duration_s < sample_interval_s:
@@ -132,36 +207,27 @@ def generate_observation_series(
         operator = rng.choice(aircraft.operators)
         radar = RADARS[aircraft.radar]
         modes = list(radar.modes)
-        initial_mode = rng.choice(modes)
         duration_s = rng.uniform(min_duration_s, max_duration_s)
         obs_count = _observation_count_for_duration(duration_s, sample_interval_s)
+        mode_schedule, shift_indices = _sample_mode_schedule(
+            rng,
+            modes,
+            obs_count,
+            mode_switch_probability,
+            max_mode_switches,
+        )
         track_start = start + timedelta(seconds=rng.randrange(max(1, int(span - duration_s))))
         base_location = _location(rng)
         base_kinematics = _kinematics(rng, aircraft)
-        shift_index = rng.randrange(1, obs_count) if len(modes) > 1 and rng.random() < 0.35 else None
-        shifted_mode = (
-            rng.choice([mode for mode in modes if mode.name != initial_mode.name])
-            if shift_index
-            else initial_mode
-        )
 
         observations = []
         for obs_index in range(obs_count):
             elapsed_s = obs_index * sample_interval_s + rng.uniform(-0.04, 0.04)
             elapsed_s = max(0.0, elapsed_s)
             timestamp = track_start + timedelta(seconds=elapsed_s)
-            mode = shifted_mode if shift_index is not None and obs_index >= shift_index else initial_mode
+            mode = mode_schedule[obs_index]
             props = _mode_bounds(mode)
-            label = ObservationLabel(
-                aircraft.family,
-                aircraft.variant,
-                f"aircraft:{slug(aircraft.variant)}",
-                operator,
-                radar.name,
-                f"radar:{slug(radar.name)}",
-                mode.name,
-                f"radar_mode:{slug(radar.name)}:{slug(mode.name)}",
-            )
+            label = _mode_label(aircraft, operator, radar, mode)
             kin = _evolve_kinematics(rng, base_kinematics, elapsed_s)
             observations.append({
                 "observation_id": f"esm_series_{series_index:05d}_obs_{obs_index + 1:03d}",
@@ -188,7 +254,16 @@ def generate_observation_series(
             "sample_interval_s": sample_interval_s,
             "duration_s": round(observations[-1]["elapsed_time_s"] - observations[0]["elapsed_time_s"], 3),
             "observation_count": len(observations),
-            "mode_shift_sequence_index": shift_index,
+            "mode_shift_sequence_indices": shift_indices,
+            "mode_shift_sequence_index": shift_indices[0] if shift_indices else None,
+            "ground_truth_mode_sequence": [
+                {
+                    "sequence_index": index,
+                    "mode": mode.name,
+                    "mode_id": f"radar_mode:{slug(radar.name)}:{slug(mode.name)}",
+                }
+                for index, mode in enumerate(mode_schedule)
+            ],
             "ground_truth_track_label": asdict(
                 ObservationLabel(
                     aircraft.family,
@@ -197,8 +272,8 @@ def generate_observation_series(
                     operator,
                     radar.name,
                     f"radar:{slug(radar.name)}",
-                    "multiple" if shift_index else initial_mode.name,
-                    "multiple" if shift_index else f"radar_mode:{slug(radar.name)}:{slug(initial_mode.name)}",
+                    "multiple" if shift_indices else mode_schedule[0].name,
+                    "multiple" if shift_indices else f"radar_mode:{slug(radar.name)}:{slug(mode_schedule[0].name)}",
                 )
             ),
             "observations": observations,
@@ -212,6 +287,8 @@ def generate_observation_series(
             "min_duration_s": min_duration_s,
             "max_duration_s": max_duration_s,
             "sample_interval_s": sample_interval_s,
+            "mode_switch_probability": mode_switch_probability,
+            "max_mode_switches": max_mode_switches,
             "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
         },
         "observation_series": series_entries,
@@ -229,6 +306,18 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--min-duration-s", type=float, default=DEFAULT_MIN_DURATION_SECONDS, help="Minimum series duration in seconds")
     parser.add_argument("--max-duration-s", type=float, default=DEFAULT_MAX_DURATION_SECONDS, help="Maximum series duration in seconds")
     parser.add_argument("--sample-interval-s", type=float, default=DEFAULT_SAMPLE_INTERVAL_SECONDS, help="Nominal interval between observations in seconds")
+    parser.add_argument(
+        "--mode-switch-probability",
+        type=float,
+        default=0.03,
+        help="Probability of a radar-mode transition between adjacent observations",
+    )
+    parser.add_argument(
+        "--max-mode-switches",
+        type=int,
+        default=None,
+        help="Optional cap on radar-mode transitions per series",
+    )
     parser.add_argument("--output", type=Path, default=Path("generated/esm_observation_series.json"), help="JSON output path")
     parser.add_argument("--start", default="2024-01-01T00:00:00Z", help="Inclusive UTC start timestamp")
     parser.add_argument("--end", default="2026-01-01T00:00:00Z", help="Exclusive UTC end timestamp")
@@ -245,6 +334,8 @@ def main(argv: Iterable[str] | None = None) -> None:
         args.sample_interval_s,
         _parse_utc(args.start),
         _parse_utc(args.end),
+        args.mode_switch_probability,
+        args.max_mode_switches,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
