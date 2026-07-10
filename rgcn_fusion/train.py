@@ -176,6 +176,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         for task_name, labels in encoded_classes.items()
     }
 
+    num_layers = max(5, int(model_cfg.get("num_layers", 5)))
     model = RGCNEvidenceModel(
         in_features=x.shape[1],
         hidden_features=int(model_cfg.get("hidden_features", 64)),
@@ -183,7 +184,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         num_hypotheses=len(hypotheses),
         dropout=float(model_cfg.get("dropout", 0.1)),
         classification_tasks={task_name: len(values) for task_name, values in class_vocabularies.items()},
-        num_layers=int(model_cfg.get("num_layers", 5)),
+        num_layers=num_layers,
         num_bases=model_cfg.get("num_bases"),
         residual=bool(model_cfg.get("residual", True)),
         normalization=model_cfg.get("normalization", "layernorm"),
@@ -198,6 +199,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     )
 
     classification_loss_weight = float(train_cfg.get("classification_loss_weight", 1.0))
+    l1_lambda = float(train_cfg.get("l1_lambda", 1e-5))
     epochs = int(train_cfg.get("epochs", 200))
     seed = int(train_cfg.get("seed", 42))
     train_fraction = float(train_cfg.get("train_fraction", 0.5))
@@ -269,7 +271,9 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         "epochs": epochs,
         "learning_rate": float(train_cfg.get("learning_rate", 1e-3)),
         "weight_decay": float(train_cfg.get("weight_decay", 1e-4)),
+        "l1_lambda": l1_lambda,
         "hidden_features": int(model_cfg.get("hidden_features", 64)),
+        "num_layers": num_layers,
         "dropout": float(model_cfg.get("dropout", 0.1)),
         "train_fraction": train_fraction,
         "test_fraction": test_fraction,
@@ -280,7 +284,8 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
 
     best_val = math.inf
     bad_epochs = 0
-    patience = int(train_cfg.get("patience", epochs + 1))
+    patience = int(train_cfg.get("patience", 10))
+    min_delta = float(train_cfg.get("early_stopping_min_delta", 1e-4))
     history: list[dict[str, float]] = []
     try:
         for epoch in tqdm(range(1, epochs + 1), desc="Training r-GCN"):
@@ -295,7 +300,10 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
                 reduction="batchmean",
             )
             class_loss = _classification_loss(outputs, train_indices)
-            loss = mass_loss + classification_loss_weight * class_loss
+            l1_penalty = torch.zeros((), dtype=torch.float32, device=device)
+            if l1_lambda > 0.0:
+                l1_penalty = sum(parameter.abs().sum() for parameter in model.parameters())
+            loss = mass_loss + classification_loss_weight * class_loss + l1_lambda * l1_penalty
             loss.backward()
             optimizer.step()
 
@@ -323,7 +331,9 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
                 writer.add_scalar(f"accuracy_test/{task_name}", test_metrics[f"{task_name}_acc"], epoch)
                 writer.add_scalar(f"accuracy_validation/{task_name}", val_metrics[f"{task_name}_acc"], epoch)
             writer.add_scalar("optimizer/learning_rate", optimizer.param_groups[0]["lr"], epoch)
+            writer.add_scalar("regularization/l1_penalty", float(l1_penalty.detach().cpu()), epoch)
 
+            print(f"Epoch no: {epoch}")
             diagnostic_parts = [
                 f"epoch={epoch:04d}",
                 f"train_loss={train_metrics['loss']:.6f}",
@@ -340,7 +350,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
                     f"test_{task_name}_acc={test_metrics[f'{task_name}_acc']:.4f}",
                 ])
             print(" | ".join(diagnostic_parts))
-            if val_metrics["loss"] < best_val:
+            if val_metrics["loss"] < best_val - min_delta:
                 best_val = val_metrics["loss"]
                 bad_epochs = 0
                 torch.save(

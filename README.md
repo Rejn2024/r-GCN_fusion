@@ -134,7 +134,8 @@ candidate-evidence graphs:
   properties are projected as `0.0`, so the same config can run before every
   feature has been materialised.
 - `model.num_layers`, `model.residual`, and `model.normalization` build a
-  configurable residual r-GCN stack instead of a fixed two-layer encoder.
+  configurable residual r-GCN stack instead of a fixed two-layer encoder;
+  training enforces a minimum of five r-GCN layers.
 - `model.num_bases` enables r-GCN basis decomposition to share parameters
   across relations.
 - `model.relation_gates` learns an importance gate for each relation type.
@@ -143,6 +144,9 @@ candidate-evidence graphs:
 - `model.mass_head_type: dirichlet` predicts non-negative evidence, Dirichlet
   concentration parameters, normalized masses, and an uncertainty scalar for
   each node.
+- `training.l1_lambda`, `training.patience`, and
+  `training.early_stopping_min_delta` add L1 regularization plus more aggressive
+  validation-loss early stopping to slow rapid overfitting.
 
 ## Neo4j Notebook
 
