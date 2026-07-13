@@ -52,9 +52,12 @@ Useful temporal and evidential relationship types include:
 - `SUPPORTS_RADAR`
 - `SUPPORTS_AIRCRAFT`
 - `SUPPORTS_OPERATOR`
+- `CONTRADICTS_CANDIDATE`
 
 These relationships would expose both temporal continuity and candidate support
-to the r-GCN.
+to the r-GCN. `CONTRADICTS_CANDIDATE` is emitted by the observation ETL for
+same-observation candidates when a stronger candidate supports incompatible
+mode, radar, aircraft, or operator hypotheses.
 
 ## Candidate scoring and fusion levels
 
@@ -115,6 +118,9 @@ Repeated observations should update cumulative belief as follows:
 - Reinforce a hypothesis when consecutive or repeated observations support the
   same radar mode, radar type, aircraft variant, or operator.
 - Counter a hypothesis when observations support incompatible alternatives.
+  Within one observation, the ETL makes this explicit with directed
+  `CONTRADICTS_CANDIDATE` edges from higher-scored candidates to lower-scored
+  incompatible candidates.
 - Preserve uncertainty when candidate scores are close or ambiguous.
 - Split mode segments when the mode changes but retain radar, aircraft, and
   operator continuity when appropriate.
@@ -159,4 +165,3 @@ Observation t3 -> radar A / single-target-track / aircraft X / operator O1
 The appropriate interpretation is not that the mode estimate is unstable.
 Instead, the series suggests a mode transition while reinforcing the parent
 radar, compatible aircraft variant, and plausible operator.
-

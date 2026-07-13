@@ -1,4 +1,4 @@
-from rgcn_fusion.observation_etl import ds_masses_from_score, score_candidates
+from rgcn_fusion.observation_etl import contradiction_edges_for_candidates, ds_masses_from_score, score_candidates
 
 
 def _observation():
@@ -216,3 +216,49 @@ def test_score_candidates_uses_kg_aircraft_radar_compatibility():
     assert candidates[0].aircraft_id == "aircraft:linked"
     assert candidates[0].aircraft_score > candidates[1].aircraft_score
     assert candidates[0].total_score > candidates[1].total_score
+
+
+def test_contradiction_edges_mark_stronger_incompatible_candidates():
+    candidates = score_candidates(
+        _observation(),
+        [
+            {
+                "mode_id": "radar_mode:good:track_while_scan",
+                "mode_props": {
+                    "waveform": "pulse_doppler",
+                    "scan_type": "sector",
+                    "centre_frequency_min_ghz": 9.4,
+                    "centre_frequency_max_ghz": 9.8,
+                },
+                "radar_id": "radar:good",
+                "aircraft_id": "aircraft:good",
+                "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+                "operator": "Testland",
+            },
+            {
+                "mode_id": "radar_mode:bad:mapping",
+                "mode_props": {
+                    "waveform": "synthetic_aperture_or_real_beam",
+                    "scan_type": "ground",
+                    "centre_frequency_min_ghz": 14.0,
+                    "centre_frequency_max_ghz": 15.0,
+                },
+                "radar_id": "radar:bad",
+                "aircraft_id": "aircraft:bad",
+                "aircraft_props": {"max_speed_mach": 1.0, "service_ceiling_m": 5000},
+                "operator": "Other",
+            },
+        ],
+        max_candidates=2,
+    )
+
+    edges = contradiction_edges_for_candidates(["candidate:1", "candidate:2"], candidates)
+
+    assert edges == [
+        {
+            "source": "candidate:1",
+            "target": "candidate:2",
+            "score_delta": candidates[0].total_score - candidates[1].total_score,
+            "reason": "mode_id,radar_id,aircraft_id,operator",
+        }
+    ]
