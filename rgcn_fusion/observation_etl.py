@@ -2,8 +2,9 @@
 
 The ETL compares each observation's measured radar parameters with RadarMode
 nodes already loaded in Neo4j, writes observation/candidate nodes labelled
-``EvidenceEntity``, and connects them with typed candidate relationships that can
-be consumed by :mod:`rgcn_fusion.train`.
+``EvidenceEntity``, and connects them with typed candidate relationships,
+including contradictory candidate relationships, that can be consumed by
+:mod:`rgcn_fusion.train`.
 """
 
 from __future__ import annotations
@@ -34,6 +35,7 @@ MEASURED_TO_KG_FIELDS = {
 DEFAULT_FEATURE_PROPERTIES = ("degree_score", "text_score", "recency_score")
 DEFAULT_LABEL_PROPERTY = "ds_masses"
 DEFAULT_MAX_CANDIDATES = 5
+MIN_CONTRADICTION_SCORE_DELTA = 0.05
 
 
 @dataclass(frozen=True)
@@ -229,6 +231,41 @@ def score_candidates(
     return sorted(scored, key=lambda item: item.total_score, reverse=True)[:max_candidates]
 
 
+def contradiction_edges_for_candidates(
+    candidate_ids: list[str],
+    candidates: list[CandidateScore],
+    *,
+    min_score_delta: float = MIN_CONTRADICTION_SCORE_DELTA,
+) -> list[dict[str, Any]]:
+    """Return directed edges from stronger candidates to incompatible alternatives.
+
+    These edges make counter-evidence explicit for the r-GCN: when one candidate
+    hypothesis is scored higher than another candidate for the same observation
+    and the candidates point at different mode/radar/aircraft hypotheses, the
+    stronger candidate contradicts the weaker alternative.
+    """
+    contradiction_edges: list[dict[str, Any]] = []
+    for left_idx, (left_id, left) in enumerate(zip(candidate_ids, candidates, strict=True)):
+        for right_id, right in zip(candidate_ids[left_idx + 1 :], candidates[left_idx + 1 :], strict=True):
+            score_delta = round(left.total_score - right.total_score, 6)
+            if score_delta < min_score_delta:
+                continue
+            reasons = [
+                field
+                for field in ("mode_id", "radar_id", "aircraft_id", "operator")
+                if getattr(left, field) != getattr(right, field)
+            ]
+            if not reasons:
+                continue
+            contradiction_edges.append({
+                "source": left_id,
+                "target": right_id,
+                "score_delta": score_delta,
+                "reason": ",".join(reasons),
+            })
+    return contradiction_edges
+
+
 class ObservationNeo4jETL:
     """Insert observations and scored candidate evidence into Neo4j."""
 
@@ -286,6 +323,7 @@ class ObservationNeo4jETL:
         obs_rows: list[dict[str, Any]] = []
         candidate_rows: list[dict[str, Any]] = []
         candidate_edges: list[dict[str, Any]] = []
+        contradiction_edges: list[dict[str, Any]] = []
         truth_edges: list[dict[str, Any]] = []
         similarity_edges: list[dict[str, Any]] = []
         by_best_mode: dict[str, list[str]] = {}
@@ -321,8 +359,10 @@ class ObservationNeo4jETL:
             obs_rows.append(obs_row)
             by_best_mode.setdefault(best.mode_id, []).append(obs_node_id)
 
+            candidate_ids: list[str] = []
             for rank, candidate in enumerate(candidates, start=1):
                 candidate_id = f"evidence:candidate:{obs_id}:{rank}"
+                candidate_ids.append(candidate_id)
                 candidate_rows.append({
                     "id": candidate_id,
                     "observation_id": obs_id,
@@ -346,23 +386,42 @@ class ObservationNeo4jETL:
                 ):
                     truth_edges.append({"source": obs_node_id, "target": candidate_id})
 
+            contradiction_edges.extend(contradiction_edges_for_candidates(candidate_ids, candidates))
+
         for ids in by_best_mode.values():
             for left, right in zip(ids, ids[1:]):
                 similarity_edges.append({"source": left, "target": right})
                 similarity_edges.append({"source": right, "target": left})
 
         with self.driver.session(database=self.database) as session:
-            session.execute_write(_write_evidence_rows, obs_rows, candidate_rows, candidate_edges, truth_edges, similarity_edges)
+            session.execute_write(
+                _write_evidence_rows,
+                obs_rows,
+                candidate_rows,
+                candidate_edges,
+                contradiction_edges,
+                truth_edges,
+                similarity_edges,
+            )
         return {
             "observations": len(obs_rows),
             "candidates": len(candidate_rows),
             "candidate_edges": len(candidate_edges),
+            "contradiction_edges": len(contradiction_edges),
             "truth_edges": len(truth_edges),
             "similarity_edges": len(similarity_edges),
         }
 
 
-def _write_evidence_rows(tx, obs_rows, candidate_rows, candidate_edges, truth_edges, similarity_edges):
+def _write_evidence_rows(
+    tx,
+    obs_rows,
+    candidate_rows,
+    candidate_edges,
+    contradiction_edges,
+    truth_edges,
+    similarity_edges,
+):
     tx.run(
         """
         UNWIND $rows AS row
@@ -388,6 +447,16 @@ def _write_evidence_rows(tx, obs_rows, candidate_rows, candidate_edges, truth_ed
         SET r.score = row.score, r.rank = row.rank
         """,
         rows=candidate_edges,
+    )
+    tx.run(
+        """
+        UNWIND $rows AS row
+        MATCH (source:EvidenceEntity {id: row.source})
+        MATCH (target:EvidenceEntity {id: row.target})
+        MERGE (source)-[r:CONTRADICTS_CANDIDATE]->(target)
+        SET r.score_delta = row.score_delta, r.reason = row.reason
+        """,
+        rows=contradiction_edges,
     )
     tx.run(
         """

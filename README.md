@@ -93,9 +93,12 @@ The ETL creates `Observation` and `CandidateEvidence` nodes, both labelled
 `EvidenceEntity`, with `degree_score`, `text_score`, `recency_score`,
 `ds_masses`, and optional class-label properties (`radar_id`, `mode_id`,
 `aircraft_id`, and `operator`). It also creates `HAS_CANDIDATE`,
-`GROUND_TRUTH_CANDIDATE`, and `SHARES_BEST_MODE` relationships so
-`rgcn_fusion.train` can load the evidence subgraph with the example
-`EvidenceEntity` Cypher queries.
+`CONTRADICTS_CANDIDATE`, `GROUND_TRUTH_CANDIDATE`, and `SHARES_BEST_MODE`
+relationships so `rgcn_fusion.train` can load the evidence subgraph with the
+example `EvidenceEntity` Cypher queries. `CONTRADICTS_CANDIDATE` is directed
+from a stronger-scored candidate to a weaker incompatible candidate for the same
+observation, with `score_delta` and `reason` properties explaining which
+hypothesis fields differ.
 
 A Jupyter walkthrough at
 `notebooks/observation_etl_rgcn_end_to_end.ipynb` shows the full process:
