@@ -90,16 +90,16 @@ def test_rgcn_evidence_model_rejects_classification_tasks_with_too_few_classes()
         )
 
 
-def test_model_uses_singleton_uncertainty_masses_for_more_than_ten_hypotheses():
+def test_model_uses_singleton_binary_uncertainty_masses_for_more_than_ten_hypotheses():
     model = RGCNEvidenceModel(
         in_features=3,
         hidden_features=4,
         num_relations=1,
         num_hypotheses=11,
     )
-    assert model.num_masses == 12
+    assert model.num_masses == 67
 
-    masses = torch.zeros(2, 12)
+    masses = torch.zeros(2, 67)
     masses[:, 3] = 0.8
     masses[:, -1] = 0.2
     midpoint_scores = model.interval_midpoints(masses)

@@ -31,7 +31,7 @@ except ImportError:  # pragma: no cover - optional dependency guard
             yield item
         print(f"{label}: done")
 
-from .dempster_shafer import belief_plausibility, validate_masses
+from .dempster_shafer import belief_plausibility, subset_masks, validate_masses
 from .model import RGCNEvidenceModel
 from .neo4j_loader import GraphData, Neo4jGraphLoader
 
@@ -160,7 +160,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
 
     hypotheses = data_cfg["hypotheses"]
     targets_np = validate_masses(graph.labels)
-    expected_masses = 2 ** len(hypotheses) - 1
+    expected_masses = len(subset_masks(len(hypotheses)))
     if targets_np.shape[1] != expected_masses:
         raise ValueError(f"labels must contain {expected_masses} masses per node")
 
