@@ -12,7 +12,8 @@ data:
     - degree_score
     - text_score
     - recency_score
-  # Each training node should contain a list of length 2**len(hypotheses)-1.
+  # Each training node should contain a mass list matching rgcn_fusion.dempster_shafer.subset_masks:
+  # length 2**len(hypotheses)-1 when len(hypotheses) <= 10, otherwise singleton-plus-uncertainty length len(hypotheses)+1.
   # For two hypotheses, order is: {benign}, {suspicious}, {benign,suspicious}.
   label_property: ds_masses
   # Enable node-level categorical classification alongside evidential masses.

@@ -88,3 +88,21 @@ def test_rgcn_evidence_model_rejects_classification_tasks_with_too_few_classes()
             num_hypotheses=2,
             classification_tasks={"radar_type": 1},
         )
+
+
+def test_model_uses_singleton_uncertainty_masses_for_more_than_ten_hypotheses():
+    model = RGCNEvidenceModel(
+        in_features=3,
+        hidden_features=4,
+        num_relations=1,
+        num_hypotheses=11,
+    )
+    assert model.num_masses == 12
+
+    masses = torch.zeros(2, 12)
+    masses[:, 3] = 0.8
+    masses[:, -1] = 0.2
+    midpoint_scores = model.interval_midpoints(masses)
+    assert midpoint_scores.shape == (2, 11)
+    assert torch.allclose(midpoint_scores[:, 3], torch.full((2,), 0.9))
+    assert torch.allclose(midpoint_scores[:, 0], torch.full((2,), 0.1))

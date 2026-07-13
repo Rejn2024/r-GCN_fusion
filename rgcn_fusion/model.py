@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import torch
-from torch import nn
 import torch.nn.functional as F
+from torch import nn
+
+from .dempster_shafer import MAX_FULL_SUBSET_HYPOTHESES, subset_masks
 
 
 class RGCNLayer(nn.Module):
@@ -130,7 +132,8 @@ class RGCNEvidenceModel(nn.Module):
         if mass_head_type not in {"softmax", "dirichlet"}:
             raise ValueError("mass_head_type must be 'softmax' or 'dirichlet'")
         self.num_hypotheses = num_hypotheses
-        self.num_masses = 2**num_hypotheses - 1
+        mass_masks = subset_masks(num_hypotheses)
+        self.num_masses = len(mass_masks)
         self.mass_head_type = mass_head_type
         normalization = None if normalization == "none" else normalization
         self.input_projection = nn.Sequential(
@@ -173,10 +176,19 @@ class RGCNEvidenceModel(nn.Module):
                 if num_classes != num_hypotheses
             }
         )
-        masks = torch.arange(1, self.num_masses + 1, dtype=torch.long)
-        singleton_masks = 1 << torch.arange(num_hypotheses, dtype=torch.long)
-        self.register_buffer("_singleton_indices", singleton_masks - 1, persistent=False)
-        self.register_buffer("_plausibility_mask", (masks.unsqueeze(0) & singleton_masks.unsqueeze(1)) != 0, persistent=False)
+        if num_hypotheses <= MAX_FULL_SUBSET_HYPOTHESES:
+            masks = torch.tensor(mass_masks, dtype=torch.long)
+            singleton_masks = 1 << torch.arange(num_hypotheses, dtype=torch.long)
+            singleton_indices = torch.tensor([mass_masks.index(int(mask)) for mask in singleton_masks], dtype=torch.long)
+            plausibility_mask = (masks.unsqueeze(0) & singleton_masks.unsqueeze(1)) != 0
+        else:
+            singleton_indices = torch.arange(num_hypotheses, dtype=torch.long)
+            plausibility_mask = torch.cat(
+                [torch.eye(num_hypotheses, dtype=torch.bool), torch.ones(num_hypotheses, 1, dtype=torch.bool)],
+                dim=1,
+            )
+        self.register_buffer("_singleton_indices", singleton_indices, persistent=False)
+        self.register_buffer("_plausibility_mask", plausibility_mask, persistent=False)
 
     @staticmethod
     def _make_head(
