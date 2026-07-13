@@ -184,7 +184,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
 
     hypotheses = data_cfg["hypotheses"]
     targets_np = validate_masses(graph.labels)
-    expected_masses = len(subset_masks(len(hypotheses)))
+    expected_masses = len(subset_masks(hypotheses))
     if targets_np.shape[1] != expected_masses:
         raise ValueError(f"labels must contain {expected_masses} masses per node")
 
@@ -206,6 +206,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         hidden_features=int(model_cfg.get("hidden_features", 64)),
         num_relations=max(len(graph.relation_names), 1),
         num_hypotheses=len(hypotheses),
+        hypotheses=hypotheses,
         dropout=float(model_cfg.get("dropout", 0.1)),
         classification_tasks={task_name: len(values) for task_name, values in class_vocabularies.items()},
         num_layers=num_layers,

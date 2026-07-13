@@ -112,6 +112,7 @@ class RGCNEvidenceModel(nn.Module):
         hidden_features: int,
         num_relations: int,
         num_hypotheses: int,
+        hypotheses: list[str] | None = None,
         dropout: float = 0.1,
         classification_tasks: dict[str, int] | None = None,
         num_layers: int = 2,
@@ -132,7 +133,7 @@ class RGCNEvidenceModel(nn.Module):
         if mass_head_type not in {"softmax", "dirichlet"}:
             raise ValueError("mass_head_type must be 'softmax' or 'dirichlet'")
         self.num_hypotheses = num_hypotheses
-        mass_masks = subset_masks(num_hypotheses)
+        mass_masks = subset_masks(hypotheses if hypotheses is not None else num_hypotheses)
         self.num_masses = len(mass_masks)
         self.mass_head_type = mass_head_type
         normalization = None if normalization == "none" else normalization
