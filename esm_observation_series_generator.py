@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from json import JSONDecodeError
 import multiprocessing
 import os
 import random
@@ -37,6 +38,50 @@ DEFAULT_SERIES_COUNT = 2500
 DEFAULT_SAMPLE_INTERVAL_SECONDS = 0.5
 DEFAULT_MIN_DURATION_SECONDS = 1.0
 DEFAULT_MAX_DURATION_SECONDS = 60.0
+
+
+def _json_error_context(
+    document: str, error: JSONDecodeError, *, context_lines: int = 2
+) -> str:
+    """Return a compact source excerpt around a JSON decoding error."""
+    lines = document.splitlines() or [""]
+    line_index = max(0, min(error.lineno - 1, len(lines) - 1))
+    start = max(0, line_index - context_lines)
+    end = min(len(lines), line_index + context_lines + 1)
+    width = len(str(end))
+    excerpt: list[str] = []
+    for idx in range(start, end):
+        marker = ">" if idx == line_index else " "
+        excerpt.append(f"{marker} {idx + 1:{width}d} | {lines[idx]}")
+        if idx == line_index:
+            caret_column = max(error.colno, 1)
+            excerpt.append(f"  {' ' * width} | {' ' * (caret_column - 1)}^")
+    return "\n".join(excerpt)
+
+
+def load_observation_series_json(path: str | Path) -> dict[str, object]:
+    """Load an observation-series JSON file with line-level error context.
+
+    This wraps :func:`json.loads` so notebooks fail with an actionable message
+    when a generated or hand-edited dataset is malformed.
+    """
+    source_path = Path(path)
+    document = source_path.read_text(encoding="utf-8")
+    try:
+        data = json.loads(document)
+    except JSONDecodeError as exc:
+        context = _json_error_context(document, exc)
+        raise ValueError(
+            f"Could not parse JSON in {source_path} at line {exc.lineno}, "
+            f"column {exc.colno}: {exc.msg}.\n{context}"
+        ) from exc
+    if not isinstance(data, dict) or not isinstance(
+        data.get("observation_series"), list
+    ):
+        raise ValueError(
+            f"{source_path} must contain an object with an 'observation_series' list"
+        )
+    return data
 
 
 def _sample_esm_parameters(rng: random.Random, props: dict[str, Any]) -> dict[str, Any]:
