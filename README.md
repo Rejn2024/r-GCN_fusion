@@ -112,10 +112,13 @@ Dempster-Shafer mass prediction. Enable `data.classification` or provide
 - `radar_type` (for example, a `radar_id` target);
 - `radar_mode` (for example, a `mode_id` target);
 - `aircraft_variant` (for example, an `aircraft_id` target);
-- `operator` (for example, an operator name or id target).
+- `operator_country` (for example, an operator country/name target).
 
 Classification loss is added to the evidential KL-divergence objective and can
-be scaled with `training.classification_loss_weight`. Tasks whose class count
+be scaled globally with `training.classification_loss_weight`. Individual tasks
+can be emphasized with `training.classification_task_loss_weights`; by default,
+`aircraft_variant` and `operator_country` receive 2.0x multipliers so their
+accuracy metrics are prioritized during training. Tasks whose class count
 matches the configured hypotheses are scored from the midpoint of each singleton
 hypothesis' Dempster-Shafer belief/plausibility interval. Targets with a
 different vocabulary size use lightweight per-task classifier heads on the

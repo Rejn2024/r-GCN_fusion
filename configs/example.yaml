@@ -17,13 +17,13 @@ data:
   # For two hypotheses, order is: {benign}, {suspicious}, {benign,suspicious}.
   label_property: ds_masses
   # Enable node-level categorical classification alongside evidential masses.
-  # The default tasks include radar type, radar mode, aircraft variant, and operator.
+  # The default tasks include radar type, radar mode, aircraft variant, and operator country.
   classification: true
   classification_label_properties:
     radar_type: radar_id
     radar_mode: mode_id
     aircraft_variant: aircraft_id
-    operator: operator
+    operator_country: operator_country
   node_query: |
     MATCH (n:EvidenceEntity)
     RETURN elementId(n) AS id, properties(n) AS props
@@ -50,6 +50,10 @@ training:
   weight_decay: 0.0001
   l1_lambda: 0.00001
   classification_loss_weight: 1.0
+  # Per-task multipliers prioritize these accuracy metrics during training.
+  classification_task_loss_weights:
+    aircraft_variant: 2.0
+    operator_country: 2.0
   patience: 10
   early_stopping_min_delta: 0.0001
   device: cpu
