@@ -113,6 +113,23 @@ def test_load_observation_series_json_reports_line_context(tmp_path):
     assert "line 3, column 18" in message
     assert ">{:2d} |".format(3) in message
     assert "^" in message
+    assert "fix the JSON syntax near the highlighted line" in message
+
+
+def test_load_observation_series_json_hints_at_missing_key_colon(tmp_path):
+    path = tmp_path / "bad_series.json"
+    path.write_text(
+        '{\n  "observation_series": [\n    {"esm_radar_parameters": {\n'
+        '      "measured_pulse_repetition_interval_us"\n    }}\n  ]\n}\n',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError) as excinfo:
+        load_observation_series_json(path)
+
+    message = str(excinfo.value)
+    assert "measured_pulse_repetition_interval_us" in message
+    assert "JSON object key without a trailing colon" in message
 
 
 def test_load_observation_series_json_validates_schema(tmp_path):

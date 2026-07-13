@@ -59,6 +59,27 @@ def _json_error_context(
     return "\n".join(excerpt)
 
 
+def _json_error_hint(document: str, error: JSONDecodeError) -> str:
+    """Return a targeted remediation hint for common JSON mistakes."""
+    lines = document.splitlines() or [""]
+    line_index = max(0, min(error.lineno - 1, len(lines) - 1))
+    candidate_lines = [lines[line_index]]
+    if line_index > 0:
+        candidate_lines.append(lines[line_index - 1])
+    if (
+        error.msg == "Expecting ':' delimiter"
+        and any(
+            (stripped := line.strip()).startswith('"') and stripped.endswith('"')
+            for line in candidate_lines
+        )
+    ):
+        return (
+            "Hint: this line looks like a JSON object key without a trailing "
+            "colon. Add ':' after the closing quote, then re-run the loader."
+        )
+    return "Hint: regenerate this file or fix the JSON syntax near the highlighted line."
+
+
 def load_observation_series_json(path: str | Path) -> dict[str, object]:
     """Load an observation-series JSON file with line-level error context.
 
@@ -71,9 +92,10 @@ def load_observation_series_json(path: str | Path) -> dict[str, object]:
         data = json.loads(document)
     except JSONDecodeError as exc:
         context = _json_error_context(document, exc)
+        hint = _json_error_hint(document, exc)
         raise ValueError(
             f"Could not parse JSON in {source_path} at line {exc.lineno}, "
-            f"column {exc.colno}: {exc.msg}.\n{context}"
+            f"column {exc.colno}: {exc.msg}.\n{context}\n{hint}"
         ) from exc
     if not isinstance(data, dict) or not isinstance(
         data.get("observation_series"), list
