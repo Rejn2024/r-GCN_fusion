@@ -2,15 +2,16 @@
 
 Mass vectors use the following order for a frame with ``n`` singleton hypotheses:
 all non-empty subsets encoded by bit masks ``1..(2**n - 1)`` when ``n`` is at
-most 10. Larger frames use singleton masks ``1 << i``, binary subset masks,
-and one full-frame uncertainty mask to avoid exponential growth. For example,
-with hypotheses ``["A", "B"]`` the full-subset vector is ``[{A}, {B}, {A,B}]``.
+most 10. Larger aircraft frames use singleton masks ``1 << i``, inferred
+aircraft-type subset masks (for example, all MiG-29 variants), and one
+full-frame uncertainty mask to avoid exponential growth. For example, with
+hypotheses ``["A", "B"]`` the full-subset vector is ``[{A}, {B}, {A,B}]``.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Sequence
 
 import numpy as np
 
@@ -27,25 +28,60 @@ class Interval:
     plausibility: float
 
 
-def subset_masks(num_hypotheses: int) -> list[int]:
+def _aircraft_type_key(hypothesis: str) -> str:
+    """Infer a coarse aircraft type from an aircraft hypothesis label or id."""
+    text = hypothesis.removeprefix("aircraft:").lower().replace("/", "_").replace("-", "_")
+    tokens = [token for token in text.split("_") if token]
+    if len(tokens) >= 2 and tokens[0].isalpha() and tokens[1].isdigit():
+        return f"{tokens[0]}-{tokens[1]}"
+    if len(tokens) >= 2 and tokens[0].isalpha() and tokens[1].isalnum():
+        family_digits = "".join(ch for ch in tokens[1] if ch.isdigit())
+        if family_digits:
+            return f"{tokens[0]}-{family_digits}"
+    return tokens[0] if tokens else text
+
+
+def grouped_type_masks(hypotheses: Sequence[str]) -> list[int]:
+    """Return subset masks that group hypotheses by inferred aircraft type.
+
+    Groups containing only one hypothesis duplicate singleton masses and are
+    omitted. The returned order is deterministic: groups are emitted at the
+    position of their first member after all singleton masses.
+    """
+    groups: dict[str, int] = {}
+    group_order: list[str] = []
+    for idx, hypothesis in enumerate(hypotheses):
+        key = _aircraft_type_key(str(hypothesis))
+        if key not in groups:
+            groups[key] = 0
+            group_order.append(key)
+        groups[key] |= 1 << idx
+    return [groups[key] for key in group_order if groups[key].bit_count() > 1]
+
+
+def subset_masks(hypotheses: int | Sequence[str]) -> list[int]:
     """Return bit-mask encodings for the supported mass vector frame.
 
     Frames with at most ``MAX_FULL_SUBSET_HYPOTHESES`` hypotheses use every
-    non-empty subset. Larger frames fall back to singleton masses, binary
-    subset masses, and one residual full-frame uncertainty mass.
+    non-empty subset. Larger frames use singleton masses, aircraft-type grouped
+    subset masses when hypothesis labels are supplied, and one residual
+    full-frame uncertainty mass. Passing only an integer for a large frame keeps
+    the frame compact by emitting singleton masses plus uncertainty.
     """
+    if isinstance(hypotheses, int):
+        num_hypotheses = hypotheses
+        hypothesis_labels: Sequence[str] | None = None
+    else:
+        hypothesis_labels = list(hypotheses)
+        num_hypotheses = len(hypothesis_labels)
     if num_hypotheses < 1:
         raise ValueError("num_hypotheses must be positive")
     if num_hypotheses <= MAX_FULL_SUBSET_HYPOTHESES:
         return list(range(1, 2**num_hypotheses))
     singleton_masks = [1 << idx for idx in range(num_hypotheses)]
-    binary_masks = [
-        (1 << left_idx) | (1 << right_idx)
-        for left_idx in range(num_hypotheses)
-        for right_idx in range(left_idx + 1, num_hypotheses)
-    ]
+    type_masks = grouped_type_masks(hypothesis_labels) if hypothesis_labels is not None else []
     full_frame_mask = (1 << num_hypotheses) - 1
-    return singleton_masks + binary_masks + [full_frame_mask]
+    return singleton_masks + type_masks + [full_frame_mask]
 
 
 def _masks_for_mass_length(num_masses: int) -> list[int]:
@@ -57,19 +93,15 @@ def _masks_for_mass_length(num_masses: int) -> list[int]:
     ):
         return subset_masks(full_subset_hypotheses)
 
-    # Large frames include n singleton masses, nC2 binary subset masses, and
-    # one full-frame uncertainty mass. Solve n + n(n - 1)/2 + 1 == num_masses.
-    discriminant = 8 * (num_masses - 1) + 1
-    large_frame_hypotheses = int((np.sqrt(discriminant) - 1) / 2)
-    if (
-        large_frame_hypotheses > MAX_FULL_SUBSET_HYPOTHESES
-        and large_frame_hypotheses * (large_frame_hypotheses + 1) // 2 + 1 == num_masses
-    ):
+    # Large frames created without hypothesis labels include n singleton masses
+    # and one full-frame uncertainty mass. Solve n + 1 == num_masses.
+    large_frame_hypotheses = num_masses - 1
+    if large_frame_hypotheses > MAX_FULL_SUBSET_HYPOTHESES:
         return subset_masks(large_frame_hypotheses)
 
     raise ValueError(
         "mass vector length must match either a full-subset frame with at most "
-        f"{MAX_FULL_SUBSET_HYPOTHESES} hypotheses or a singleton-binary-plus-uncertainty "
+        f"{MAX_FULL_SUBSET_HYPOTHESES} hypotheses or a singleton/type-group/uncertainty "
         f"frame with more than {MAX_FULL_SUBSET_HYPOTHESES} hypotheses"
     )
 
@@ -93,7 +125,7 @@ def belief_plausibility(
 ) -> list[Interval]:
     """Compute singleton belief/plausibility intervals from a mass vector."""
     mass = validate_masses(np.asarray(list(masses), dtype=np.float64))
-    masks = subset_masks(len(hypotheses))
+    masks = subset_masks(hypotheses)
     if mass.shape[0] != len(masks):
         raise ValueError(
             f"expected {len(masks)} masses for {len(hypotheses)} hypotheses, "
@@ -109,7 +141,9 @@ def belief_plausibility(
     return intervals
 
 
-def combine_masses(left: Iterable[float], right: Iterable[float]) -> np.ndarray:
+def combine_masses(
+    left: Iterable[float], right: Iterable[float], hypotheses: Sequence[str] | None = None
+) -> np.ndarray:
     """Combine two mass vectors with normalized Dempster's rule of combination."""
     left_arr = validate_masses(np.asarray(list(left), dtype=np.float64))
     right_arr = validate_masses(np.asarray(list(right), dtype=np.float64))
@@ -117,7 +151,9 @@ def combine_masses(left: Iterable[float], right: Iterable[float]) -> np.ndarray:
         raise ValueError("mass vectors must have the same shape")
 
     num_masses = left_arr.shape[0]
-    masks = _masks_for_mass_length(num_masses)
+    masks = subset_masks(hypotheses) if hypotheses is not None else _masks_for_mass_length(num_masses)
+    if len(masks) != num_masses:
+        raise ValueError(f"expected {len(masks)} masses for supplied hypotheses, got {num_masses}")
     mask_indices = {mask: idx for idx, mask in enumerate(masks)}
     combined = np.zeros(num_masses, dtype=np.float64)
     conflict = 0.0
