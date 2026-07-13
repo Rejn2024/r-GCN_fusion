@@ -6,16 +6,35 @@ import numpy as np
 from rgcn_fusion.neo4j_loader import GraphData
 from rgcn_fusion.train import (
     DEFAULT_CLASSIFICATION_TARGETS,
+    DEFAULT_CLASSIFICATION_TASK_LOSS_WEIGHTS,
     RECOMMENDED_CANDIDATE_FEATURES,
     _classification_label_properties,
+    _classification_task_loss_weights,
     _encode_classification_targets,
     _feature_properties,
 )
 
 
-def test_default_classification_targets_include_radar_type():
+def test_default_classification_targets_include_radar_type_and_operator_country():
     assert _classification_label_properties({"classification": True}) == DEFAULT_CLASSIFICATION_TARGETS
     assert DEFAULT_CLASSIFICATION_TARGETS["radar_type"] == "radar_id"
+    assert DEFAULT_CLASSIFICATION_TARGETS["operator_country"] == "operator_country"
+
+
+def test_default_classification_task_loss_weights_prioritize_requested_metrics():
+    weights = _classification_task_loss_weights({})
+
+    assert weights == DEFAULT_CLASSIFICATION_TASK_LOSS_WEIGHTS
+    assert weights["aircraft_variant"] > 1.0
+    assert weights["operator_country"] > 1.0
+
+
+def test_classification_task_loss_weights_can_be_overridden():
+    weights = _classification_task_loss_weights({
+        "classification_task_loss_weights": {"aircraft_variant": 3, "radar_type": 0.5}
+    })
+
+    assert weights == {"aircraft_variant": 3.0, "radar_type": 0.5}
 
 
 def test_encode_classification_targets_preserves_missing_values():

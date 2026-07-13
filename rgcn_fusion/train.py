@@ -40,7 +40,11 @@ DEFAULT_CLASSIFICATION_TARGETS = {
     "radar_type": "radar_id",
     "radar_mode": "mode_id",
     "aircraft_variant": "aircraft_id",
-    "operator": "operator",
+    "operator_country": "operator_country",
+}
+DEFAULT_CLASSIFICATION_TASK_LOSS_WEIGHTS = {
+    "aircraft_variant": 2.0,
+    "operator_country": 2.0,
 }
 RECOMMENDED_CANDIDATE_FEATURES = [
     "degree_score",
@@ -98,6 +102,26 @@ def _feature_properties(data_cfg: dict[str, Any]) -> list[str]:
     if not features:
         raise ValueError("data.feature_properties must contain at least one numeric feature")
     return features
+
+
+def _classification_task_loss_weights(train_cfg: dict[str, Any]) -> dict[str, float]:
+    """Return per-classification-task loss multipliers.
+
+    The default emphasizes the aircraft-variant and operator-country targets so
+    training optimizes more strongly for the accuracy metrics stakeholders care
+    about most.  Users can override or extend these multipliers with
+    ``training.classification_task_loss_weights``.
+    """
+    configured = train_cfg.get("classification_task_loss_weights")
+    if configured is None:
+        return dict(DEFAULT_CLASSIFICATION_TASK_LOSS_WEIGHTS)
+    if not isinstance(configured, dict):
+        raise TypeError("classification_task_loss_weights must map task names to numeric weights")
+    weights = {str(task_name): float(weight) for task_name, weight in configured.items()}
+    for task_name, weight in weights.items():
+        if weight < 0.0:
+            raise ValueError(f"classification_task_loss_weights[{task_name!r}] must be non-negative")
+    return weights
 
 
 def _encode_classification_targets(
@@ -199,6 +223,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     )
 
     classification_loss_weight = float(train_cfg.get("classification_loss_weight", 1.0))
+    classification_task_loss_weights = _classification_task_loss_weights(train_cfg)
     l1_lambda = float(train_cfg.get("l1_lambda", 1e-5))
     epochs = int(train_cfg.get("epochs", 200))
     seed = int(train_cfg.get("seed", 42))
@@ -230,7 +255,10 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
             if not torch.any(split_labels != IGNORE_CLASS_INDEX):
                 continue
             logits = outputs["classification_logits"][task_name][indices]
-            class_loss = class_loss + F.cross_entropy(logits, split_labels, ignore_index=IGNORE_CLASS_INDEX)
+            task_weight = classification_task_loss_weights.get(task_name, 1.0)
+            class_loss = class_loss + task_weight * F.cross_entropy(
+                logits, split_labels, ignore_index=IGNORE_CLASS_INDEX
+            )
         return class_loss
 
     def _classification_accuracy(logits: torch.Tensor, labels: torch.Tensor) -> float:
@@ -279,6 +307,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         "test_fraction": test_fraction,
         "val_fraction": val_fraction,
         "classification_loss_weight": classification_loss_weight,
+        "classification_task_loss_weights": classification_task_loss_weights,
         "seed": seed,
     }, indent=2))
 
