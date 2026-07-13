@@ -2,9 +2,9 @@
 
 Mass vectors use the following order for a frame with ``n`` singleton hypotheses:
 all non-empty subsets encoded by bit masks ``1..(2**n - 1)`` when ``n`` is at
-most 10. Larger frames use singleton masks ``1 << i`` plus one full-frame
-uncertainty mask to avoid exponential growth. For example, with hypotheses
-``["A", "B"]`` the full-subset vector is ``[{A}, {B}, {A,B}]``.
+most 10. Larger frames use singleton masks ``1 << i``, binary subset masks,
+and one full-frame uncertainty mask to avoid exponential growth. For example,
+with hypotheses ``["A", "B"]`` the full-subset vector is ``[{A}, {B}, {A,B}]``.
 """
 
 from __future__ import annotations
@@ -31,16 +31,21 @@ def subset_masks(num_hypotheses: int) -> list[int]:
     """Return bit-mask encodings for the supported mass vector frame.
 
     Frames with at most ``MAX_FULL_SUBSET_HYPOTHESES`` hypotheses use every
-    non-empty subset. Larger frames fall back to singleton masses plus one
-    residual full-frame uncertainty mass.
+    non-empty subset. Larger frames fall back to singleton masses, binary
+    subset masses, and one residual full-frame uncertainty mass.
     """
     if num_hypotheses < 1:
         raise ValueError("num_hypotheses must be positive")
     if num_hypotheses <= MAX_FULL_SUBSET_HYPOTHESES:
         return list(range(1, 2**num_hypotheses))
     singleton_masks = [1 << idx for idx in range(num_hypotheses)]
+    binary_masks = [
+        (1 << left_idx) | (1 << right_idx)
+        for left_idx in range(num_hypotheses)
+        for right_idx in range(left_idx + 1, num_hypotheses)
+    ]
     full_frame_mask = (1 << num_hypotheses) - 1
-    return singleton_masks + [full_frame_mask]
+    return singleton_masks + binary_masks + [full_frame_mask]
 
 
 def _masks_for_mass_length(num_masses: int) -> list[int]:
@@ -52,13 +57,19 @@ def _masks_for_mass_length(num_masses: int) -> list[int]:
     ):
         return subset_masks(full_subset_hypotheses)
 
-    large_frame_hypotheses = num_masses - 1
-    if large_frame_hypotheses > MAX_FULL_SUBSET_HYPOTHESES:
+    # Large frames include n singleton masses, nC2 binary subset masses, and
+    # one full-frame uncertainty mass. Solve n + n(n - 1)/2 + 1 == num_masses.
+    discriminant = 8 * (num_masses - 1) + 1
+    large_frame_hypotheses = int((np.sqrt(discriminant) - 1) / 2)
+    if (
+        large_frame_hypotheses > MAX_FULL_SUBSET_HYPOTHESES
+        and large_frame_hypotheses * (large_frame_hypotheses + 1) // 2 + 1 == num_masses
+    ):
         return subset_masks(large_frame_hypotheses)
 
     raise ValueError(
         "mass vector length must match either a full-subset frame with at most "
-        f"{MAX_FULL_SUBSET_HYPOTHESES} hypotheses or a singleton-plus-uncertainty "
+        f"{MAX_FULL_SUBSET_HYPOTHESES} hypotheses or a singleton-binary-plus-uncertainty "
         f"frame with more than {MAX_FULL_SUBSET_HYPOTHESES} hypotheses"
     )
 

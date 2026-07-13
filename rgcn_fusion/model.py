@@ -6,7 +6,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
-from .dempster_shafer import MAX_FULL_SUBSET_HYPOTHESES, subset_masks
+from .dempster_shafer import subset_masks
 
 
 class RGCNLayer(nn.Module):
@@ -176,17 +176,10 @@ class RGCNEvidenceModel(nn.Module):
                 if num_classes != num_hypotheses
             }
         )
-        if num_hypotheses <= MAX_FULL_SUBSET_HYPOTHESES:
-            masks = torch.tensor(mass_masks, dtype=torch.long)
-            singleton_masks = 1 << torch.arange(num_hypotheses, dtype=torch.long)
-            singleton_indices = torch.tensor([mass_masks.index(int(mask)) for mask in singleton_masks], dtype=torch.long)
-            plausibility_mask = (masks.unsqueeze(0) & singleton_masks.unsqueeze(1)) != 0
-        else:
-            singleton_indices = torch.arange(num_hypotheses, dtype=torch.long)
-            plausibility_mask = torch.cat(
-                [torch.eye(num_hypotheses, dtype=torch.bool), torch.ones(num_hypotheses, 1, dtype=torch.bool)],
-                dim=1,
-            )
+        masks = torch.tensor(mass_masks, dtype=torch.long)
+        singleton_masks = 1 << torch.arange(num_hypotheses, dtype=torch.long)
+        singleton_indices = torch.tensor([mass_masks.index(int(mask)) for mask in singleton_masks], dtype=torch.long)
+        plausibility_mask = (masks.unsqueeze(0) & singleton_masks.unsqueeze(1)) != 0
         self.register_buffer("_singleton_indices", singleton_indices, persistent=False)
         self.register_buffer("_plausibility_mask", plausibility_mask, persistent=False)
 
