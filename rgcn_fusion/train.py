@@ -201,6 +201,12 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     }
 
     num_layers = max(5, int(model_cfg.get("num_layers", 5)))
+    edge_chunk_size = int(model_cfg.get("edge_chunk_size", train_cfg.get("edge_chunk_size", 50000)))
+    gradient_checkpointing = bool(model_cfg.get("gradient_checkpointing", train_cfg.get("gradient_checkpointing", True)))
+    use_amp = bool(train_cfg.get("use_amp", device.type == "cuda"))
+    amp_dtype_name = str(train_cfg.get("amp_dtype", "float16"))
+    amp_dtype = torch.bfloat16 if amp_dtype_name == "bfloat16" else torch.float16
+
     model = RGCNEvidenceModel(
         in_features=x.shape[1],
         hidden_features=int(model_cfg.get("hidden_features", 64)),
@@ -216,7 +222,10 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         relation_gates=bool(model_cfg.get("relation_gates", False)),
         task_head_hidden_features=model_cfg.get("task_head_hidden_features"),
         mass_head_type=str(model_cfg.get("mass_head_type", "softmax")),
+        edge_chunk_size=edge_chunk_size,
+        gradient_checkpointing=gradient_checkpointing,
     ).to(device)
+    scaler = torch.amp.GradScaler("cuda", enabled=use_amp and device.type == "cuda" and amp_dtype == torch.float16)
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=float(train_cfg.get("learning_rate", 1e-3)),
@@ -288,7 +297,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     def split_losses_and_metrics(split: str) -> dict[str, float]:
         model.eval()
         indices = split_indices[split]
-        with torch.no_grad():
+        with torch.no_grad(), torch.amp.autocast(device_type=device.type, dtype=amp_dtype, enabled=use_amp and device.type == "cuda"):
             outputs = model(x, edge_index, edge_type)
             masses = outputs["masses"]
             mass_loss = F.kl_div(
@@ -327,6 +336,10 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         "batches_per_epoch": batches_per_epoch,
         "classification_loss_weight": classification_loss_weight,
         "classification_task_loss_weights": classification_task_loss_weights,
+        "edge_chunk_size": edge_chunk_size,
+        "gradient_checkpointing": gradient_checkpointing,
+        "use_amp": use_amp,
+        "amp_dtype": amp_dtype_name,
         "seed": seed,
     }, indent=2))
 
@@ -348,21 +361,23 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
             weighted_l1_penalty = 0.0
             for batch_indices in batch_progress:
                 optimizer.zero_grad(set_to_none=True)
-                outputs = model(x, edge_index, edge_type)
-                masses = outputs["masses"]
-                mass_loss = F.kl_div(
-                    torch.log(masses[batch_indices].clamp_min(1e-9)),
-                    targets[batch_indices],
-                    reduction="batchmean",
-                )
-                class_loss = _classification_loss(outputs, batch_indices)
-                l1_penalty = torch.zeros((), dtype=torch.float32, device=device)
-                if l1_lambda > 0.0:
-                    l1_penalty = sum(parameter.abs().sum() for parameter in model.parameters())
-                batch_fraction = float(batch_indices.numel()) / train_size
-                loss = mass_loss + classification_loss_weight * class_loss + l1_lambda * l1_penalty * batch_fraction
-                loss.backward()
-                optimizer.step()
+                with torch.amp.autocast(device_type=device.type, dtype=amp_dtype, enabled=use_amp and device.type == "cuda"):
+                    outputs = model(x, edge_index, edge_type)
+                    masses = outputs["masses"]
+                    mass_loss = F.kl_div(
+                        torch.log(masses[batch_indices].clamp_min(1e-9)),
+                        targets[batch_indices],
+                        reduction="batchmean",
+                    )
+                    class_loss = _classification_loss(outputs, batch_indices)
+                    l1_penalty = torch.zeros((), dtype=torch.float32, device=device)
+                    if l1_lambda > 0.0:
+                        l1_penalty = sum(parameter.abs().sum() for parameter in model.parameters())
+                    batch_fraction = float(batch_indices.numel()) / train_size
+                    loss = mass_loss + classification_loss_weight * class_loss + l1_lambda * l1_penalty * batch_fraction
+                scaler.scale(loss).backward()
+                scaler.step(optimizer)
+                scaler.update()
                 weighted_l1_penalty += float(l1_penalty.detach().cpu()) * batch_fraction
                 if hasattr(batch_progress, "set_postfix"):
                     batch_progress.set_postfix(loss=f"{float(loss.detach().cpu()):.4f}")
@@ -441,7 +456,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     print("Test metrics:", test_metrics)
 
     model.eval()
-    with torch.no_grad():
+    with torch.no_grad(), torch.amp.autocast(device_type=device.type, dtype=amp_dtype, enabled=use_amp and device.type == "cuda"):
         outputs = model(x, edge_index, edge_type)
         predictions = outputs["masses"].cpu().numpy()
         uncertainty = outputs["uncertainty"]
