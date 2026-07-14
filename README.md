@@ -158,9 +158,13 @@ candidate-evidence graphs:
 - `model.mass_head_type: dirichlet` predicts non-negative evidence, Dirichlet
   concentration parameters, normalized masses, and an uncertainty scalar for
   each node.
-- `training.l1_lambda`, `training.patience`, and
-  `training.early_stopping_min_delta` add L1 regularization plus more aggressive
-  validation-loss early stopping to slow rapid overfitting.
+- `training.l1_lambda`, `training.mass_label_smoothing`,
+  `training.classification_label_smoothing`, `training.confidence_penalty_weight`,
+  `training.max_grad_norm`, `training.reduce_lr_on_plateau`, `training.patience`,
+  and `training.early_stopping_min_delta` combine L1 regularization, softened
+  targets, entropy-based confidence penalties, gradient clipping, plateau-based
+  learning-rate reduction, and aggressive validation-loss early stopping to slow
+  rapid overfitting.
 
 ## Neo4j Notebook
 

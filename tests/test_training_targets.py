@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
+import torch
 
 from rgcn_fusion.neo4j_loader import GraphData
 from rgcn_fusion.train import (
@@ -9,8 +11,10 @@ from rgcn_fusion.train import (
     DEFAULT_CLASSIFICATION_TASK_LOSS_WEIGHTS,
     RECOMMENDED_CANDIDATE_FEATURES,
     _classification_label_properties,
+    _bounded_fraction,
     _classification_task_loss_weights,
     _encode_classification_targets,
+    _smooth_mass_targets,
     _feature_properties,
 )
 
@@ -35,6 +39,21 @@ def test_classification_task_loss_weights_can_be_overridden():
     })
 
     assert weights == {"aircraft_variant": 3.0, "radar_type": 0.5}
+
+
+def test_mass_label_smoothing_blends_targets_with_uniform_prior():
+    targets = torch.tensor([[1.0, 0.0, 0.0, 0.0]])
+
+    smoothed = _smooth_mass_targets(targets, 0.2)
+
+    assert torch.allclose(smoothed, torch.tensor([[0.85, 0.05, 0.05, 0.05]]))
+    assert torch.allclose(smoothed.sum(dim=1), torch.ones(1))
+
+
+def test_regularization_fractions_are_bounded():
+    assert _bounded_fraction({"mass_label_smoothing": 0.25}, "mass_label_smoothing", 0.01) == 0.25
+    with pytest.raises(ValueError, match="training.mass_label_smoothing"):
+        _bounded_fraction({"mass_label_smoothing": 1.5}, "mass_label_smoothing", 0.01)
 
 
 def test_encode_classification_targets_preserves_missing_values():

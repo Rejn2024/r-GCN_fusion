@@ -63,12 +63,21 @@ training:
   learning_rate: 0.001
   weight_decay: 0.0001
   l1_lambda: 0.00001
+  # Stronger overtraining prevention: smooth hard labels, discourage low-entropy
+  # memorization, clip gradients, and reduce LR when validation loss plateaus.
+  mass_label_smoothing: 0.01
+  classification_label_smoothing: 0.05
+  confidence_penalty_weight: 0.01
+  max_grad_norm: 1.0
+  reduce_lr_on_plateau: true
+  lr_patience: 3
+  lr_factor: 0.5
   classification_loss_weight: 1.0
   # Per-task multipliers prioritize these accuracy metrics during training.
   classification_task_loss_weights:
     aircraft_variant: 2.0
     operator_country: 2.0
-  patience: 10
+  patience: 8
   early_stopping_min_delta: 0.0001
   device: cpu
 
