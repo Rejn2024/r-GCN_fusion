@@ -23,7 +23,7 @@ except ImportError:  # pragma: no cover - optional dependency guard
 try:
     from tqdm.auto import tqdm
 except ImportError:  # pragma: no cover - optional dependency guard
-    def tqdm(iterable, desc=None):
+    def tqdm(iterable, desc=None, **_kwargs):
         total = len(iterable) if hasattr(iterable, "__len__") else None
         label = desc or "Progress"
         print(f"{label}: starting" + (f" ({total} steps)" if total else ""))
@@ -227,6 +227,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     classification_task_loss_weights = _classification_task_loss_weights(train_cfg)
     l1_lambda = float(train_cfg.get("l1_lambda", 1e-5))
     epochs = int(train_cfg.get("epochs", 200))
+    batch_size = int(train_cfg.get("batch_size", 0))
     seed = int(train_cfg.get("seed", 42))
     train_fraction = float(train_cfg.get("train_fraction", 0.5))
     test_fraction = float(train_cfg.get("test_fraction", 0.3))
@@ -248,6 +249,21 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         "val": torch.as_tensor(perm[n_train + n_test:], dtype=torch.long, device=device),
     }
     print({name: int(indices.numel()) for name, indices in split_indices.items()})
+    train_size = int(split_indices["train"].numel())
+    if train_size < 1:
+        raise ValueError("training split must contain at least one node")
+    if batch_size == 0:
+        batch_size = train_size
+    elif batch_size < 0:
+        raise ValueError("training.batch_size must be zero for full-batch training or greater than zero")
+    batches_per_epoch = math.ceil(train_size / batch_size)
+    print(f"training nodes={train_size:,}, batch_size={batch_size:,}, batches_per_epoch={batches_per_epoch:,}")
+
+    def _epoch_train_batches(epoch: int) -> list[torch.Tensor]:
+        generator = torch.Generator(device=device)
+        generator.manual_seed(seed + epoch)
+        shuffled = split_indices["train"][torch.randperm(train_size, generator=generator, device=device)]
+        return [shuffled[start:start + batch_size] for start in range(0, train_size, batch_size)]
 
     def _classification_loss(outputs: dict[str, Any], indices: torch.Tensor) -> torch.Tensor:
         class_loss = torch.zeros((), dtype=torch.float32, device=device)
@@ -307,6 +323,8 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         "train_fraction": train_fraction,
         "test_fraction": test_fraction,
         "val_fraction": val_fraction,
+        "batch_size": batch_size,
+        "batches_per_epoch": batches_per_epoch,
         "classification_loss_weight": classification_loss_weight,
         "classification_task_loss_weights": classification_task_loss_weights,
         "seed": seed,
@@ -318,24 +336,36 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     min_delta = float(train_cfg.get("early_stopping_min_delta", 1e-4))
     history: list[dict[str, float]] = []
     try:
-        for epoch in tqdm(range(1, epochs + 1), desc="Training r-GCN"):
+        for epoch in range(1, epochs + 1):
             model.train()
-            optimizer.zero_grad(set_to_none=True)
-            outputs = model(x, edge_index, edge_type)
-            train_indices = split_indices["train"]
-            masses = outputs["masses"]
-            mass_loss = F.kl_div(
-                torch.log(masses[train_indices].clamp_min(1e-9)),
-                targets[train_indices],
-                reduction="batchmean",
+            epoch_batches = _epoch_train_batches(epoch)
+            batch_progress = tqdm(
+                epoch_batches,
+                desc=f"Epoch {epoch}/{epochs}",
+                unit="batch",
+                leave=True,
             )
-            class_loss = _classification_loss(outputs, train_indices)
-            l1_penalty = torch.zeros((), dtype=torch.float32, device=device)
-            if l1_lambda > 0.0:
-                l1_penalty = sum(parameter.abs().sum() for parameter in model.parameters())
-            loss = mass_loss + classification_loss_weight * class_loss + l1_lambda * l1_penalty
-            loss.backward()
-            optimizer.step()
+            weighted_l1_penalty = 0.0
+            for batch_indices in batch_progress:
+                optimizer.zero_grad(set_to_none=True)
+                outputs = model(x, edge_index, edge_type)
+                masses = outputs["masses"]
+                mass_loss = F.kl_div(
+                    torch.log(masses[batch_indices].clamp_min(1e-9)),
+                    targets[batch_indices],
+                    reduction="batchmean",
+                )
+                class_loss = _classification_loss(outputs, batch_indices)
+                l1_penalty = torch.zeros((), dtype=torch.float32, device=device)
+                if l1_lambda > 0.0:
+                    l1_penalty = sum(parameter.abs().sum() for parameter in model.parameters())
+                batch_fraction = float(batch_indices.numel()) / train_size
+                loss = mass_loss + classification_loss_weight * class_loss + l1_lambda * l1_penalty * batch_fraction
+                loss.backward()
+                optimizer.step()
+                weighted_l1_penalty += float(l1_penalty.detach().cpu()) * batch_fraction
+                if hasattr(batch_progress, "set_postfix"):
+                    batch_progress.set_postfix(loss=f"{float(loss.detach().cpu()):.4f}")
 
             train_metrics = split_losses_and_metrics("train")
             test_metrics = split_losses_and_metrics("test")
@@ -361,7 +391,7 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
                 writer.add_scalar(f"accuracy_test/{task_name}", test_metrics[f"{task_name}_acc"], epoch)
                 writer.add_scalar(f"accuracy_validation/{task_name}", val_metrics[f"{task_name}_acc"], epoch)
             writer.add_scalar("optimizer/learning_rate", optimizer.param_groups[0]["lr"], epoch)
-            writer.add_scalar("regularization/l1_penalty", float(l1_penalty.detach().cpu()), epoch)
+            writer.add_scalar("regularization/l1_penalty", weighted_l1_penalty, epoch)
 
             print(f"Epoch no: {epoch}")
             diagnostic_parts = [
