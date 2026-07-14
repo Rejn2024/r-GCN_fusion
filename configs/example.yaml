@@ -24,9 +24,20 @@ data:
     radar_mode: mode_id
     aircraft_variant: aircraft_id
     operator_country: operator_country
+  # Leakage-safe classification controls:
+  # - train/evaluate supervised losses only on Observation nodes, so CandidateEvidence
+  #   mode_id values are not treated as ground-truth radar-mode labels;
+  # - split whole series/observations together when a grouping property is present;
+  # - remove candidate-derived or truth-only relations from the message-passing graph.
+  supervised_node_labels: [Observation]
+  split_group_property: series_id
+  remove_cross_split_edges: true
+  exclude_relation_types:
+    - GROUND_TRUTH_CANDIDATE
+    - SHARES_BEST_MODE
   node_query: |
     MATCH (n:EvidenceEntity)
-    RETURN elementId(n) AS id, properties(n) AS props
+    RETURN elementId(n) AS id, properties(n) AS props, labels(n) AS labels
     ORDER BY id
   edge_query: |
     MATCH (s:EvidenceEntity)-[r]->(t:EvidenceEntity)

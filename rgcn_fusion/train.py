@@ -124,6 +124,133 @@ def _classification_task_loss_weights(train_cfg: dict[str, Any]) -> dict[str, fl
     return weights
 
 
+def _nodes_with_labels(graph: GraphData, required_labels: list[str]) -> np.ndarray:
+    """Return a boolean mask selecting nodes that have all required Neo4j labels."""
+    if not required_labels:
+        return np.ones(len(graph.node_ids), dtype=bool)
+    if graph.node_labels is None:
+        raise ValueError("node labels are required when data.supervised_node_labels is configured")
+    required = set(required_labels)
+    return np.asarray([required.issubset(set(labels)) for labels in graph.node_labels], dtype=bool)
+
+
+def _supervised_node_mask(graph: GraphData, data_cfg: dict[str, Any]) -> np.ndarray:
+    """Select nodes that are allowed to contribute supervised losses and metrics."""
+    mask = _nodes_with_labels(graph, [str(label) for label in data_cfg.get("supervised_node_labels", [])])
+    if graph.labels is not None:
+        mask &= np.asarray([len(row) > 0 for row in graph.labels], dtype=bool)
+    for values in (graph.classification_labels or {}).values():
+        mask &= np.asarray([value is not None for value in values.tolist()], dtype=bool)
+    if not np.any(mask):
+        raise ValueError("no supervised nodes remain after applying label and node-label filters")
+    return mask
+
+
+def _grouped_split_indices(
+    graph: GraphData,
+    supervised_mask: np.ndarray,
+    data_cfg: dict[str, Any],
+    train_cfg: dict[str, Any],
+    device: torch.device,
+) -> dict[str, torch.Tensor]:
+    """Create train/test/validation splits, optionally grouping by a node property."""
+    seed = int(train_cfg.get("seed", 42))
+    train_fraction = float(train_cfg.get("train_fraction", 0.5))
+    test_fraction = float(train_cfg.get("test_fraction", 0.3))
+    val_fraction = float(train_cfg.get("val_fraction", 0.2))
+    if not math.isclose(train_fraction + test_fraction + val_fraction, 1.0, rel_tol=0.0, abs_tol=1e-9):
+        raise ValueError("train_fraction, test_fraction, and val_fraction must sum to 1.0")
+
+    supervised_indices = np.flatnonzero(supervised_mask)
+    split_group_property = data_cfg.get("split_group_property")
+    rng = np.random.default_rng(seed)
+    if split_group_property:
+        if graph.node_properties is None:
+            raise ValueError("node properties are required when data.split_group_property is configured")
+        group_to_indices: dict[Any, list[int]] = {}
+        for idx in supervised_indices.tolist():
+            props = graph.node_properties[idx]
+            group_value = props.get(split_group_property)
+            if group_value is None:
+                group_value = graph.node_ids[idx]
+            group_to_indices.setdefault(group_value, []).append(idx)
+        groups = np.asarray(list(group_to_indices), dtype=object)
+        rng.shuffle(groups)
+        n_train = int(round(train_fraction * len(groups)))
+        n_test = int(round(test_fraction * len(groups)))
+        split_groups = {
+            "train": groups[:n_train],
+            "test": groups[n_train:n_train + n_test],
+            "val": groups[n_train + n_test:],
+        }
+        split_arrays = {
+            name: np.asarray(
+                [idx for group in groups_for_split.tolist() for idx in group_to_indices[group]],
+                dtype=np.int64,
+            )
+            for name, groups_for_split in split_groups.items()
+        }
+    else:
+        perm = rng.permutation(supervised_indices)
+        n_train = int(round(train_fraction * len(perm)))
+        n_test = int(round(test_fraction * len(perm)))
+        split_arrays = {
+            "train": perm[:n_train],
+            "test": perm[n_train:n_train + n_test],
+            "val": perm[n_train + n_test:],
+        }
+    return {
+        name: torch.as_tensor(indices, dtype=torch.long, device=device)
+        for name, indices in split_arrays.items()
+    }
+
+
+def _filter_graph_edges(graph: GraphData, data_cfg: dict[str, Any], split_indices: dict[str, torch.Tensor]) -> GraphData:
+    """Drop configured leakage-prone relations and, optionally, cross-split edges."""
+    excluded = {str(name) for name in data_cfg.get("exclude_relation_types", [])}
+    keep_relation = np.ones(len(graph.edge_type), dtype=bool)
+    if excluded:
+        keep_relation &= np.asarray(
+            [graph.relation_names[int(rel)] not in excluded for rel in graph.edge_type],
+            dtype=bool,
+        )
+
+    if data_cfg.get("remove_cross_split_edges", False):
+        split_by_node: dict[int, str] = {}
+        for split, indices in split_indices.items():
+            for idx in indices.detach().cpu().tolist():
+                split_by_node[idx] = split
+        keep_cross_split = []
+        for source, target in graph.edge_index.T.tolist():
+            source_split = split_by_node.get(source)
+            target_split = split_by_node.get(target)
+            keep_cross_split.append(
+                source_split is None or target_split is None or source_split == target_split
+            )
+        keep_relation &= np.asarray(keep_cross_split, dtype=bool)
+
+    if np.all(keep_relation):
+        return graph
+
+    kept_edge_type = graph.edge_type[keep_relation]
+    kept_edge_index = graph.edge_index[:, keep_relation]
+    used_relation_ids = sorted(set(kept_edge_type.tolist()))
+    rel_remap = {old: new for new, old in enumerate(used_relation_ids)}
+    remapped_edge_type = np.asarray([rel_remap[int(rel)] for rel in kept_edge_type], dtype=np.int64)
+    relation_names = [graph.relation_names[old] for old in used_relation_ids]
+    return GraphData(
+        node_ids=graph.node_ids,
+        node_features=graph.node_features,
+        edge_index=kept_edge_index,
+        edge_type=remapped_edge_type,
+        relation_names=relation_names,
+        labels=graph.labels,
+        classification_labels=graph.classification_labels,
+        node_properties=graph.node_properties,
+        node_labels=graph.node_labels,
+    )
+
+
 def _encode_classification_targets(
     graph: GraphData,
     class_values: dict[str, list[Any]] | None = None,
@@ -193,6 +320,9 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     )
 
     device = torch.device(train_cfg.get("device", "cuda" if torch.cuda.is_available() else "cpu"))
+    supervised_mask = _supervised_node_mask(graph, data_cfg)
+    split_indices = _grouped_split_indices(graph, supervised_mask, data_cfg, train_cfg, device)
+    graph = _filter_graph_edges(graph, data_cfg, split_indices)
     x, edge_index, edge_type = _tensor_graph(graph, device)
     targets = torch.as_tensor(targets_np, dtype=torch.float32, device=device)
     class_targets = {
@@ -241,22 +371,12 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     train_fraction = float(train_cfg.get("train_fraction", 0.5))
     test_fraction = float(train_cfg.get("test_fraction", 0.3))
     val_fraction = float(train_cfg.get("val_fraction", 0.2))
-    if not math.isclose(train_fraction + test_fraction + val_fraction, 1.0, rel_tol=0.0, abs_tol=1e-9):
-        raise ValueError("train_fraction, test_fraction, and val_fraction must sum to 1.0")
 
     output_dir = Path(output_cfg.get("directory", "artifacts"))
     output_dir.mkdir(parents=True, exist_ok=True)
     tensorboard_log_dir = output_dir / "tensorboard"
     ckpt_path = output_dir / "best_rgcn_evidence_model.pt"
 
-    perm = np.random.default_rng(seed).permutation(len(graph.node_ids))
-    n_train = int(round(train_fraction * len(perm)))
-    n_test = int(round(test_fraction * len(perm)))
-    split_indices = {
-        "train": torch.as_tensor(perm[:n_train], dtype=torch.long, device=device),
-        "test": torch.as_tensor(perm[n_train:n_train + n_test], dtype=torch.long, device=device),
-        "val": torch.as_tensor(perm[n_train + n_test:], dtype=torch.long, device=device),
-    }
     print({name: int(indices.numel()) for name, indices in split_indices.items()})
     train_size = int(split_indices["train"].numel())
     if train_size < 1:
