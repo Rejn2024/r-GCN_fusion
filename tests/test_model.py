@@ -1,7 +1,26 @@
 import pytest
 import torch
 
-from rgcn_fusion.model import RGCNEvidenceModel
+from rgcn_fusion.model import RGCNEvidenceModel, RGCNLayer
+
+
+def test_rgcn_layer_accumulates_autocast_messages_in_accumulator_dtype():
+    layer = RGCNLayer(
+        in_features=3,
+        out_features=5,
+        num_relations=2,
+        relation_gates=True,
+        edge_chunk_size=2,
+    )
+    x = torch.randn(4, 3)
+    edge_index = torch.tensor([[0, 1, 2], [1, 2, 3]])
+    edge_type = torch.tensor([0, 1, 0])
+
+    with torch.amp.autocast(device_type="cpu", dtype=torch.bfloat16):
+        output = layer(x, edge_index, edge_type)
+
+    assert output.shape == (4, 5)
+    assert output.dtype == torch.float32
 
 
 def test_rgcn_evidence_model_emits_ds_derived_classification_scores():
