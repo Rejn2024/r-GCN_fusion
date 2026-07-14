@@ -66,12 +66,12 @@ class RGCNLayer(nn.Module):
                         rel_msg = x[chunk_source] @ weights[relation]
                         if gates is not None:
                             rel_msg = rel_msg * gates[relation]
-                        messages.index_add_(0, chunk_target, rel_msg)
+                        messages.index_add_(0, chunk_target, rel_msg.to(messages.dtype))
                 else:
                     rel_msg = x[rel_source] @ weights[relation]
                     if gates is not None:
                         rel_msg = rel_msg * gates[relation]
-                    messages.index_add_(0, rel_target, rel_msg)
+                    messages.index_add_(0, rel_target, rel_msg.to(messages.dtype))
         return out + messages / degree + self.bias
 
 
