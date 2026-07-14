@@ -468,6 +468,26 @@ def generate_observation_series(
     }
 
 
+def generate_observation_series_with_intelligence_reports(
+    *args: Any,
+    intelligence_seed: int | None = None,
+    min_reports_per_observation: int = 10,
+    max_reports_per_observation: int = 12,
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Generate ESM observation series enriched with synthetic intelligence reports."""
+    from rgcn_fusion.intelligence_reports import add_intelligence_reports_to_series
+
+    data = generate_observation_series(*args, **kwargs)
+    seed = int(data["metadata"].get("seed", 7) if intelligence_seed is None else intelligence_seed)
+    return add_intelligence_reports_to_series(
+        data,
+        seed=seed,
+        min_reports=min_reports_per_observation,
+        max_reports=max_reports_per_observation,
+    )
+
+
 def _parse_utc(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00")).astimezone(UTC)
 
