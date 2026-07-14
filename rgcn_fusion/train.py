@@ -124,6 +124,27 @@ def _classification_task_loss_weights(train_cfg: dict[str, Any]) -> dict[str, fl
     return weights
 
 
+def _bounded_fraction(train_cfg: dict[str, Any], key: str, default: float) -> float:
+    """Return a configured regularization fraction in the inclusive [0, 1] range."""
+    value = float(train_cfg.get(key, default))
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(f"training.{key} must be between 0.0 and 1.0")
+    return value
+
+
+def _smooth_mass_targets(targets: torch.Tensor, smoothing: float) -> torch.Tensor:
+    """Blend target masses with a uniform prior to discourage overconfident fits."""
+    if smoothing == 0.0:
+        return targets
+    uniform = torch.full_like(targets, 1.0 / targets.shape[-1])
+    return targets.mul(1.0 - smoothing).add(uniform, alpha=smoothing)
+
+
+def _entropy_from_probabilities(probabilities: torch.Tensor) -> torch.Tensor:
+    """Return mean categorical entropy for already-normalized probabilities."""
+    return -(probabilities.clamp_min(1e-9).log() * probabilities).sum(dim=-1).mean()
+
+
 def _nodes_with_labels(graph: GraphData, required_labels: list[str]) -> np.ndarray:
     """Return a boolean mask selecting nodes that have all required Neo4j labels."""
     if not required_labels:
@@ -325,6 +346,8 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
     graph = _filter_graph_edges(graph, data_cfg, split_indices)
     x, edge_index, edge_type = _tensor_graph(graph, device)
     targets = torch.as_tensor(targets_np, dtype=torch.float32, device=device)
+    mass_label_smoothing = _bounded_fraction(train_cfg, "mass_label_smoothing", 0.01)
+    targets = _smooth_mass_targets(targets, mass_label_smoothing)
     class_targets = {
         task_name: torch.as_tensor(labels, dtype=torch.long, device=device)
         for task_name, labels in encoded_classes.items()
@@ -364,6 +387,9 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
 
     classification_loss_weight = float(train_cfg.get("classification_loss_weight", 1.0))
     classification_task_loss_weights = _classification_task_loss_weights(train_cfg)
+    classification_label_smoothing = _bounded_fraction(train_cfg, "classification_label_smoothing", 0.05)
+    confidence_penalty_weight = float(train_cfg.get("confidence_penalty_weight", 0.01))
+    max_grad_norm = float(train_cfg.get("max_grad_norm", 1.0))
     l1_lambda = float(train_cfg.get("l1_lambda", 1e-5))
     epochs = int(train_cfg.get("epochs", 200))
     batch_size = int(train_cfg.get("batch_size", 0))
@@ -394,6 +420,11 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         shuffled = split_indices["train"][torch.randperm(train_size, generator=generator, device=device)]
         return [shuffled[start:start + batch_size] for start in range(0, train_size, batch_size)]
 
+    if confidence_penalty_weight < 0.0:
+        raise ValueError("training.confidence_penalty_weight must be non-negative")
+    if max_grad_norm < 0.0:
+        raise ValueError("training.max_grad_norm must be non-negative")
+
     def _classification_loss(outputs: dict[str, Any], indices: torch.Tensor) -> torch.Tensor:
         class_loss = torch.zeros((), dtype=torch.float32, device=device)
         for task_name, labels in class_targets.items():
@@ -403,7 +434,10 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
             logits = outputs["classification_logits"][task_name][indices]
             task_weight = classification_task_loss_weights.get(task_name, 1.0)
             class_loss = class_loss + task_weight * F.cross_entropy(
-                logits, split_labels, ignore_index=IGNORE_CLASS_INDEX
+                logits,
+                split_labels,
+                ignore_index=IGNORE_CLASS_INDEX,
+                label_smoothing=classification_label_smoothing,
             )
         return class_loss
 
@@ -446,6 +480,10 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         "learning_rate": float(train_cfg.get("learning_rate", 1e-3)),
         "weight_decay": float(train_cfg.get("weight_decay", 1e-4)),
         "l1_lambda": l1_lambda,
+        "mass_label_smoothing": mass_label_smoothing,
+        "classification_label_smoothing": classification_label_smoothing,
+        "confidence_penalty_weight": confidence_penalty_weight,
+        "max_grad_norm": max_grad_norm,
         "hidden_features": int(model_cfg.get("hidden_features", 64)),
         "num_layers": num_layers,
         "dropout": float(model_cfg.get("dropout", 0.1)),
@@ -462,6 +500,13 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
         "amp_dtype": amp_dtype_name,
         "seed": seed,
     }, indent=2))
+
+    scheduler_enabled = bool(train_cfg.get("reduce_lr_on_plateau", True))
+    lr_patience = int(train_cfg.get("lr_patience", max(1, int(train_cfg.get("patience", 10)) // 3)))
+    lr_factor = float(train_cfg.get("lr_factor", 0.5))
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer, mode="min", factor=lr_factor, patience=lr_patience
+    ) if scheduler_enabled else None
 
     best_val = math.inf
     bad_epochs = 0
@@ -494,8 +539,23 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
                     if l1_lambda > 0.0:
                         l1_penalty = sum(parameter.abs().sum() for parameter in model.parameters())
                     batch_fraction = float(batch_indices.numel()) / train_size
-                    loss = mass_loss + classification_loss_weight * class_loss + l1_lambda * l1_penalty * batch_fraction
+                    confidence_penalty = torch.zeros((), dtype=torch.float32, device=device)
+                    if confidence_penalty_weight > 0.0:
+                        confidence_penalty = confidence_penalty - _entropy_from_probabilities(masses[batch_indices])
+                        for logits in outputs["classification_logits"].values():
+                            confidence_penalty = confidence_penalty - _entropy_from_probabilities(
+                                F.softmax(logits[batch_indices], dim=-1)
+                            )
+                    loss = (
+                        mass_loss
+                        + classification_loss_weight * class_loss
+                        + l1_lambda * l1_penalty * batch_fraction
+                        + confidence_penalty_weight * confidence_penalty
+                    )
                 scaler.scale(loss).backward()
+                if max_grad_norm > 0.0:
+                    scaler.unscale_(optimizer)
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), max_grad_norm)
                 scaler.step(optimizer)
                 scaler.update()
                 weighted_l1_penalty += float(l1_penalty.detach().cpu()) * batch_fraction
@@ -545,6 +605,8 @@ def train_model(config: dict[str, Any]) -> dict[str, Any]:
                     f"test_{task_name}_acc={test_metrics[f'{task_name}_acc']:.4f}",
                 ])
             print(" | ".join(diagnostic_parts))
+            if scheduler is not None:
+                scheduler.step(val_metrics["loss"])
             if val_metrics["loss"] < best_val - min_delta:
                 best_val = val_metrics["loss"]
                 bad_epochs = 0
