@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn.functional as F
+from torch.utils.checkpoint import checkpoint
 from torch import nn
 
 from .dempster_shafer import subset_masks
@@ -20,6 +21,7 @@ class RGCNLayer(nn.Module):
         *,
         num_bases: int | None = None,
         relation_gates: bool = False,
+        edge_chunk_size: int = 0,
     ):
         super().__init__()
         self.num_relations = max(num_relations, 1)
@@ -29,6 +31,9 @@ class RGCNLayer(nn.Module):
         self.basis_weights = nn.Parameter(torch.empty(self.num_bases, in_features, out_features))
         self.basis_coefficients = nn.Parameter(torch.empty(self.num_relations, self.num_bases))
         self.relation_gate_logits = nn.Parameter(torch.zeros(self.num_relations)) if relation_gates else None
+        if edge_chunk_size < 0:
+            raise ValueError("edge_chunk_size must be non-negative")
+        self.edge_chunk_size = int(edge_chunk_size)
         self.self_loop = nn.Linear(in_features, out_features, bias=False)
         self.bias = nn.Parameter(torch.zeros(out_features))
         nn.init.xavier_uniform_(self.basis_weights)
@@ -53,10 +58,20 @@ class RGCNLayer(nn.Module):
             if torch.any(mask):
                 rel_source = source[mask]
                 rel_target = target[mask]
-                rel_msg = x[rel_source] @ weights[relation]
-                if gates is not None:
-                    rel_msg = rel_msg * gates[relation]
-                messages.index_add_(0, rel_target, rel_msg)
+                if self.edge_chunk_size > 0:
+                    for start in range(0, int(rel_source.numel()), self.edge_chunk_size):
+                        stop = start + self.edge_chunk_size
+                        chunk_source = rel_source[start:stop]
+                        chunk_target = rel_target[start:stop]
+                        rel_msg = x[chunk_source] @ weights[relation]
+                        if gates is not None:
+                            rel_msg = rel_msg * gates[relation]
+                        messages.index_add_(0, chunk_target, rel_msg)
+                else:
+                    rel_msg = x[rel_source] @ weights[relation]
+                    if gates is not None:
+                        rel_msg = rel_msg * gates[relation]
+                    messages.index_add_(0, rel_target, rel_msg)
         return out + messages / degree + self.bias
 
 
@@ -73,6 +88,7 @@ class RGCNBlock(nn.Module):
         residual: bool = True,
         normalization: str | None = "layernorm",
         relation_gates: bool = False,
+        edge_chunk_size: int = 0,
     ):
         super().__init__()
         self.conv = RGCNLayer(
@@ -81,6 +97,7 @@ class RGCNBlock(nn.Module):
             num_relations,
             num_bases=num_bases,
             relation_gates=relation_gates,
+            edge_chunk_size=edge_chunk_size,
         )
         self.norm = nn.LayerNorm(hidden_features) if normalization == "layernorm" else nn.Identity()
         self.dropout = nn.Dropout(dropout)
@@ -122,6 +139,8 @@ class RGCNEvidenceModel(nn.Module):
         relation_gates: bool = False,
         task_head_hidden_features: int | None = None,
         mass_head_type: str = "softmax",
+        edge_chunk_size: int = 0,
+        gradient_checkpointing: bool = False,
     ):
         super().__init__()
         if num_hypotheses < 1:
@@ -153,11 +172,13 @@ class RGCNEvidenceModel(nn.Module):
                     residual=residual,
                     normalization=normalization,
                     relation_gates=relation_gates,
+                    edge_chunk_size=edge_chunk_size,
                 )
                 for _ in range(num_layers)
             ]
         )
         self.dropout = nn.Dropout(dropout)
+        self.gradient_checkpointing = bool(gradient_checkpointing)
         self.head = self._make_head(hidden_features, self.num_masses, task_head_hidden_features, dropout)
 
         classification_tasks = classification_tasks or {}
@@ -204,7 +225,10 @@ class RGCNEvidenceModel(nn.Module):
         """Return shared r-GCN node embeddings."""
         x = self.input_projection(x)
         for layer in self.layers:
-            x = layer(x, edge_index, edge_type)
+            if self.gradient_checkpointing and self.training:
+                x = checkpoint(layer, x, edge_index, edge_type, use_reentrant=False)
+            else:
+                x = layer(x, edge_index, edge_type)
         return x
 
     def interval_midpoints(self, masses: torch.Tensor) -> torch.Tensor:
