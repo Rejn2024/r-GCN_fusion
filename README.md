@@ -130,6 +130,14 @@ variant do not need to match the hypothesis set. The emitted `node_evidence.json
 includes Dempster-Shafer masses, belief/plausibility intervals, and per-task
 class predictions.
 
+For leakage-safe observation-level radar-mode experiments, the example config
+filters supervised loss/metrics to `Observation` nodes, groups splits by
+`series_id` when that property is present, removes cross-split edges, and drops
+truth-only or candidate-derived shortcut relations such as
+`GROUND_TRUTH_CANDIDATE` and `SHARES_BEST_MODE`. This prevents candidate-node
+`mode_id` properties from being treated as observation truth labels and avoids
+message passing across train/test/validation series.
+
 The example training config enables the enhanced architecture for noisy
 candidate-evidence graphs:
 

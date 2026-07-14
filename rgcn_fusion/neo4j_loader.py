@@ -20,6 +20,8 @@ class GraphData:
     relation_names: list[str]
     labels: np.ndarray | None = None
     classification_labels: dict[str, np.ndarray] | None = None
+    node_properties: list[dict[str, Any]] | None = None
+    node_labels: list[list[str]] | None = None
 
 
 class Neo4jGraphLoader:
@@ -42,7 +44,9 @@ class Neo4jGraphLoader:
         edge_query: str | None = None,
     ) -> GraphData:
         """Fetch nodes, directed relationships, optional features, mass labels, and categorical labels."""
-        node_query = node_query or "MATCH (n) RETURN elementId(n) AS id, properties(n) AS props ORDER BY id"
+        node_query = node_query or (
+            "MATCH (n) RETURN elementId(n) AS id, properties(n) AS props, labels(n) AS labels ORDER BY id"
+        )
         edge_query = edge_query or (
             "MATCH (s)-[r]->(t) RETURN elementId(s) AS source, elementId(t) AS target, "
             "type(r) AS type ORDER BY source, target, type"
@@ -52,15 +56,17 @@ class Neo4jGraphLoader:
             edges = list(session.run(edge_query))
 
         node_ids = [record["id"] for record in nodes]
+        node_properties = [dict(record["props"]) for record in nodes]
+        node_labels = [list(record.get("labels", [])) for record in nodes]
         id_to_idx = {node_id: idx for idx, node_id in enumerate(node_ids)}
         features = np.asarray(
-            [[float(record["props"].get(prop, 0.0)) for prop in feature_properties] for record in nodes],
+            [[float(props.get(prop, 0.0)) for prop in feature_properties] for props in node_properties],
             dtype=np.float32,
         )
 
         labels = None
         if label_property:
-            raw = [record["props"].get(label_property) for record in nodes]
+            raw = [props.get(label_property) for props in node_properties]
             labels = np.asarray([
                 value if isinstance(value, list) else [] for value in raw
             ], dtype=np.float32)
@@ -68,7 +74,7 @@ class Neo4jGraphLoader:
         classification_labels = None
         if classification_label_properties:
             classification_labels = {
-                task_name: np.asarray([record["props"].get(prop) for record in nodes], dtype=object)
+                task_name: np.asarray([props.get(prop) for props in node_properties], dtype=object)
                 for task_name, prop in classification_label_properties.items()
             }
 
@@ -91,4 +97,6 @@ class Neo4jGraphLoader:
             relation_names=relation_names,
             labels=labels,
             classification_labels=classification_labels,
+            node_properties=node_properties,
+            node_labels=node_labels,
         )
