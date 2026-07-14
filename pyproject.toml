@@ -18,6 +18,7 @@ dependencies = [
 [project.scripts]
 rgcn-fusion-train = "rgcn_fusion.train:main"
 rgcn-fusion-load-observations = "rgcn_fusion.observation_etl:main"
+rgcn-fusion-load-reports = "rgcn_fusion.intelligence_reports:main"
 
 [tool.setuptools.packages.find]
 include = ["rgcn_fusion*"]
