@@ -43,8 +43,8 @@ DEFAULT_CLASSIFICATION_TARGETS = {
     "operator_country": "operator_country",
 }
 DEFAULT_CLASSIFICATION_TASK_LOSS_WEIGHTS = {
-    "aircraft_variant": 2.0,
-    "operator_country": 2.0,
+    "aircraft_variant": 10.0,
+    "operator_country": 10.0,
 }
 RECOMMENDED_CANDIDATE_FEATURES = [
     "degree_score",
