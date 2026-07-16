@@ -207,3 +207,27 @@ The relation vocabulary is deliberately small for r-GCN experimentation:
 - `USES_RADAR`
 - `HAS_MODE`
 - `OPERATES`
+
+## References
+
+The project uses the following sources as conceptual and software references. The
+KG seed data remains representative open-source experiment data rather than an
+authoritative technical database.
+
+- Schlichtkrull, M., Kipf, T. N., Bloem, P., van den Berg, R., Titov, I., &
+  Welling, M. (2017). *Modeling Relational Data with Graph Convolutional
+  Networks*. arXiv:1703.06103. https://arxiv.org/abs/1703.06103
+- Dempster, A. P. (1967). *Upper and Lower Probabilities Induced by a
+  Multivalued Mapping*. The Annals of Mathematical Statistics, 38(2), 325-339.
+  https://doi.org/10.1214/aoms/1177698950
+- Shafer, G. (1976). *A Mathematical Theory of Evidence*. Princeton University
+  Press. ISBN 9780691100425.
+- PyTorch contributors. *PyTorch documentation*. https://pytorch.org/docs/stable/
+- PyTorch Geometric contributors. *RGCNConv documentation*.
+  https://pytorch-geometric.readthedocs.io/en/2.6.1/generated/torch_geometric.nn.conv.RGCNConv.html
+- Neo4j. *Cypher Manual: MATCH, MERGE, and constraints*.
+  https://neo4j.com/docs/cypher-manual/current/
+- Neo4j. *Graph Data Science node classification pipelines*.
+  https://neo4j.com/docs/graph-data-science/current/machine-learning/node-property-prediction/nodeclassification-pipelines/node-classification/
+- scikit-learn contributors. *train_test_split documentation*.
+  https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
