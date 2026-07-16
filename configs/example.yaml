@@ -54,6 +54,8 @@ model:
   relation_gates: true
   task_head_hidden_features: 128
   mass_head_type: dirichlet
+  # Recompute r-GCN block activations during backward to lower CUDA memory use.
+  gradient_checkpointing: true
 
 training:
   epochs: 200

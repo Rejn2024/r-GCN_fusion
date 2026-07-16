@@ -130,6 +130,10 @@ variant do not need to match the hypothesis set. The emitted `node_evidence.json
 includes Dempster-Shafer masses, belief/plausibility intervals, and per-task
 class predictions.
 
+If training the full observation graph exhausts GPU memory, see
+[`docs/training_memory.md`](docs/training_memory.md) for model, graph, and
+runtime settings that reduce CUDA memory pressure.
+
 For leakage-safe observation-level radar-mode experiments, the example config
 filters supervised loss/metrics to `Observation` nodes, groups splits by
 `series_id` when that property is present, removes cross-split edges, and drops
