@@ -473,9 +473,19 @@ def generate_observation_series_with_intelligence_reports(
     intelligence_seed: int | None = None,
     min_reports_per_observation: int = 10,
     max_reports_per_observation: int = 12,
+    min_reports_per_observation_series: int | None = None,
+    max_reports_per_observation_series: int | None = None,
     **kwargs: Any,
 ) -> dict[str, Any]:
-    """Generate ESM observation series enriched with synthetic intelligence reports."""
+    """Generate ESM observation series enriched with synthetic intelligence reports.
+
+    By default, every observation receives ``min_reports_per_observation`` to
+    ``max_reports_per_observation`` reports.  When
+    ``min_reports_per_observation_series`` and
+    ``max_reports_per_observation_series`` are supplied, those bounds cap the
+    total number of reports generated for each observation series instead; the
+    selected reports are distributed across observations in that series.
+    """
     from rgcn_fusion.intelligence_reports import add_intelligence_reports_to_series
 
     data = generate_observation_series(*args, **kwargs)
@@ -485,6 +495,8 @@ def generate_observation_series_with_intelligence_reports(
         seed=seed,
         min_reports=min_reports_per_observation,
         max_reports=max_reports_per_observation,
+        min_reports_per_series=min_reports_per_observation_series,
+        max_reports_per_series=max_reports_per_observation_series,
     )
 
 

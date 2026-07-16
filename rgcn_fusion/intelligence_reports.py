@@ -264,21 +264,73 @@ def generate_intelligence_reports_for_observation(
 
 
 def add_intelligence_reports_to_series(
-    data: dict[str, Any], *, seed: int = 7, min_reports: int = MIN_REPORTS_PER_OBSERVATION, max_reports: int = MAX_REPORTS_PER_OBSERVATION
+    data: dict[str, Any],
+    *,
+    seed: int = 7,
+    min_reports: int = MIN_REPORTS_PER_OBSERVATION,
+    max_reports: int = MAX_REPORTS_PER_OBSERVATION,
+    min_reports_per_series: int | None = None,
+    max_reports_per_series: int | None = None,
 ) -> dict[str, Any]:
-    """Attach synthetic intelligence reports to every observation in a series dataset."""
+    """Attach synthetic intelligence reports to observations in a series dataset.
+
+    When ``min_reports_per_series`` and ``max_reports_per_series`` are omitted,
+    every observation receives ``min_reports`` to ``max_reports`` reports.  When
+    both series-level bounds are provided, each observation series receives a
+    bounded total number of reports distributed across its observations.
+    """
+    if (min_reports_per_series is None) != (max_reports_per_series is None):
+        raise ValueError("both series-level report count bounds must be provided")
+    if min_reports_per_series is not None:
+        if (
+            min_reports_per_series < 0
+            or max_reports_per_series < min_reports_per_series
+        ):
+            raise ValueError(
+                "series-level report count bounds must be non-negative and ordered"
+            )
+
     rng = random.Random(seed)
     enriched = json.loads(json.dumps(data))
     for series in enriched.get("observation_series", []):
-        for obs in series.get("observations", []):
-            obs["intelligence_reports"] = generate_intelligence_reports_for_observation(
-                obs,
-                seed=rng.getrandbits(64),
-                min_reports=min_reports,
-                max_reports=max_reports,
+        observations = series.get("observations", [])
+        for obs in observations:
+            obs["intelligence_reports"] = []
+        if min_reports_per_series is None:
+            for obs in observations:
+                obs["intelligence_reports"] = generate_intelligence_reports_for_observation(
+                    obs,
+                    seed=rng.getrandbits(64),
+                    min_reports=min_reports,
+                    max_reports=max_reports,
+                )
+            continue
+
+        total_reports = rng.randint(min_reports_per_series, max_reports_per_series)
+        if not observations or total_reports == 0:
+            continue
+        reports_remaining = total_reports
+        observation_count = len(observations)
+        for obs_index, obs in enumerate(observations):
+            observations_remaining = observation_count - obs_index - 1
+            report_count = (
+                rng.randint(0, reports_remaining)
+                if observations_remaining
+                else reports_remaining
             )
+            reports_remaining -= report_count
+            if report_count:
+                obs["intelligence_reports"] = generate_intelligence_reports_for_observation(
+                    obs,
+                    seed=rng.getrandbits(64),
+                    min_reports=report_count,
+                    max_reports=report_count,
+                )
     meta = enriched.setdefault("metadata", {})
-    meta["intelligence_reports_per_observation"] = [min_reports, max_reports]
+    if min_reports_per_series is None:
+        meta["intelligence_reports_per_observation"] = [min_reports, max_reports]
+    else:
+        meta["intelligence_reports_per_observation_series"] = [min_reports_per_series, max_reports_per_series]
     meta["intelligence_claim_types"] = list(CLAIM_TYPES)
     return enriched
 

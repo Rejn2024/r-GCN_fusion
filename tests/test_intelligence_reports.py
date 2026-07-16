@@ -73,3 +73,19 @@ def test_report_claim_score_uses_optional_external_priors():
     disfavoured = report_claim_score(report, {**base_claim, "object_id": "Disfavoured"}, observation_time=datetime(2025, 1, 1, tzinfo=UTC))
 
     assert favoured > disfavoured
+
+
+def test_series_generator_accepts_report_bounds_per_observation_series():
+    data = generate_observation_series_with_intelligence_reports(
+        count=3,
+        seed=707,
+        intelligence_seed=808,
+        min_reports_per_observation_series=2,
+        max_reports_per_observation_series=4,
+        workers=1,
+    )
+
+    assert data["metadata"]["intelligence_reports_per_observation_series"] == [2, 4]
+    for series in data["observation_series"]:
+        report_count = sum(len(obs["intelligence_reports"]) for obs in series["observations"])
+        assert 2 <= report_count <= 4
