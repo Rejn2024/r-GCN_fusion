@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -100,6 +100,53 @@ def radar_modes(base_freq: float, long_range: int, track_capacity: int) -> tuple
     )
 
 
+def _radar_mode_signature(radar_index: int, mode_index: int) -> dict[str, float | int]:
+    """Return deterministic offsets that make every radar/mode signature distinct.
+
+    The seed table in :func:`radar_modes` captures mode-relative behaviour, while
+    these small per-radar offsets ensure each concrete ``Radar``/``RadarMode``
+    pair has unique observable interval bounds in the KG and synthetic ESM data.
+    """
+    return {
+        "prf_min_hz": radar_index * 137 + mode_index * 17,
+        "prf_max_hz": radar_index * 311 + mode_index * 37,
+        "centre_frequency_ghz": radar_index * 0.0031 + mode_index * 0.0007,
+        "bandwidth_mhz": radar_index * 0.91 + mode_index * 0.13,
+        "pulse_width_us": radar_index * 0.041 + mode_index * 0.009,
+        "duty_cycle": radar_index * 0.00017 + mode_index * 0.000031,
+        "coherent_processing_interval_ms": radar_index * 0.83 + mode_index * 0.19,
+        "dwell_time_ms": radar_index * 1.73 + mode_index * 0.31,
+    }
+
+
+def _with_distinct_mode_signatures(radars: dict[str, Radar]) -> dict[str, Radar]:
+    """Return radars whose modes have unique observable parameter values."""
+    distinct: dict[str, Radar] = {}
+    for radar_index, (radar_name, radar) in enumerate(radars.items(), start=1):
+        modes: list[RadarMode] = []
+        for mode_index, mode in enumerate(radar.modes, start=1):
+            offsets = _radar_mode_signature(radar_index, mode_index)
+            modes.append(
+                replace(
+                    mode,
+                    prf_min_hz=mode.prf_min_hz + int(offsets["prf_min_hz"]),
+                    prf_max_hz=mode.prf_max_hz + int(offsets["prf_max_hz"]),
+                    centre_frequency_ghz=round(mode.centre_frequency_ghz + float(offsets["centre_frequency_ghz"]), 6),
+                    bandwidth_mhz=round(mode.bandwidth_mhz + float(offsets["bandwidth_mhz"]), 6),
+                    pulse_width_us=round(mode.pulse_width_us + float(offsets["pulse_width_us"]), 6),
+                    duty_cycle=round(mode.duty_cycle + float(offsets["duty_cycle"]), 6),
+                    coherent_processing_interval_ms=round(
+                        mode.coherent_processing_interval_ms
+                        + float(offsets["coherent_processing_interval_ms"]),
+                        6,
+                    ),
+                    dwell_time_ms=round(mode.dwell_time_ms + float(offsets["dwell_time_ms"]), 6),
+                )
+            )
+        distinct[radar_name] = replace(radar, modes=tuple(modes))
+    return distinct
+
+
 RADARS: dict[str, Radar] = {
     "N019 Rubin": Radar("N019 Rubin", "I/J (X)", "slotted planar array", radar_modes(9.3, 80, 10)),
     "N010 Zhuk": Radar("N010 Zhuk", "X", "slotted planar array", radar_modes(9.5, 100, 10)),
@@ -152,6 +199,9 @@ RADARS: dict[str, Radar] = {
     "Cyrano IV": Radar("Cyrano IV", "I/J", "monopulse radar", radar_modes(9.2, 70, 2)),
     "Anemone": Radar("Anemone", "I/J", "pulse-doppler array", radar_modes(9.4, 100, 8)),
 }
+
+
+RADARS = _with_distinct_mode_signatures(RADARS)
 
 
 AIRCRAFT: tuple[AircraftVariant, ...] = (

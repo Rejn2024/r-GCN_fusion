@@ -31,6 +31,15 @@ MEASURED_TO_KG_FIELDS = {
     ),
     "measured_dwell_time_ms": ("dwell_time_min_ms", "dwell_time_max_ms"),
 }
+RESIDUAL_FEATURES_BY_MEASUREMENT = {
+    "measured_centre_frequency_ghz": "center_frequency_residual",
+    "measured_prf_hz": "prf_residual",
+    "measured_bandwidth_mhz": "bandwidth_residual",
+    "measured_pulse_width_us": "pulse_width_residual",
+    "measured_duty_cycle": "duty_cycle_residual",
+    "measured_coherent_processing_interval_ms": "coherent_processing_interval_residual",
+    "measured_dwell_time_ms": "dwell_time_residual",
+}
 
 DEFAULT_FEATURE_PROPERTIES = ("degree_score", "text_score", "recency_score")
 DEFAULT_LABEL_PROPERTY = "ds_masses"
@@ -51,6 +60,7 @@ class CandidateScore:
     total_score: float
     matched_fields: int
     compared_fields: int
+    feature_scores: dict[str, float] | None = None
 
 
 def load_observations(path: str | Path) -> list[dict[str, Any]]:
@@ -90,39 +100,81 @@ def _measurement_interval(measurement: dict[str, Any]) -> tuple[float, float] | 
     return None
 
 
-def _mode_score(observation: dict[str, Any], mode_props: dict[str, Any]) -> tuple[float, int, int]:
+def _mode_feature_scores(
+    observation: dict[str, Any], mode_props: dict[str, Any]
+) -> tuple[float, int, int, dict[str, float]]:
     esm = observation.get("esm_radar_parameters", {})
     scores: list[float] = []
+    residuals: dict[str, float] = {}
     matched_fields = 0
+    missing_fields = 0
     for obs_field, (kg_min_field, kg_max_field) in MEASURED_TO_KG_FIELDS.items():
         interval = _measurement_interval(esm.get(obs_field))
         if interval is None or mode_props.get(kg_min_field) is None or mode_props.get(kg_max_field) is None:
+            missing_fields += 1
             continue
-        score = _interval_overlap_score(interval[0], interval[1], float(mode_props[kg_min_field]), float(mode_props[kg_max_field]))
+        kg_min = float(mode_props[kg_min_field])
+        kg_max = float(mode_props[kg_max_field])
+        score = _interval_overlap_score(interval[0], interval[1], kg_min, kg_max)
         scores.append(score)
         matched_fields += int(score >= 0.5)
+
+        obs_center = (interval[0] + interval[1]) / 2.0
+        kg_center = (kg_min + kg_max) / 2.0
+        kg_width = max(kg_max - kg_min, abs(kg_center), 1.0)
+        residual_name = RESIDUAL_FEATURES_BY_MEASUREMENT.get(obs_field)
+        if residual_name:
+            residuals[residual_name] = round(abs(obs_center - kg_center) / kg_width, 6)
 
     for obs_field, kg_field in (("observed_waveform", "waveform"), ("observed_scan_type", "scan_type")):
         if obs_field in esm and kg_field in mode_props:
             score = 1.0 if esm[obs_field] == mode_props[kg_field] else 0.0
             scores.append(score)
             matched_fields += int(score >= 0.5)
+        else:
+            missing_fields += 1
 
+    residuals["radar_interval_overlap_score"] = round(sum(scores) / len(scores), 6) if scores else 0.0
+    residuals["waveform_match_score"] = 1.0 if esm.get("observed_waveform") == mode_props.get("waveform") else 0.0
+    residuals["scan_type_match_score"] = 1.0 if esm.get("observed_scan_type") == mode_props.get("scan_type") else 0.0
+    residuals["missing_feature_count"] = float(missing_fields)
     if not scores:
-        return 0.0, 0, 0
-    return sum(scores) / len(scores), matched_fields, len(scores)
+        return 0.0, 0, 0, residuals
+    return sum(scores) / len(scores), matched_fields, len(scores), residuals
+
+
+def _mode_score(observation: dict[str, Any], mode_props: dict[str, Any]) -> tuple[float, int, int]:
+    score, matched_fields, compared_fields, _features = _mode_feature_scores(observation, mode_props)
+    return score, matched_fields, compared_fields
+
+
+def _speed_consistency_score(observation: dict[str, Any], aircraft_props: dict[str, Any] | None) -> float:
+    if not aircraft_props:
+        return 0.5
+    kin = observation.get("approximate_kinematics", {})
+    speed_max = float(kin.get("ground_speed_max_kph", kin.get("ground_speed_kph", 0.0)))
+    aircraft_speed = float(aircraft_props.get("max_speed_mach", 0.0)) * 1060.0
+    if not aircraft_speed:
+        return 1.0
+    return 1.0 if speed_max <= aircraft_speed * 1.05 else max(0.0, aircraft_speed / speed_max)
+
+
+def _altitude_consistency_score(observation: dict[str, Any], aircraft_props: dict[str, Any] | None) -> float:
+    if not aircraft_props:
+        return 0.5
+    kin = observation.get("approximate_kinematics", {})
+    altitude_max = float(kin.get("altitude_max_m", kin.get("altitude_m", 0.0)))
+    aircraft_ceiling = float(aircraft_props.get("service_ceiling_m", 0.0))
+    if not aircraft_ceiling:
+        return 1.0
+    return 1.0 if altitude_max <= aircraft_ceiling * 1.05 else max(0.0, aircraft_ceiling / altitude_max)
 
 
 def _kinematic_score(observation: dict[str, Any], aircraft_props: dict[str, Any] | None) -> float:
     if not aircraft_props:
         return 0.5
-    kin = observation.get("approximate_kinematics", {})
-    speed_max = float(kin.get("ground_speed_max_kph", kin.get("ground_speed_kph", 0.0)))
-    altitude_max = float(kin.get("altitude_max_m", kin.get("altitude_m", 0.0)))
-    aircraft_speed = float(aircraft_props.get("max_speed_mach", 0.0)) * 1060.0
-    aircraft_ceiling = float(aircraft_props.get("service_ceiling_m", 0.0))
-    speed_ok = 1.0 if not aircraft_speed or speed_max <= aircraft_speed * 1.05 else max(0.0, aircraft_speed / speed_max)
-    altitude_ok = 1.0 if not aircraft_ceiling or altitude_max <= aircraft_ceiling * 1.05 else max(0.0, aircraft_ceiling / altitude_max)
+    speed_ok = _speed_consistency_score(observation, aircraft_props)
+    altitude_ok = _altitude_consistency_score(observation, aircraft_props)
     return (speed_ok + altitude_ok) / 2.0
 
 
@@ -213,7 +265,7 @@ def score_candidates(
     """
     scored: list[CandidateScore] = []
     for row in kg_rows:
-        mode_score, matched_fields, compared_fields = _mode_score(observation, row["mode_props"])
+        mode_score, matched_fields, compared_fields, feature_scores = _mode_feature_scores(observation, row["mode_props"])
         aircraft_score = _aircraft_score(observation, row)
         operator_score = _external_prior_score(observation, "operator", row.get("operator"))
         total = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
@@ -227,7 +279,9 @@ def score_candidates(
             total_score=round(total, 6),
             matched_fields=matched_fields,
             compared_fields=compared_fields,
+            feature_scores=feature_scores,
         ))
+
     return sorted(scored, key=lambda item: item.total_score, reverse=True)[:max_candidates]
 
 
@@ -363,6 +417,10 @@ class ObservationNeo4jETL:
             for rank, candidate in enumerate(candidates, start=1):
                 candidate_id = f"evidence:candidate:{obs_id}:{rank}"
                 candidate_ids.append(candidate_id)
+                candidate_aircraft_props = next(
+                    (row.get("aircraft_props") for row in kg_rows if row.get("aircraft_id") == candidate.aircraft_id),
+                    None,
+                )
                 candidate_rows.append({
                     "id": candidate_id,
                     "observation_id": obs_id,
@@ -377,6 +435,19 @@ class ObservationNeo4jETL:
                     "operator": candidate.operator,
                     "mode_score": candidate.mode_score,
                     "aircraft_score": candidate.aircraft_score,
+                    "speed_consistency_score": _speed_consistency_score(observation, candidate_aircraft_props),
+                    "altitude_consistency_score": _altitude_consistency_score(observation, candidate_aircraft_props),
+                    "heading_consistency_score": 1.0,
+                    "observation_uncertainty_width": round(
+                        sum(
+                            abs(float(v.get("max", 0.0)) - float(v.get("min", 0.0)))
+                            for v in observation.get("esm_radar_parameters", {}).values()
+                            if isinstance(v, dict) and "min" in v and "max" in v
+                        ),
+                        6,
+                    ),
+                    "candidate_ambiguity_count": float(len(candidates)),
+                    **(candidate.feature_scores or {}),
                 })
                 candidate_edges.append({"source": obs_node_id, "target": candidate_id, "score": candidate.total_score, "rank": rank})
                 if (
