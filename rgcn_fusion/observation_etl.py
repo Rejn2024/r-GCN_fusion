@@ -64,11 +64,37 @@ class CandidateScore:
 
 
 def load_observations(path: str | Path) -> list[dict[str, Any]]:
-    """Load observations from the JSON schema emitted by ``esm_observation_generator.py``."""
+    """Load flat observations or flatten series emitted by the ESM generators.
+
+    Series observations already contain ``series_id`` and ``sequence_index``.
+    Keeping those fields allows the evidence graph to be queried and visualised
+    one emitter track at a time after ingestion.
+    """
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     observations = data.get("observations", data if isinstance(data, list) else None)
+    if observations is None and isinstance(data, dict):
+        series = data.get("observation_series")
+        if not isinstance(series, list):
+            raise ValueError(
+                "observation file must contain an 'observations' list, an "
+                "'observation_series' list, or be a list of observations"
+            )
+        observations = []
+        for entry in series:
+            if not isinstance(entry, dict) or not isinstance(entry.get("observations"), list):
+                raise ValueError("each observation_series entry must contain an 'observations' list")
+            series_id = entry.get("series_id")
+            for observation in entry["observations"]:
+                if not isinstance(observation, dict):
+                    raise ValueError("each series observation must be an object")
+                if series_id is not None and "series_id" not in observation:
+                    observation = {**observation, "series_id": series_id}
+                observations.append(observation)
     if not isinstance(observations, list):
-        raise ValueError("observation file must contain an 'observations' list or be a list of observations")
+        raise ValueError(
+            "observation file must contain an 'observations' list, an "
+            "'observation_series' list, or be a list of observations"
+        )
     return observations
 
 
@@ -397,6 +423,9 @@ class ObservationNeo4jETL:
             obs_row = {
                 "id": obs_node_id,
                 "observation_id": obs_id,
+                "series_id": observation.get("series_id"),
+                "sequence_index": observation.get("sequence_index"),
+                "elapsed_time_s": observation.get("elapsed_time_s"),
                 "timestamp_iso8601": observation.get("timestamp_iso8601"),
                 "degree_score": round(len(candidates) / max_candidates, 6),
                 "text_score": best.total_score,
@@ -424,6 +453,8 @@ class ObservationNeo4jETL:
                 candidate_rows.append({
                     "id": candidate_id,
                     "observation_id": obs_id,
+                    "series_id": observation.get("series_id"),
+                    "sequence_index": observation.get("sequence_index"),
                     "rank": rank,
                     "degree_score": round(candidate.matched_fields / max(candidate.compared_fields, 1), 6),
                     "text_score": candidate.total_score,

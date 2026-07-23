@@ -105,6 +105,16 @@ A Jupyter walkthrough at
 base KG loading, observation generation, ETL, evidence-graph inspection, and
 r-GCN training.
 
+For series-generated observations, the loader also accepts the
+`observation_series` wrapper and preserves `series_id` plus temporal ordering
+fields on the Neo4j evidence nodes.  See
+[`docs/neo4j_observation_series_visualisation.md`](docs/neo4j_observation_series_visualisation.md)
+for parameterised Cypher queries and graph styling guidance to inspect one
+series and its candidate nodes.  The runnable
+[`notebooks/neo4j_observation_series_visualisation.ipynb`](notebooks/neo4j_observation_series_visualisation.ipynb)
+walkthrough generates a compact series, loads it into Neo4j, and displays the
+selected series' candidate timeline.
+
 
 ## r-GCN Training Targets
 
