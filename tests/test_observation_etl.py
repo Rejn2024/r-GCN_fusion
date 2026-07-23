@@ -1,4 +1,29 @@
-from rgcn_fusion.observation_etl import contradiction_edges_for_candidates, ds_masses_from_score, score_candidates
+import json
+
+from rgcn_fusion.observation_etl import (
+    contradiction_edges_for_candidates,
+    ds_masses_from_score,
+    load_observations,
+    score_candidates,
+)
+
+
+def test_load_observations_flattens_series_and_preserves_track_metadata(tmp_path):
+    source = tmp_path / "series.json"
+    source.write_text(json.dumps({
+        "observation_series": [{
+            "series_id": "esm_series_00001",
+            "observations": [{"observation_id": "obs-1", "sequence_index": 0}],
+        }],
+    }), encoding="utf-8")
+
+    observations = load_observations(source)
+
+    assert observations == [{
+        "observation_id": "obs-1",
+        "sequence_index": 0,
+        "series_id": "esm_series_00001",
+    }]
 
 
 def _observation():
