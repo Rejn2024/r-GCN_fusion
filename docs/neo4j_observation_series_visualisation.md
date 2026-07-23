@@ -40,28 +40,31 @@ In Browser/Workspace, set the parameter before running any query below:
 
 ## Visualise observations and candidates
 
-Run this query in graph view.  It limits each observation to its three highest
-ranked candidates, which keeps long series readable.  Increase or reduce
-`$candidateLimit` to change that limit.
+Run this query in graph view. It returns a `path`, rather than scalar values or
+maps, so Neo4j Browser renders the observation/candidate subgraph directly. It
+limits each observation to its three highest ranked candidates, which keeps long
+series readable. Increase or reduce `$candidateLimit` to change that limit.
 
 ```cypher
 :param candidateLimit => 3;
 
-MATCH (observation:Observation {series_id: $seriesId})
-CALL {
-  WITH observation
-  MATCH (observation)-[has_candidate:HAS_CANDIDATE]->(candidate:CandidateEvidence)
-  WITH candidate, has_candidate
-  ORDER BY has_candidate.rank ASC
-  LIMIT $candidateLimit
-  RETURN collect({candidate: candidate, relationship: has_candidate}) AS candidate_rows
-}
-UNWIND candidate_rows AS candidate_row
-WITH observation, candidate_row.candidate AS candidate, candidate_row.relationship AS has_candidate
-OPTIONAL MATCH (candidate)-[contradiction:CONTRADICTS_CANDIDATE]->(other:CandidateEvidence)
-WHERE other.series_id = $seriesId
-RETURN observation, has_candidate, candidate, contradiction, other
+MATCH path = (observation:Observation {series_id: $seriesId})
+             -[has_candidate:HAS_CANDIDATE]->(candidate:CandidateEvidence)
+WHERE has_candidate.rank <= $candidateLimit
+RETURN path
 ORDER BY observation.sequence_index, has_candidate.rank;
+```
+
+To inspect only the contradiction links as a graph, run this path query
+separately (the source candidate is limited to the same top ranks):
+
+```cypher
+MATCH path = (observation:Observation {series_id: $seriesId})
+             -[:HAS_CANDIDATE]->(candidate:CandidateEvidence)
+             -[:CONTRADICTS_CANDIDATE]->(other:CandidateEvidence)
+WHERE candidate.rank <= $candidateLimit
+  AND other.series_id = $seriesId
+RETURN path;
 ```
 
 `HAS_CANDIDATE.rank` is the score rank (one is best) and its `score` property
