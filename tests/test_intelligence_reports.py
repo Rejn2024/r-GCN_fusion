@@ -3,6 +3,7 @@ from datetime import UTC, datetime
 from esm_observation_series_generator import generate_observation_series_with_intelligence_reports
 from rgcn_fusion.intelligence_reports import (
     CLAIM_TYPES,
+    MIN_ORDERS_OF_BATTLE_PER_OBSERVATION,
     build_report_evidence_rows,
     flatten_reports_from_series,
     report_claim_score,
@@ -28,6 +29,17 @@ def test_series_generator_adds_10_to_12_intelligence_reports_per_observation():
         assert {"operator", "aircraft_variant", "radar_type", "radar_mode"}.issubset(claim_types)
         assert all(report["published_at"].endswith("Z") for report in reports)
         assert all(report["collected_at"].endswith("Z") for report in reports)
+        orders_of_battle = [report for report in reports if report["report_type"] == "order_of_battle"]
+        assert len(orders_of_battle) >= MIN_ORDERS_OF_BATTLE_PER_OBSERVATION
+        assert any(
+            report["order_of_battle"]["operator_country"]
+            == obs["ground_truth_label"]["operator"]
+            for report in orders_of_battle
+        )
+        assert any(
+            report["report_type"] == "automated_synthetic_intelligence"
+            for report in reports
+        )
     assert data["metadata"]["intelligence_claim_types"] == list(CLAIM_TYPES)
 
 

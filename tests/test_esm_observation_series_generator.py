@@ -30,7 +30,7 @@ def test_series_defaults_and_schema_fields():
             assert obs["approximate_kinematics"]
             assert obs["esm_radar_parameters"]
             assert obs["ground_truth_label"]["aircraft_id"].startswith("aircraft:")
-            assert obs["candidate_labels_from_shared_kg_features"]
+            assert "candidate_labels_from_shared_kg_features" not in obs
 
 
 def test_series_length_options_and_nominal_spacing():
@@ -84,7 +84,7 @@ def test_series_can_switch_modes_multiple_times_and_records_truth_sequence():
         assert entry["ground_truth_track_label"]["mode"] == "multiple"
 
 
-def test_observations_without_ground_truth_strips_only_truth_labels():
+def test_observations_without_ground_truth_strips_truth_labels():
     data = generate_observation_series(count=1, seed=31, mode_switch_probability=1.0)
     entry = data["observation_series"][0]
 
@@ -93,9 +93,7 @@ def test_observations_without_ground_truth_strips_only_truth_labels():
     assert len(inference_rows) == len(entry["observations"])
     assert all("ground_truth_label" not in row for row in inference_rows)
     assert all("esm_radar_parameters" in row for row in inference_rows)
-    assert all(
-        "candidate_labels_from_shared_kg_features" in row for row in inference_rows
-    )
+    assert all("candidate_labels_from_shared_kg_features" not in row for row in inference_rows)
     assert "ground_truth_label" in entry["observations"][0]
 
 

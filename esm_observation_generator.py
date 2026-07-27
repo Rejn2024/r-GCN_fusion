@@ -135,20 +135,6 @@ def _kinematics(rng: random.Random, aircraft: AircraftVariant) -> dict[str, Any]
     }
 
 
-def _ambiguous_candidates(aircraft: AircraftVariant, operator: str, mode_name: str) -> list[dict[str, str]]:
-    candidates = []
-    for other in AIRCRAFT:
-        if other.radar == aircraft.radar or (other.family == aircraft.family and mode_name != "single_target_track"):
-            candidates.append({
-                "aircraft_family": other.family,
-                "aircraft_variant": other.variant,
-                "aircraft_id": f"aircraft:{slug(other.variant)}",
-                "operator": operator if operator in other.operators else other.operators[0],
-                "radar": other.radar,
-            })
-    return candidates[:10]
-
-
 def generate_observation(index: int, rng: random.Random, start: datetime, end: datetime) -> dict[str, Any]:
     aircraft = rng.choice(AIRCRAFT)
     operator = rng.choice(aircraft.operators)
@@ -177,7 +163,6 @@ def generate_observation(index: int, rng: random.Random, start: datetime, end: d
         "estimated_emitter_location": _location(rng),
         "approximate_kinematics": _kinematics(rng, aircraft),
         "esm_radar_parameters": esm,
-        "candidate_labels_from_shared_kg_features": _ambiguous_candidates(aircraft, operator, mode.name),
         "ground_truth_label": asdict(label),
     }
 

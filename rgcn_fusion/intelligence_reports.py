@@ -32,6 +32,7 @@ CLAIM_TYPES = (
 )
 MIN_REPORTS_PER_OBSERVATION = 10
 MAX_REPORTS_PER_OBSERVATION = 12
+MIN_ORDERS_OF_BATTLE_PER_OBSERVATION = 2
 DEFAULT_REPORT_RECENCY_HALF_LIFE_DAYS = 14.0
 
 
@@ -214,11 +215,16 @@ def generate_intelligence_reports_for_observation(
     claim_cycle = list(CLAIM_TYPES)
     reports: list[dict[str, Any]] = []
     for idx in range(report_count):
-        claim_type = claim_cycle[idx % len(claim_cycle)]
+        is_order_of_battle = idx < MIN_ORDERS_OF_BATTLE_PER_OBSERVATION
+        claim_type = "operator" if is_order_of_battle else claim_cycle[(idx - 2) % len(claim_cycle)]
         correct = rng.random() < 0.72
-        if idx in (1, 5):
+        # The first order of battle always identifies the true operator country;
+        # the second provides a competing assessment for fusion experiments.
+        if idx == 0:
+            correct = True
+        elif idx in (1, 5):
             correct = False
-        stance = "supports" if rng.random() > 0.12 else "refutes"
+        stance = "supports" if idx == 0 or rng.random() > 0.12 else "refutes"
         value, text_value, value_kind = _claim_value_for_type(rng, claim_type, truth, observation, correct=correct)
         offset_s = rng.uniform(-1800.0, 900.0)
         collected_at = obs_time + timedelta(seconds=offset_s)
@@ -247,6 +253,7 @@ def generate_intelligence_reports_for_observation(
             "series_id": observation.get("series_id"),
             "source_id": f"source:{rng.choice(['sigint_a', 'osint_b', 'liaison_c', 'analyst_d'])}",
             "source_type": rng.choice(["sigint", "osint", "liaison", "analyst_assessment"]),
+            "report_type": "order_of_battle" if is_order_of_battle else "automated_synthetic_intelligence",
             "published_at": _iso(published_at),
             "collected_at": _iso(collected_at),
             "ingested_at": _iso(published_at + timedelta(seconds=rng.uniform(5.0, 120.0))),
@@ -259,6 +266,12 @@ def generate_intelligence_reports_for_observation(
             },
             "claims": [claim],
         }
+        if is_order_of_battle:
+            report["order_of_battle"] = {
+                "operator_country": text_value,
+                "assessed_aircraft_variant": truth["aircraft_variant"],
+                "assessment_scope": observation.get("estimated_emitter_location", {}).get("area", "unknown area"),
+            }
         reports.append(report)
     return reports
 
