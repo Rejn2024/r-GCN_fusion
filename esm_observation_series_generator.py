@@ -25,7 +25,6 @@ from typing import Any, Iterable
 from esm_observation_generator import (
     DIRECTLY_MEASURABLE_MODE_FIELDS,
     ObservationLabel,
-    _ambiguous_candidates,
     _kinematics,
     _location,
     _measured_from_mode_range,
@@ -334,9 +333,6 @@ def _generate_single_observation_series(
                 ),
                 "approximate_kinematics": kin,
                 "esm_radar_parameters": _sample_esm_parameters(rng, props),
-                "candidate_labels_from_shared_kg_features": _ambiguous_candidates(
-                    aircraft, operator, mode.name
-                ),
                 "ground_truth_label": asdict(label),
             }
         )

@@ -13,7 +13,7 @@ def test_observations_have_labels_and_time_formats():
         assert obs["timestamp_iso8601"].endswith("Z")
         assert obs["ground_truth_label"]["aircraft_id"].startswith("aircraft:")
         assert obs["ground_truth_label"]["mode_id"].startswith("radar_mode:")
-        assert obs["candidate_labels_from_shared_kg_features"]
+        assert "candidate_labels_from_shared_kg_features" not in obs
 
 
 def test_observations_reference_existing_kg_nodes_and_plausible_ranges():
@@ -57,4 +57,3 @@ def test_esm_radar_parameters_only_contains_measured_or_observed_values():
         for key, measurement in esm.items():
             if key.startswith("measured_"):
                 assert measurement["min"] <= measurement["value"] <= measurement["max"]
-
