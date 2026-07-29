@@ -144,6 +144,11 @@ If training the full observation graph exhausts GPU memory, see
 [`docs/training_memory.md`](docs/training_memory.md) for model, graph, and
 runtime settings that reduce CUDA memory pressure.
 
+The advanced notebook's GraphSAGE/HGT classifier has a reproducible
+[architecture diagram](docs/advanced_network_architecture.md). The accompanying
+generator reads the live notebook configuration without executing training, so
+the SVG can be refreshed after architecture settings change.
+
 For leakage-safe observation-level radar-mode experiments, the example config
 filters supervised loss/metrics to `Observation` nodes, groups splits by
 `series_id` when that property is present, removes cross-split edges, and drops
