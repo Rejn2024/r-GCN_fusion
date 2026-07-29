@@ -1,70 +1,46 @@
 from datetime import UTC, datetime
 
 from esm_observation_series_generator import generate_observation_series_with_intelligence_reports
-from rgcn_fusion.intelligence_reports import (
-    CLAIM_TYPES,
-    MIN_ORDERS_OF_BATTLE_PER_OBSERVATION,
-    build_report_evidence_rows,
-    flatten_reports_from_series,
-    report_claim_score,
-)
+from rgcn_fusion.intelligence_reports import CLAIM_TYPES, build_report_evidence_rows, flatten_reports_from_series, report_claim_score
 
 
-def test_series_generator_adds_10_to_12_intelligence_reports_per_observation():
+def test_series_generator_keeps_measurements_per_observation_and_reports_per_series():
     data = generate_observation_series_with_intelligence_reports(
-        count=2,
-        seed=101,
-        intelligence_seed=202,
-        start=datetime(2025, 1, 1, tzinfo=UTC),
-        end=datetime(2025, 1, 2, tzinfo=UTC),
+        count=2, seed=101, intelligence_seed=202,
+        start=datetime(2025, 1, 1, tzinfo=UTC), end=datetime(2025, 1, 2, tzinfo=UTC),
         workers=1,
     )
-
-    observations = [obs for series in data["observation_series"] for obs in series["observations"]]
-    assert observations
-    for obs in observations:
-        reports = obs["intelligence_reports"]
+    assert data["metadata"]["intelligence_reports_per_series"] == [10, 12]
+    for series in data["observation_series"]:
+        reports = series["intelligence_reports"]
+        observation_ids = [obs["observation_id"] for obs in series["observations"]]
         assert 10 <= len(reports) <= 12
-        claim_types = {report["claims"][0]["claim_type"] for report in reports}
-        assert {"operator", "aircraft_variant", "radar_type", "radar_mode"}.issubset(claim_types)
-        assert all(report["published_at"].endswith("Z") for report in reports)
-        assert all(report["collected_at"].endswith("Z") for report in reports)
-        orders_of_battle = [report for report in reports if report["report_type"] == "order_of_battle"]
-        assert len(orders_of_battle) >= MIN_ORDERS_OF_BATTLE_PER_OBSERVATION
-        assert any(
-            report["order_of_battle"]["operator_country"]
-            == obs["ground_truth_label"]["operator"]
-            for report in orders_of_battle
-        )
-        assert any(
-            report["report_type"] == "automated_synthetic_intelligence"
-            for report in reports
-        )
+        assert all(report["valid_for_observation_ids"] == observation_ids for report in reports)
+        assert all(report["series_id"] == series["series_id"] for report in reports)
+        for obs in series["observations"]:
+            assert "esm_radar_parameters" in obs
+            assert "approximate_kinematics" in obs
+            assert "intelligence_reports" not in obs
     assert data["metadata"]["intelligence_claim_types"] == list(CLAIM_TYPES)
 
 
-def test_generated_reports_include_correct_and_contradictory_claims():
-    data = generate_observation_series_with_intelligence_reports(count=1, seed=303, intelligence_seed=404, workers=1)
+def test_flatten_reports_does_not_duplicate_shared_series_reports():
+    data = generate_observation_series_with_intelligence_reports(count=2, seed=303, intelligence_seed=404, workers=1)
     reports = flatten_reports_from_series(data)
-    truth_values = {report["claims"][0]["synthetic_truth_value"] for report in reports}
-
-    assert "correct" in truth_values
-    assert "contradictory" in truth_values
+    assert len(reports) == sum(len(series["intelligence_reports"]) for series in data["observation_series"])
+    assert len({report["report_id"] for report in reports}) == len(reports)
 
 
-def test_report_evidence_rows_include_contradictions_and_ds_masses():
+def test_report_evidence_links_each_shared_claim_to_every_observation():
     data = generate_observation_series_with_intelligence_reports(count=1, seed=505, intelligence_seed=606, workers=1)
-    observations = [obs for series in data["observation_series"] for obs in series["observations"]]
-
-    rows = build_report_evidence_rows(observations)
-
-    assert rows["reports"]
-    assert rows["claims"]
-    assert rows["contains_edges"]
-    assert rows["support_edges"]
+    series = data["observation_series"][0]
+    rows = build_report_evidence_rows(data["observation_series"])
+    claim_count = sum(len(report["claims"]) for report in series["intelligence_reports"])
+    assert len(rows["reports"]) == len(series["intelligence_reports"])
+    assert len(rows["claims"]) == claim_count
+    assert len(rows["support_edges"]) == claim_count * len(series["observations"])
     assert rows["contradiction_edges"]
     assert all(abs(sum(row["ds_masses"]) - 1.0) < 1e-6 for row in rows["claims"])
-
 
 def test_report_claim_score_uses_optional_external_priors():
     report = {
@@ -85,19 +61,3 @@ def test_report_claim_score_uses_optional_external_priors():
     disfavoured = report_claim_score(report, {**base_claim, "object_id": "Disfavoured"}, observation_time=datetime(2025, 1, 1, tzinfo=UTC))
 
     assert favoured > disfavoured
-
-
-def test_series_generator_accepts_report_bounds_per_observation_series():
-    data = generate_observation_series_with_intelligence_reports(
-        count=3,
-        seed=707,
-        intelligence_seed=808,
-        min_reports_per_observation_series=2,
-        max_reports_per_observation_series=4,
-        workers=1,
-    )
-
-    assert data["metadata"]["intelligence_reports_per_observation_series"] == [2, 4]
-    for series in data["observation_series"]:
-        report_count = sum(len(obs["intelligence_reports"]) for obs in series["observations"])
-        assert 2 <= report_count <= 4

@@ -282,68 +282,41 @@ def add_intelligence_reports_to_series(
     seed: int = 7,
     min_reports: int = MIN_REPORTS_PER_OBSERVATION,
     max_reports: int = MAX_REPORTS_PER_OBSERVATION,
-    min_reports_per_series: int | None = None,
-    max_reports_per_series: int | None = None,
 ) -> dict[str, Any]:
-    """Attach synthetic intelligence reports to observations in a series dataset.
-
-    When ``min_reports_per_series`` and ``max_reports_per_series`` are omitted,
-    every observation receives ``min_reports`` to ``max_reports`` reports.  When
-    both series-level bounds are provided, each observation series receives a
-    bounded total number of reports distributed across its observations.
-    """
-    if (min_reports_per_series is None) != (max_reports_per_series is None):
-        raise ValueError("both series-level report count bounds must be provided")
-    if min_reports_per_series is not None:
-        if (
-            min_reports_per_series < 0
-            or max_reports_per_series < min_reports_per_series
-        ):
-            raise ValueError(
-                "series-level report count bounds must be non-negative and ordered"
-            )
+    """Attach one shared intelligence-report set to every observation series."""
+    if min_reports < 1 or max_reports < min_reports:
+        raise ValueError("report count bounds must be positive and ordered")
 
     rng = random.Random(seed)
     enriched = json.loads(json.dumps(data))
     for series in enriched.get("observation_series", []):
         observations = series.get("observations", [])
         for obs in observations:
-            obs["intelligence_reports"] = []
-        if min_reports_per_series is None:
-            for obs in observations:
-                obs["intelligence_reports"] = generate_intelligence_reports_for_observation(
-                    obs,
-                    seed=rng.getrandbits(64),
-                    min_reports=min_reports,
-                    max_reports=max_reports,
-                )
+            obs.pop("intelligence_reports", None)
+        if not observations:
+            series["intelligence_reports"] = []
             continue
-
-        total_reports = rng.randint(min_reports_per_series, max_reports_per_series)
-        if not observations or total_reports == 0:
-            continue
-        reports_remaining = total_reports
-        observation_count = len(observations)
-        for obs_index, obs in enumerate(observations):
-            observations_remaining = observation_count - obs_index - 1
-            report_count = (
-                rng.randint(0, reports_remaining)
-                if observations_remaining
-                else reports_remaining
+        reports = generate_intelligence_reports_for_observation(
+            observations[0], seed=rng.getrandbits(64),
+            min_reports=min_reports, max_reports=max_reports,
+        )
+        observation_ids = [obs["observation_id"] for obs in observations]
+        for report_index, report in enumerate(reports, start=1):
+            report["report_id"] = (
+                f"intel_report:{series['series_id']}:{report_index:02d}"
             )
-            reports_remaining -= report_count
-            if report_count:
-                obs["intelligence_reports"] = generate_intelligence_reports_for_observation(
-                    obs,
-                    seed=rng.getrandbits(64),
-                    min_reports=report_count,
-                    max_reports=report_count,
+            report.pop("observation_id", None)
+            report["series_id"] = series["series_id"]
+            report["valid_for_observation_ids"] = observation_ids
+            for claim_index, claim in enumerate(report.get("claims") or [], start=1):
+                claim["claim_id"] = (
+                    f"intel_claim:{series['series_id']}:{report_index:02d}:"
+                    f"{claim_index:02d}"
                 )
+                claim["subject_id"] = series["series_id"]
+        series["intelligence_reports"] = reports
     meta = enriched.setdefault("metadata", {})
-    if min_reports_per_series is None:
-        meta["intelligence_reports_per_observation"] = [min_reports, max_reports]
-    else:
-        meta["intelligence_reports_per_observation_series"] = [min_reports_per_series, max_reports_per_series]
+    meta["intelligence_reports_per_series"] = [min_reports, max_reports]
     meta["intelligence_claim_types"] = list(CLAIM_TYPES)
     return enriched
 
@@ -351,31 +324,28 @@ def add_intelligence_reports_to_series(
 def flatten_reports_from_series(data: dict[str, Any]) -> list[dict[str, Any]]:
     reports: list[dict[str, Any]] = []
     for series in data.get("observation_series", []):
-        for obs in series.get("observations", []):
-            reports.extend(obs.get("intelligence_reports") or [])
+        reports.extend(series.get("intelligence_reports") or [])
     return reports
 
 
-def build_report_evidence_rows(observations: Iterable[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
-    """Transform generated reports into ingestion-ready node and edge rows."""
-    report_rows: list[dict[str, Any]] = []
-    claim_rows: list[dict[str, Any]] = []
-    contains_edges: list[dict[str, Any]] = []
-    support_edges: list[dict[str, Any]] = []
+def build_report_evidence_rows(
+    series_records: Iterable[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+    """Build unique report/claim nodes and link claims to all series observations."""
+    report_rows, claim_rows, contains_edges, support_edges = [], [], [], []
     contradiction_edges: list[dict[str, Any]] = []
-    claims_by_observation: dict[str, list[dict[str, Any]]] = {}
-    for obs in observations:
-        obs_time = _parse_utc(obs.get("timestamp_iso8601"))
-        for report in obs.get("intelligence_reports") or []:
-            recency = report_recency_score(report, reference_time=obs_time)
+    for series in series_records:
+        observations = series.get("observations", [])
+        reports = series.get("intelligence_reports") or []
+        claims_for_series: list[dict[str, Any]] = []
+        reference_time = _parse_utc(observations[0].get("timestamp_iso8601")) if observations else None
+        for report in reports:
+            recency = report_recency_score(report, reference_time=reference_time)
+            report_id = f"evidence:report:{report['report_id']}"
             report_rows.append({
-                "id": f"evidence:report:{report['report_id']}",
-                "report_id": report["report_id"],
-                "observation_id": obs["observation_id"],
-                "series_id": obs.get("series_id"),
-                "source_id": report.get("source_id"),
-                "source_type": report.get("source_type"),
-                "published_at": report.get("published_at"),
+                "id": report_id, "report_id": report["report_id"],
+                "series_id": series.get("series_id"), "source_id": report.get("source_id"),
+                "source_type": report.get("source_type"), "published_at": report.get("published_at"),
                 "collected_at": report.get("collected_at"),
                 "credibility_score": float(report.get("credibility_score", 0.5)),
                 "recency_score": round(recency, 6),
@@ -384,33 +354,27 @@ def build_report_evidence_rows(observations: Iterable[dict[str, Any]]) -> dict[s
                 "ds_masses": ds_masses_from_score(float(report.get("credibility_score", 0.5)) * recency, 0.25),
             })
             for claim in report.get("claims") or []:
-                score = report_claim_score(report, claim, observation_time=obs_time)
+                score = report_claim_score(report, claim, observation_time=reference_time)
                 claim_id = f"evidence:claim:{claim['claim_id']}"
                 claim_row = {
-                    "id": claim_id,
-                    "claim_id": claim["claim_id"],
-                    "report_id": report["report_id"],
-                    "observation_id": obs["observation_id"],
-                    "series_id": obs.get("series_id"),
-                    "claim_type": claim.get("claim_type"),
-                    "stance": claim.get("stance", "supports"),
-                    "object_id": claim.get("object_id"),
+                    "id": claim_id, "claim_id": claim["claim_id"], "report_id": report["report_id"],
+                    "series_id": series.get("series_id"), "claim_type": claim.get("claim_type"),
+                    "stance": claim.get("stance", "supports"), "object_id": claim.get("object_id"),
                     "object_value": claim.get("object_value"),
                     "credibility_score": float(report.get("credibility_score", 0.5)),
                     "recency_score": round(recency, 6),
                     "claim_confidence": float(claim.get("claim_confidence", 0.5)),
                     "extraction_confidence": float(claim.get("extraction_confidence", 0.5)),
-                    "degree_score": 1.0,
-                    "text_score": score,
+                    "degree_score": 1.0, "text_score": score,
                     "ds_masses": ds_masses_from_score(score, 0.2 if claim.get("stance") == "supports" else 0.35),
                 }
                 claim_rows.append(claim_row)
-                contains_edges.append({"source": f"evidence:report:{report['report_id']}", "target": claim_id})
-                support_edges.append({"source": claim_id, "target": f"evidence:observation:{obs['observation_id']}", "score": score, "stance": claim.get("stance", "supports")})
-                claims_by_observation.setdefault(obs["observation_id"], []).append(claim_row)
-    for claim_rows_for_obs in claims_by_observation.values():
-        for left_idx, left in enumerate(claim_rows_for_obs):
-            for right in claim_rows_for_obs[left_idx + 1:]:
+                claims_for_series.append(claim_row)
+                contains_edges.append({"source": report_id, "target": claim_id})
+                for obs in observations:
+                    support_edges.append({"source": claim_id, "target": f"evidence:observation:{obs['observation_id']}", "score": score, "stance": claim.get("stance", "supports")})
+        for left_idx, left in enumerate(claims_for_series):
+            for right in claims_for_series[left_idx + 1:]:
                 if left.get("claim_type") == right.get("claim_type") and left.get("object_id") != right.get("object_id"):
                     contradiction_edges.append({
                         "source": left["id"] if left["text_score"] >= right["text_score"] else right["id"],
@@ -433,8 +397,8 @@ class ReportNeo4jETL:
     def close(self) -> None:
         self.driver.close()
 
-    def ingest(self, observations: list[dict[str, Any]]) -> dict[str, int]:
-        rows = build_report_evidence_rows(observations)
+    def ingest(self, series_records: list[dict[str, Any]]) -> dict[str, int]:
+        rows = build_report_evidence_rows(series_records)
         with self.driver.session(database=self.database) as session:
             session.execute_write(_write_report_evidence_rows, rows)
         return {name: len(values) for name, values in rows.items()}
@@ -484,12 +448,12 @@ def load_reports_json(path: str | Path) -> list[dict[str, Any]]:
     raise ValueError("report JSON must be a series dataset, {'reports': [...]}, or a list")
 
 
-def observations_from_series_json(path: str | Path) -> list[dict[str, Any]]:
-    """Load observations, including nested intelligence reports, from a series JSON file."""
+def series_from_series_json(path: str | Path) -> list[dict[str, Any]]:
+    """Load series records with their shared intelligence reports."""
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(data, dict) or not isinstance(data.get("observation_series"), list):
         raise ValueError("series JSON must contain an 'observation_series' list")
-    return [obs for series in data["observation_series"] for obs in series.get("observations", [])]
+    return data["observation_series"]
 
 
 def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
@@ -504,10 +468,10 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
 
 def main(argv: Iterable[str] | None = None) -> None:
     args = parse_args(argv)
-    observations = observations_from_series_json(args.series)
+    series_records = series_from_series_json(args.series)
     etl = ReportNeo4jETL(args.neo4j_uri, args.neo4j_user, args.neo4j_password, args.neo4j_database)
     try:
-        result = etl.ingest(observations)
+        result = etl.ingest(series_records)
     finally:
         etl.close()
     print(json.dumps(result, indent=2))

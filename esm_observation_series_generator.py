@@ -2,10 +2,9 @@
 """Generate synthetic single-emitter ESM observation series.
 
 Each generated entry represents one aircraft/emitter track containing repeated
-observations spaced at roughly 0.5 seconds.  Per-observation records preserve the
-same top-level fields emitted by :mod:`esm_observation_generator` so they can be
-reused by existing ETL/scoring experiments, while the series wrapper adds track
-metadata and temporal ordering for single-emitter sequence experiments.
+observations spaced at roughly 0.5 seconds. Per-observation records contain ESM
+and kinematics measurements, while optional intelligence reports live once on
+the series wrapper and apply to every observation in that series.
 """
 
 from __future__ import annotations
@@ -467,20 +466,16 @@ def generate_observation_series(
 def generate_observation_series_with_intelligence_reports(
     *args: Any,
     intelligence_seed: int | None = None,
-    min_reports_per_observation: int = 10,
-    max_reports_per_observation: int = 12,
-    min_reports_per_observation_series: int | None = None,
-    max_reports_per_observation_series: int | None = None,
+    min_reports_per_series: int = 10,
+    max_reports_per_series: int = 12,
     **kwargs: Any,
 ) -> dict[str, Any]:
     """Generate ESM observation series enriched with synthetic intelligence reports.
 
-    By default, every observation receives ``min_reports_per_observation`` to
-    ``max_reports_per_observation`` reports.  When
-    ``min_reports_per_observation_series`` and
-    ``max_reports_per_observation_series`` are supplied, those bounds cap the
-    total number of reports generated for each observation series instead; the
-    selected reports are distributed across observations in that series.
+    Each observation contains its own ESM and kinematics measurements.  A single
+    set of ``min_reports_per_series`` to ``max_reports_per_series`` intelligence
+    reports is attached to the series wrapper and applies to every observation
+    in that series.  Reports are deliberately not copied into observations.
     """
     from rgcn_fusion.intelligence_reports import add_intelligence_reports_to_series
 
@@ -489,10 +484,8 @@ def generate_observation_series_with_intelligence_reports(
     return add_intelligence_reports_to_series(
         data,
         seed=seed,
-        min_reports=min_reports_per_observation,
-        max_reports=max_reports_per_observation,
-        min_reports_per_series=min_reports_per_observation_series,
-        max_reports_per_series=max_reports_per_observation_series,
+        min_reports=min_reports_per_series,
+        max_reports=max_reports_per_series,
     )
 
 
