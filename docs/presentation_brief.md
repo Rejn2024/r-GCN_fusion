@@ -294,16 +294,19 @@ zero-filled, and ground-truth fields are excluded from the input.
 
 A **linear input projection** is a learned affine map, not a manual feature
 selection or a graph operation.  If node properties are
-\(\mathbf{x}_v\in\mathbb{R}^{F}\), the notebook computes
+$\mathbf{x}_v\in\mathbb{R}^{F}$, the notebook computes
 
-\[
+$$
 \mathbf{h}^{(0)}_v =
 \operatorname{Dropout}\!\left(\operatorname{GELU}\!\left(
 \operatorname{LayerNorm}(\mathbf{W}_{in}\mathbf{x}_v+\mathbf{b}_{in})
 \right)\right).
-\]
+$$
 
-Thus \(\mathbf{W}_{in}\in\mathbb{R}^{128\times F}\) learns weighted mixtures
+**Presentation wording:** project the raw property vector with a learned weight
+matrix and bias, then apply LayerNorm, GELU, and dropout.
+
+Thus $\mathbf{W}_{in}\in\mathbb{R}^{128\times F}$ learns weighted mixtures
 of differently named properties and places every node type in the same
 128-dimensional latent coordinate system.  Layer normalization controls scale,
 GELU introduces non-linearity, and dropout regularizes the representation.  A
@@ -314,18 +317,21 @@ uncertainty, report credibility, and node kind.
 ### Deep GraphSAGE representation
 
 The notebook deterministically precomputes at most 12 inbound neighbours per
-node and reuses those edges for 12 GraphSAGE layers.  At layer \(\ell\), it forms
+node and reuses those edges for 12 GraphSAGE layers.  At layer $\ell$, it forms
 the mean inbound-neighbour representation and combines a transform of that mean
 with a separate transform of the node itself:
 
-\[
+$$
 \bar{\mathbf{h}}^{(\ell)}_{N(v)}=
 \frac{1}{|N(v)|}\sum_{u\in N(v)}\mathbf{h}^{(\ell)}_u,
 \qquad
 \tilde{\mathbf{h}}^{(\ell+1)}_v =
 \mathbf{W}^{(\ell)}_{self}\mathbf{h}^{(\ell)}_v+
 \mathbf{W}^{(\ell)}_{nbr}\bar{\mathbf{h}}^{(\ell)}_{N(v)}.
-\]
+$$
+
+**Presentation wording:** average the inbound neighbour encodings, transform the
+node and neighbour average separately, and add the two results.
 
 After GELU and dropout, a residual projection carries the previous state around
 the update and LayerNorm produces the next state.  Layer widths taper from 128
@@ -339,21 +345,25 @@ multi-hop evidence into a compact representation.
 ### Relation-aware HGT refinement and task heads
 
 One four-head HGT-style layer then revisits the full typed edge set.  For edge
-\(u\xrightarrow{r}v\), each head compares the destination query with a
+$u\xrightarrow{r}v$, each head compares the destination query with a
 relation-transformed source key and transforms the source value with a second
 relation matrix:
 
-\[
+$$
 s^{r,h}_{uv}=\frac{\left(\mathbf{q}^{h}_v\right)^\top
 \mathbf{R}^{r,h}_{K}\mathbf{k}^{h}_u}{\sqrt{d_h}}\,\mu_{r,h},
 \qquad
 \mathbf{m}^{r,h}_{uv}=\sigma(s^{r,h}_{uv})
 \mathbf{R}^{r,h}_{V}\mathbf{v}^{h}_u.
-\]
+$$
+
+**Presentation wording:** score each source-to-destination message using the
+edge type and attention head, use that score as a gate, and pass a
+relation-transformed source value to the destination.
 
 Messages are mean-aggregated at the destination, projected, passed through
 GELU/dropout, and added residually before LayerNorm.  Relation-specific key and
-value transforms plus the learned priority \(\mu_{r,h}\) let, for example, a
+value transforms plus the learned priority $\mu_{r,h}$ let, for example, a
 `CONTRADICTS_CLAIM` edge affect a node differently from a temporal or self-loop
 edge.  Separate two-layer MLP heads map the shared 32-dimensional encoding to
 aircraft-variant, radar-mode, radar-type, and operator-country logits.  The
@@ -365,35 +375,43 @@ overfitting.
 ### Dirichlet evidential output: formulae and advantages
 
 The advanced notebook currently ends in ordinary classification logits.  A
-natural evidential extension is to replace or augment a \(K\)-class task head
+natural evidential extension is to replace or augment a $K$-class task head
 with the Dirichlet construction already implemented by the packaged r-GCN.  For
-head logits \(\mathbf{z}\), define non-negative evidence and concentration as
+head logits $\mathbf{z}$, define non-negative evidence and concentration as
 
-\[
+$$
 e_k=\operatorname{softplus}(z_k),\qquad
 \alpha_k=e_k+1,\qquad S=\sum_{j=1}^{K}\alpha_j.
-\]
+$$
 
-The expected class probability is \(\mathbb{E}[p_k]=\alpha_k/S\).  In the
+**Presentation wording:** turn each logit into non-negative evidence, add one to
+obtain its Dirichlet concentration, and sum all concentrations to obtain the
+total evidence strength.
+
+The expected class probability is $\mathbb{E}[p_k]=\alpha_k/S$.  In the
 subjective-logic/DS view, committed singleton belief and uncommitted uncertainty
 are
 
-\[
+$$
 b_k=\frac{e_k}{S},\qquad u=\frac{K}{S},\qquad
 \sum_{k=1}^{K}b_k+u=1.
-\]
+$$
 
-For the repository's DS mass head, whose \(K\) outputs are focal-element masses,
-the implemented prediction is \(m_k=\alpha_k/S\), with the same concentration
-diagnostic \(u=K/S\).  This distinction should be stated on a slide: normalized
+**Presentation wording:** divide each class's evidence by the total strength to
+obtain committed belief; the unevidenced share is the number of classes divided
+by that same strength.
+
+For the repository's DS mass head, whose $K$ outputs are focal-element masses,
+the implemented prediction is $m_k=\alpha_k/S$, with the same concentration
+diagnostic $u=K/S$.  This distinction should be stated on a slide: normalized
 Dirichlet means over focal elements are the model's masses, whereas
-\(b_k=e_k/S\) and \(u=K/S\) give the conventional evidential decomposition.
+$b_k=e_k/S$ and $u=K/S$ give the conventional evidential decomposition.
 
 The approach has four presentation-worthy advantages over a bare softmax:
 
-- it cannot create negative evidence, and \(\alpha_k\geq1\) provides a clear
+- it cannot create negative evidence, and $\alpha_k\geq1$ provides a clear
   zero-evidence prior;
-- total concentration \(S\) records how much evidence the network has gathered,
+- total concentration $S$ records how much evidence the network has gathered,
   so identical class rankings can carry different uncertainty;
 - uncertainty rises toward one when all evidence is weak and falls only when
   accumulated evidence is strong, making ignorance explicit rather than forcing
@@ -405,6 +423,21 @@ These quantities are useful uncertainty indicators, not automatic guarantees of
 calibration.  Evidence from correlated graph neighbours or reports must not be
 treated as independent without validation, and an evidential version of the
 advanced notebook would require calibration and out-of-distribution evaluation.
+
+### Equation encoding and presentation reuse
+
+The equations above use GitHub-supported Markdown math delimiters: single dollar
+signs for inline expressions (`$...$`) and double dollar signs on their own lines
+for display equations (`$$ ... $$`).  Their contents are LaTeX math commands;
+GitHub renders that combination in Chrome, whereas the generic LaTeX delimiters
+`\\(...\\)` and `\\[...\\]` are not reliably recognized by GitHub Markdown.
+
+For presentation generation, use the bold **Presentation wording** below each
+formula as speaker notes or a plain-text fallback.  For a visual equation on a
+slide, paste the contents between the dollar-sign delimiters into PowerPoint's
+equation editor in LaTeX input mode; do not paste the dollar signs themselves.
+This keeps the source readable in raw Markdown, rendered GitHub notes, and slide
+software without relying on a screenshot of the equation.
 
 ## Data splits, evaluation, and leakage controls
 
