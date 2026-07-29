@@ -3,7 +3,8 @@
 The diagram below represents the classifier defined in
 `notebooks/observation_series_and_intel_rgcn_classification_advanced_network.ipynb`.
 It shows the feature projection, the configured GraphSAGE receptive-field depth,
-the relation-aware HGT refinement, and the four observation-level task heads.
+the relation-aware HGT refinement, and paired classification and
+Dirichlet/Dempster–Shafer heads for the four observation-level tasks.
 
 ![Advanced GraphSAGE and HGT neural-network architecture](advanced_network_architecture.svg)
 

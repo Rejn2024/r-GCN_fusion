@@ -275,9 +275,9 @@ The presentation should lead with the architecture in
 deep GraphSAGE encoder followed by relation-aware HGT attention.  It is designed
 for a heterogeneous series graph containing observations, scored candidates,
 intelligence reports, and report claims.  The installable CLI's residual r-GCN
-is a separate, production-facing path and should be mentioned only as the
-current implementation of the DS/Dirichlet output described below; do not imply
-that the notebook already has an evidential head.
+is a separate, production-facing path and should be mentioned only as another
+implementation of the DS/Dirichlet output described below. The notebook now
+trains per-task evidential heads alongside its classification heads.
 
 ### Node properties and linear input projection
 
@@ -365,19 +365,19 @@ Messages are mean-aggregated at the destination, projected, passed through
 GELU/dropout, and added residually before LayerNorm.  Relation-specific key and
 value transforms plus the learned priority $\mu_{r,h}$ let, for example, a
 `CONTRADICTS_CLAIM` edge affect a node differently from a temporal or self-loop
-edge.  Separate two-layer MLP heads map the shared 32-dimensional encoding to
-aircraft-variant, radar-mode, radar-type, and operator-country logits.  The
-notebook trains these heads with summed cross-entropy and optional L1
-regularization, using one full-graph step per epoch.  Edge chunking, CUDA mixed
+edge. Paired two-layer MLP heads map the shared 32-dimensional encoding to
+ordinary classification logits and Dirichlet evidence for aircraft variant,
+radar mode, radar type, and operator country. The notebook jointly trains them
+with summed cross-entropy, expected Dirichlet cross-entropy, and optional L1
+regularization, using one full-graph step per epoch. Edge chunking, CUDA mixed
 precision, gradient checkpointing, and early stopping control memory and
 overfitting.
 
 ### Dirichlet evidential output: formulae and advantages
 
-The advanced notebook currently ends in ordinary classification logits.  A
-natural evidential extension is to replace or augment a $K$-class task head
-with the Dirichlet construction already implemented by the packaged r-GCN.  For
-head logits $\mathbf{z}$, define non-negative evidence and concentration as
+The advanced notebook augments every ordinary $K$-class task head with the
+Dirichlet construction also implemented by the packaged r-GCN. For evidential
+head logits $\mathbf{z}$, it defines non-negative evidence and concentration as
 
 $$
 e_k=\mathrm{softplus}(z_k),\qquad
