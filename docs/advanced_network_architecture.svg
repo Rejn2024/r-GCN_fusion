@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1430" height="460" viewBox="0 0 1430 460" role="img" aria-labelledby="title description">
 <title id="title">Advanced GraphSAGE and HGT classifier architecture</title>
-<desc id="description">Node features flow through input projection, GraphSAGE blocks, relation-aware HGT attention, and four classification heads.</desc>
+<desc id="description">Node features flow through input projection, GraphSAGE blocks, relation-aware HGT attention, and paired classification and Dirichlet Dempster-Shafer heads.</desc>
 <rect width="1430" height="460" fill="#ffffff"/>
 <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#526887"/></marker></defs>
 <text x="715" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="25" font-weight="700" fill="#172033">Observation-series + intelligence GraphSAGE/HGT classifier</text>
@@ -27,19 +27,21 @@
 <text x="965" y="199" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">4 attention heads</text>
 <text x="965" y="221" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">typed key/value transforms</text>
 <text x="965" y="243" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">full relational edge set</text>
-<rect x="1140" y="105" width="260" height="230" rx="14" fill="#ffe9ed" stroke="#31415f" stroke-width="2"/>
-<text x="1270" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#172033">Multitask heads</text>
-<text x="1270" y="162" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">MLP: 32 → 72</text>
-<text x="1270" y="184" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">GELU + dropout</text>
-<text x="1270" y="206" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">aircraft_variant</text>
-<text x="1270" y="228" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">radar_mode</text>
-<text x="1270" y="250" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">radar_type</text>
-<text x="1270" y="272" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">operator_country</text>
+<rect x="1140" y="85" width="260" height="270" rx="14" fill="#ffe9ed" stroke="#31415f" stroke-width="2"/>
+<text x="1270" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#172033">Dual multitask heads</text>
+<text x="1270" y="142" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">MLP: 32 → 72</text>
+<text x="1270" y="164" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">classification logits</text>
+<text x="1270" y="186" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">Dirichlet / DS evidence</text>
+<text x="1270" y="208" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">loss weight: 0.1</text>
+<text x="1270" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">aircraft_variant</text>
+<text x="1270" y="252" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">radar_mode</text>
+<text x="1270" y="274" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">radar_type</text>
+<text x="1270" y="296" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">operator_country</text>
 <line x1="220" y1="220" x2="262" y2="220" stroke="#526887" stroke-width="3" marker-end="url(#arrow)"/>
 <line x1="480" y1="220" x2="522" y2="220" stroke="#526887" stroke-width="3" marker-end="url(#arrow)"/>
 <line x1="790" y1="220" x2="832" y2="220" stroke="#526887" stroke-width="3" marker-end="url(#arrow)"/>
 <line x1="1090" y1="220" x2="1132" y2="220" stroke="#526887" stroke-width="3" marker-end="url(#arrow)"/>
 <text x="660" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">Precomputed sampled inbound edges</text>
 <text x="965" y="375" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">Self, temporal, emitter, candidate, report, claim, and contradiction relations</text>
-<text x="715" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#172033">All heads classify observation-node embeddings; ground-truth fields are not model inputs</text>
+<text x="715" y="425" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#172033">Task logits and evidential belief/uncertainty share observation-node embeddings; ground truth is not an input</text>
 </svg>

@@ -24,6 +24,7 @@ SETTING_NAMES = {
     "NUM_ATTENTION_HEADS",
     "DROPOUT",
     "TASK_HEAD_HIDDEN_DIM",
+    "EVIDENTIAL_LOSS_WEIGHT",
     "GRAPHSAGE_FANOUT",
 }
 
@@ -106,12 +107,12 @@ def render_svg(architecture: dict[str, Any]) -> str:
         (270, 145, 210, 150, "Input projection", [f"Linear → {settings['MAXIMUM_HIDDEN_DIM']}", "LayerNorm + GELU", f"Dropout {settings['DROPOUT']}"], "#e9f8f0"),
         (530, 120, 260, 200, "GraphSAGE encoder", [f"{len(dims)} mean-aggregation blocks", f"widths: {dims[0]} → {dims[-1]}", f"fanout: {settings['GRAPHSAGE_FANOUT']}", "residual + norm per block"], "#fff3d9"),
         (840, 120, 250, 200, "Relation-aware HGT", [f"{settings['NUM_HGT_LAYERS']} layer(s)", f"{settings['NUM_ATTENTION_HEADS']} attention heads", "typed key/value transforms", "full relational edge set"], "#f4e9ff"),
-        (1140, 105, 260, 230, "Multitask heads", [f"MLP: {dims[-1]} → {settings['TASK_HEAD_HIDDEN_DIM']}", "GELU + dropout", *targets], "#ffe9ed"),
+        (1140, 85, 260, 270, "Dual multitask heads", [f"MLP: {dims[-1]} → {settings['TASK_HEAD_HIDDEN_DIM']}", "classification logits", "Dirichlet / DS evidence", f"loss weight: {settings['EVIDENTIAL_LOSS_WEIGHT']}", *targets], "#ffe9ed"),
     ]
     svg = [
         '<svg xmlns="http://www.w3.org/2000/svg" width="1430" height="460" viewBox="0 0 1430 460" role="img" aria-labelledby="title description">',
         '<title id="title">Advanced GraphSAGE and HGT classifier architecture</title>',
-        '<desc id="description">Node features flow through input projection, GraphSAGE blocks, relation-aware HGT attention, and four classification heads.</desc>',
+        '<desc id="description">Node features flow through input projection, GraphSAGE blocks, relation-aware HGT attention, and paired classification and Dirichlet Dempster-Shafer heads.</desc>',
         '<rect width="1430" height="460" fill="#ffffff"/>',
         '<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#526887"/></marker></defs>',
         _text(715, 45, "Observation-series + intelligence GraphSAGE/HGT classifier", size=25, weight=700),
@@ -124,7 +125,7 @@ def render_svg(architecture: dict[str, Any]) -> str:
     svg.extend([
         _text(660, 375, "Precomputed sampled inbound edges", size=14),
         _text(965, 375, "Self, temporal, emitter, candidate, report, claim, and contradiction relations", size=14),
-        _text(715, 425, "All heads classify observation-node embeddings; ground-truth fields are not model inputs", size=15, weight=700),
+        _text(715, 425, "Task logits and evidential belief/uncertainty share observation-node embeddings; ground truth is not an input", size=15, weight=700),
         "</svg>",
     ])
     return "\n".join(svg) + "\n"
