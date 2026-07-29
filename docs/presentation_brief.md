@@ -11,6 +11,13 @@ context, synthetic passive ESM observations provide controlled data, an r-GCN
 learns relational evidence patterns, and Dempster-Shafer (DS) theory expresses
 both support and residual uncertainty.
 
+The current repository also generates **synthetic intelligence reports** for
+observation series. Report and claim provenance, credibility, recency, and
+contradictions are represented as evidence nodes instead of overwriting the
+canonical KG. In addition to the packaged r-GCN training path, an advanced
+notebook experiments with a deeper GraphSAGE-plus-HGT classifier for the
+combined series, candidate, and intelligence-report graph.
+
 **Important framing:** the aircraft and radar numbers are representative,
 open-source-inspired simulation inputs.  They are not authoritative technical
 performance data and the repository is not an operational identification system.
@@ -39,12 +46,13 @@ Curated representative seed tables
         -> procedural KG generator -> JSON/triples -> Neo4j
                                                     |
 Synthetic ESM generator -> uncertain observations -+-> candidate-scoring ETL
-                                                        -> evidence subgraph
+Synthetic intelligence reports -> claims/provenance -+-> evidence subgraph
                                                         -> leakage-safe splits
-                                                        -> r-GCN
-                                                        -> DS masses, belief/
-                                                           plausibility, and
-                                                           optional class labels
+                                                        -> packaged r-GCN or
+                                                           notebook GraphSAGE/HGT
+                                                        -> DS evidence outputs
+                                                           (packaged r-GCN) and/or
+                                                           class predictions
 ```
 
 1. Encode radar, radar-mode, aircraft-variant, family, and operator facts in a
@@ -55,9 +63,15 @@ Synthetic ESM generator -> uncertain observations -+-> candidate-scoring ETL
    mode intervals and adding measurement uncertainty.
 4. Score each observation against KG radar-mode candidates using interval,
    categorical, kinematic, and optional external-context evidence.
-5. Load observations and candidates into Neo4j as an evidence graph.
-6. Train a shared r-GCN to predict DS masses and optional categorical labels.
-7. Report normalized masses, uncertainty, belief/plausibility intervals, class
+5. Optionally generate one shared set of 10--12 synthetic intelligence reports
+   per emitter series, including at least two order-of-battle assessments and
+   supportive, contradictory, or refuting claims.
+6. Load observations, candidates, reports, and claims into Neo4j as an evidence
+   graph without changing canonical KG facts.
+7. Train the packaged shared r-GCN to predict DS masses and optional categorical
+   labels, or run the advanced notebook's classification-only GraphSAGE/HGT
+   experiment.
+8. Report normalized masses, uncertainty, belief/plausibility intervals, class
    probabilities, train/test metrics, and training history.
 
 ## Knowledge-graph ontology
@@ -73,6 +87,8 @@ Synthetic ESM generator -> uncertain observations -+-> candidate-scoring ETL
 | `Operator` | Nation/organisation operating a variant | name |
 | `Observation` + `EvidenceEntity` | Synthetic ESM observation after ETL | scores, DS masses, best candidate fields; optional offline labels |
 | `CandidateEvidence` + `EvidenceEntity` | A ranked KG interpretation of one observation | candidate identity, scores, matching/residual/uncertainty features, DS masses |
+| `IntelligenceReport` + `EvidenceEntity` | A provenance-bearing report shared by a series | source/type, collection/publication times, credibility, recency, DS masses |
+| `ReportClaim` + `EvidenceEntity` | A structured claim extracted from a report | claim type, stance, object, confidence, extraction confidence, support score, DS masses |
 
 ### Base KG relation vocabulary
 
@@ -144,6 +160,23 @@ This supports a useful presentation point: a mode change should not be mistaken
 for a platform change.  Mode evidence may need segmentation, whereas parent
 radar, aircraft, and operator evidence can remain continuous.
 
+### Intelligence reports for a series
+
+The series API can enrich each emitter series with one shared set of 10--12
+reports; reports are deliberately stored once on the series wrapper rather than
+copied into every observation. The report mix covers operator,
+aircraft-variant, aircraft-family, radar-type, radar-mode, location, and
+relationship claims. At least two reports are order-of-battle assessments. The
+synthetic mix includes correct, incorrect, supporting, and refuting claims so
+that corroboration and contradiction can be tested. Synthetic truth fields
+exist only to evaluate the generator and must not become inference features.
+
+Claim scoring blends claim confidence (25%), source credibility (20%), recency
+(15%), extraction confidence (15%), optional external prior (10%), KG
+consistency (10%), and specificity (5%). Recency uses exponential decay with a
+14-day default half-life. As with ESM generation, fixed seeds make the dataset
+reproducible.
+
 ## Observation ETL and evidence-graph preparation
 
 The ETL queries Neo4j for each `RadarMode` and its associated radar, aircraft,
@@ -173,6 +206,15 @@ best mode.  Offline-only truth edges can be enabled explicitly.  Candidate nodes
 include baseline scores plus interval-overlap, waveform/scan match, normalized
 residual, kinematic-consistency, uncertainty-width, ambiguity-count, and
 missing-feature signals.
+
+The separate report ETL writes `IntelligenceReport` and `ReportClaim` evidence
+nodes. `REPORT_CONTAINS_CLAIM` preserves provenance,
+`CLAIM_SUPPORTS_OBSERVATION` connects every shared series claim to every
+observation for which it is valid (and retains the claim stance), and directed
+`CONTRADICTS_CLAIM` edges connect incompatible same-type claims from the
+stronger-scored claim to the weaker. Reports and claims receive baseline
+features and two-hypothesis DS masses, allowing them to participate in the same
+Neo4j evidence graph as observations and candidates.
 
 ## Dempster-Shafer theory in this repository
 
@@ -228,6 +270,11 @@ frames.  A two-hypothesis example in `configs/example.yaml` (`benign`,
 
 ## Neural-network architecture
 
+The repository currently contains two distinct model paths. They should not be
+presented as one architecture: the installable CLI uses the r-GCN described
+below, while the advanced notebook is an experimental classifier for series
+graphs enriched with intelligence reports.
+
 ### Encoder
 
 The model starts with a linear input projection, optional LayerNorm, GELU, and
@@ -263,6 +310,19 @@ overconfident outputs.  Label smoothing, gradient clipping, AdamW, learning-rate
 reduction on validation plateaus, and validation-loss early stopping are used to
 reduce rapid overfitting.
 
+### Advanced notebook architecture
+
+`observation_series_and_intel_rgcn_classification_advanced_network.ipynb`
+implements a classification-focused alternative. It precomputes deterministic
+inbound GraphSAGE fanout edges, reuses them across a configurable number of
+message-passing layers, and then applies relation-aware, multi-head HGT-style
+attention. GraphSAGE widths taper linearly from a configurable maximum (128 in
+the notebook) to minimum (32), and the current notebook uses 12 GraphSAGE hops
+followed by one HGT layer with four attention heads. It includes edge chunking,
+optional mixed precision and CUDA gradient checkpointing, and separate task
+heads. This remains notebook-local experimentation; it does not replace
+`rgcn-fusion-train` or its DS mass head.
+
 ## Data splits, evaluation, and leakage controls
 
 The configured example uses a deterministic seed (default 42) and a 50% / 30%
@@ -296,8 +356,12 @@ and experimental results.
   joinable.
 - The candidate scoring code explicitly avoids truth labels unless the
   offline-only option is enabled.
+- Synthetic report generation and a `rgcn-fusion-load-reports` CLI are
+  implemented. Reports are shared at series level, claims are linked to every
+  observation in that series, and canonical KG facts remain unchanged.
 - The repository contains notebooks for KG creation, ESM generation, ETL,
-  classification, advanced-network experiments, and DS identification demos.
+  observation-series-plus-intelligence classification, advanced GraphSAGE/HGT
+  experiments, and DS identification demos.
 - A documented **proposed extension** recommends `EmitterTrack` and
   `ModeSegment` nodes, temporal links, and conflict-aware segmentation.  Present
   it as a design proposal unless the corresponding graph/ETL implementation is
@@ -318,13 +382,14 @@ and experimental results.
    parameters, deterministic unique mode signatures.
 6. **Synthetic ESM data** — sampled KG-consistent measurements, error intervals,
    kinematics, locations, timestamps, and ambiguity.
-7. **Candidate scoring and ETL** — formula, evidence nodes, support and
-   contradiction edges.
+7. **Evidence graph ETL** — candidate formula plus report/claim provenance,
+   support, stance, and contradiction edges.
 8. **Dempster-Shafer** — focal elements, masses, belief/plausibility, conflict.
 9. **Constrained frame** — bit masks; full subsets for <=10 vs compact
    singleton/group/uncertainty frame for larger identity sets.
-10. **r-GCN architecture** — relation-aware messages, residual stack, basis
-    decomposition/gates, Dirichlet mass head, multitask heads.
+10. **Two model paths** — packaged residual r-GCN with Dirichlet/multitask
+    heads; experimental deep GraphSAGE plus HGT notebook for report-enriched
+    series classification.
 11. **Leakage-safe training/evaluation** — observation-only supervision,
     grouped series split, removed shortcut/cross-split edges, 50/30/20 default.
 12. **Results/artifacts, limitations, and roadmap** — artifact outputs; clarify
