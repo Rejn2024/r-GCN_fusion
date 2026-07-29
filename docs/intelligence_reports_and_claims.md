@@ -1,0 +1,112 @@
+# Intelligence Reports and Claims
+
+## Report versus claim
+
+An **intelligence report** is the provenance-bearing container for intelligence.
+It records where and when information came from and how credible the source is.
+A **claim** is one structured assertion extracted from that report. In short:
+
+> **Report = source and context. Claim = assertion being evaluated.**
+
+For example, a liaison report collected on a particular date might claim that
+Country X operates a MiG-29 in the Baltic region. The report holds the liaison
+source, timestamps, report type, and overall credibility. Separate claims can
+represent the asserted operator, aircraft variant, and location, each with its
+own stance and confidence.
+
+| Aspect | Intelligence report | Report claim |
+|---|---|---|
+| Represents | An intelligence product or source record | One proposition extracted from a report |
+| Answers | Who reported it, when, and with what credibility? | What exactly is being asserted? |
+| Key fields | Source/type, collection and publication times, credibility | Type, subject, predicate, object, stance, and confidence |
+| Graph role | Contains claims and preserves provenance | Supports/refutes observations and may contradict other claims |
+| Neo4j label | `IntelligenceReport` + `EvidenceEntity` | `ReportClaim` + `EvidenceEntity` |
+
+Reports are stored once for an observation series rather than copied into each
+observation. A report can contain multiple claims, although the current
+synthetic generator normally creates one claim per report. During ETL,
+`REPORT_CONTAINS_CLAIM` links each report to its claims, while
+`CLAIM_SUPPORTS_OBSERVATION` links each claim to every applicable observation
+and retains its `supports` or `refutes` stance. Contradictions are modeled
+between incompatible claims, not between their containing reports.
+
+Keeping these entities separate preserves provenance, permits multiple sources
+to corroborate the same proposition, and lets assertions from one report carry
+different confidence or extraction quality.
+
+## Claim scoring
+
+Each claim receives a bounded support/quality score from 0 to 1:
+
+```text
+score = 0.25 * claim confidence
+      + 0.20 * source credibility
+      + 0.15 * recency
+      + 0.15 * extraction confidence
+      + 0.10 * optional external prior
+      + 0.10 * KG consistency
+      + 0.05 * specificity
+```
+
+Recency follows exponential decay with a 14-day half-life. `collected_at` is
+preferred over `published_at`, and a missing timestamp receives a recency score
+of 0.25. An absent external prior is neutral at 0.5. Inputs and the final score
+are bounded to `[0, 1]`.
+
+This score measures the quality or strength of an extracted assertion; it is
+not a learned probability and does not by itself establish that the assertion
+is true. Synthetic truth metadata is for generator evaluation and is excluded
+from inference features.
+
+## Baseline features
+
+Reports and claims receive a small common numeric representation so they can
+participate as `EvidenceEntity` nodes alongside observations and candidate
+evidence:
+
+- A report has credibility, recency, a degree score (number of claims), a text
+  score (currently credibility), and DS masses.
+- A claim has inherited credibility and recency, claim and extraction
+  confidence, a degree score (currently 1), a text score (the composite claim
+  score), and DS masses.
+
+Claims also retain their type, stance, asserted object, report ID, and series
+ID. These are called *baseline* features because they are simpler than the
+domain-specific interval, waveform, scan, residual, and kinematic features used
+for ESM candidate matching.
+
+## Two-hypothesis Dempster-Shafer masses
+
+A score `s` and ambiguity `u` are converted to the normalized mass vector:
+
+```text
+[m(non-match), m(match), m({non-match, match})]
+```
+
+using:
+
+```text
+m(uncertain) = u
+m(match)     = (1 - u) * s
+m(non-match) = (1 - u) * (1 - s)
+```
+
+The third entry assigns mass to the complete two-hypothesis frame. It represents
+uncommitted uncertainty, not a third outcome. Ambiguity is bounded to
+`[0.05, 0.60]`.
+
+Report masses use `credibility * recency` as the score and ambiguity 0.25.
+Claim masses use the composite claim score and ambiguity 0.20 for supporting
+claims or 0.35 for other stances. For example, a supporting claim scored 0.80
+produces:
+
+```text
+[0.16, 0.64, 0.20]
+```
+
+This commits 0.16 against a match, 0.64 for a match, and leaves 0.20 uncertain.
+Its match belief is 0.64 and its match plausibility is 0.84.
+
+The claim's substantive direction is not encoded solely by this mass vector.
+The graph also retains its stance on the claim-to-observation edge and represents
+incompatible same-type assertions with directed `CONTRADICTS_CLAIM` edges.
