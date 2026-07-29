@@ -298,8 +298,8 @@ $\mathbf{x}_v\in\mathbb{R}^{F}$, the notebook computes
 
 $$
 \mathbf{h}^{(0)}_v =
-\operatorname{Dropout}\!\left(\operatorname{GELU}\!\left(
-\operatorname{LayerNorm}(\mathbf{W}_{in}\mathbf{x}_v+\mathbf{b}_{in})
+\mathrm{Dropout}\!\left(\mathrm{GELU}\!\left(
+\mathrm{LayerNorm}(\mathbf{W}_{in}\mathbf{x}_v+\mathbf{b}_{in})
 \right)\right).
 $$
 
@@ -380,7 +380,7 @@ with the Dirichlet construction already implemented by the packaged r-GCN.  For
 head logits $\mathbf{z}$, define non-negative evidence and concentration as
 
 $$
-e_k=\operatorname{softplus}(z_k),\qquad
+e_k=\mathrm{softplus}(z_k),\qquad
 \alpha_k=e_k+1,\qquad S=\sum_{j=1}^{K}\alpha_j.
 $$
 
@@ -431,6 +431,8 @@ signs for inline expressions (`$...$`) and double dollar signs on their own line
 for display equations (`$$ ... $$`).  Their contents are LaTeX math commands;
 GitHub renders that combination in Chrome, whereas the generic LaTeX delimiters
 `\\(...\\)` and `\\[...\\]` are not reliably recognized by GitHub Markdown.
+Function names use the supported `\\mathrm{...}` styling command rather than
+`\\operatorname{...}`, which GitHub's math renderer rejects in this context.
 
 For presentation generation, use the bold **Presentation wording** below each
 formula as speaker notes or a plain-text fallback.  For a visual equation on a
