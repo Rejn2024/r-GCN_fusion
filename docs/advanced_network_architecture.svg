@@ -12,14 +12,14 @@
 <text x="125" y="246" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">sensor + evidence</text>
 <rect x="270" y="145" width="210" height="150" rx="14" fill="#e9f8f0" stroke="#31415f" stroke-width="2"/>
 <text x="375" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#172033">Input projection</text>
-<text x="375" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">Linear → 36</text>
+<text x="375" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">Linear → 40</text>
 <text x="375" y="224" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">LayerNorm + GELU</text>
 <text x="375" y="246" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">Dropout 0.3</text>
 <rect x="530" y="120" width="260" height="200" rx="14" fill="#fff3d9" stroke="#31415f" stroke-width="2"/>
 <text x="660" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#172033">GraphSAGE encoder</text>
 <text x="660" y="177" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">25 mean-aggregation blocks</text>
-<text x="660" y="199" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">widths: 36 → 32</text>
-<text x="660" y="221" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">fanout: 25</text>
+<text x="660" y="199" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">widths: 40 → 32</text>
+<text x="660" y="221" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">fanout: 32</text>
 <text x="660" y="243" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="400" fill="#172033">residual + norm per block</text>
 <rect x="840" y="120" width="250" height="200" rx="14" fill="#f4e9ff" stroke="#31415f" stroke-width="2"/>
 <text x="965" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#172033">Relation-aware HGT</text>
