@@ -270,58 +270,176 @@ frames.  A two-hypothesis example in `configs/example.yaml` (`benign`,
 
 ## Neural-network architecture
 
-The repository currently contains two distinct model paths. They should not be
-presented as one architecture: the installable CLI uses the r-GCN described
-below, while the advanced notebook is an experimental classifier for series
-graphs enriched with intelligence reports.
+The presentation should lead with the architecture in
+`observation_series_and_intel_rgcn_classification_advanced_network.ipynb`: a
+deep GraphSAGE encoder followed by relation-aware HGT attention.  It is designed
+for a heterogeneous series graph containing observations, scored candidates,
+intelligence reports, and report claims.  The installable CLI's residual r-GCN
+is a separate, production-facing path and should be mentioned only as the
+current implementation of the DS/Dirichlet output described below; do not imply
+that the notebook already has an evidential head.
 
-### Encoder
+### Node properties and linear input projection
 
-The model starts with a linear input projection, optional LayerNorm, GELU, and
-dropout.  It then applies a configurable stack of residual r-GCN blocks (the
-training pipeline enforces a minimum of five blocks).  Each block performs:
+Before message passing, each node is a sparse row in one shared feature matrix.
+An observation row contains measured ESM values and uncertainty bounds,
+kinematics, location/error-box values, elapsed time, relative sequence position,
+series duration/count, and an optional measurement-derived segment index.  A
+candidate row represents match, residual, ambiguity, kinematic, rank, and DS
+scores.  Report rows encode credibility, recency, rank, and claim count; claim
+rows encode confidence, extraction confidence, specificity, KG consistency,
+text-derived support, and supporting/refuting stance.  One-hot node-kind flags
+tell the network which of these property sets is meaningful.  Missing fields are
+zero-filled, and ground-truth fields are excluded from the input.
 
-```text
-self-loop linear transform + degree-normalized sum of relation-specific messages
--> GELU -> optional LayerNorm -> dropout -> optional residual addition
-```
+A **linear input projection** is a learned affine map, not a manual feature
+selection or a graph operation.  If node properties are
+$\mathbf{x}_v\in\mathbb{R}^{F}$, the notebook computes
 
-Relation weights can use basis decomposition: a small set of basis matrices is
-mixed into one transform per relation, reducing parameters and sharing
-statistical strength across relation types.  Optional sigmoid relation gates
-learn a relation-specific message importance.  Edge chunking limits temporary
-message memory, and optional gradient checkpointing trades extra computation for
-lower activation memory.
+$$
+\mathbf{h}^{(0)}_v =
+\mathrm{Dropout}\!\left(\mathrm{GELU}\!\left(
+\mathrm{LayerNorm}(\mathbf{W}_{in}\mathbf{x}_v+\mathbf{b}_{in})
+\right)\right).
+$$
 
-### Output heads and objectives
+**Presentation wording:** project the raw property vector with a learned weight
+matrix and bias, then apply LayerNorm, GELU, and dropout.
 
-The shared embedding feeds an evidential mass head and optional classification
-heads.  The mass head can use softmax or the recommended Dirichlet approach:
-softplus logits become non-negative evidence, `alpha = evidence + 1`, normalized
-alpha values become masses, and uncertainty is `number_of_masses / sum(alpha)`.
+Thus $\mathbf{W}_{in}\in\mathbb{R}^{128\times F}$ learns weighted mixtures
+of differently named properties and places every node type in the same
+128-dimensional latent coordinate system.  Layer normalization controls scale,
+GELU introduces non-linearity, and dropout regularizes the representation.  A
+single projected coordinate need not correspond to one human-readable field;
+it can represent a learned combination such as frequency residual, measurement
+uncertainty, report credibility, and node kind.
 
-The primary objective is KL divergence between predicted and target DS masses.
-Optional tasks predict radar type, radar mode, aircraft variant, and operator
-country.  If a task has the same cardinality as the DS hypothesis frame, its
-scores are belief/plausibility midpoints; otherwise it uses a small MLP (or
-linear) task head.  The total training loss adds weighted classification loss,
-optional L1 regularization, and an entropy-based penalty that discourages
-overconfident outputs.  Label smoothing, gradient clipping, AdamW, learning-rate
-reduction on validation plateaus, and validation-loss early stopping are used to
-reduce rapid overfitting.
+### Deep GraphSAGE representation
 
-### Advanced notebook architecture
+The notebook deterministically precomputes at most 12 inbound neighbours per
+node and reuses those edges for 12 GraphSAGE layers.  At layer $\ell$, it forms
+the mean inbound-neighbour representation and combines a transform of that mean
+with a separate transform of the node itself:
 
-`observation_series_and_intel_rgcn_classification_advanced_network.ipynb`
-implements a classification-focused alternative. It precomputes deterministic
-inbound GraphSAGE fanout edges, reuses them across a configurable number of
-message-passing layers, and then applies relation-aware, multi-head HGT-style
-attention. GraphSAGE widths taper linearly from a configurable maximum (128 in
-the notebook) to minimum (32), and the current notebook uses 12 GraphSAGE hops
-followed by one HGT layer with four attention heads. It includes edge chunking,
-optional mixed precision and CUDA gradient checkpointing, and separate task
-heads. This remains notebook-local experimentation; it does not replace
-`rgcn-fusion-train` or its DS mass head.
+$$
+\bar{\mathbf{h}}^{(\ell)}_{N(v)}=
+\frac{1}{|N(v)|}\sum_{u\in N(v)}\mathbf{h}^{(\ell)}_u,
+\qquad
+\tilde{\mathbf{h}}^{(\ell+1)}_v =
+\mathbf{W}^{(\ell)}_{self}\mathbf{h}^{(\ell)}_v+
+\mathbf{W}^{(\ell)}_{nbr}\bar{\mathbf{h}}^{(\ell)}_{N(v)}.
+$$
+
+**Presentation wording:** average the inbound neighbour encodings, transform the
+node and neighbour average separately, and add the two results.
+
+After GELU and dropout, a residual projection carries the previous state around
+the update and LayerNorm produces the next state.  Layer widths taper from 128
+to 32 dimensions.  Consequently, an observation's final encoding represents
+both its own measurements and progressively more distant context: adjacent
+observations and same-emitter continuity, candidate matches and contradictions,
+and report/claim provenance, support, and contradiction.  The residual path
+preserves local node properties while the narrowing stack compresses this
+multi-hop evidence into a compact representation.
+
+### Relation-aware HGT refinement and task heads
+
+One four-head HGT-style layer then revisits the full typed edge set.  For edge
+$u\xrightarrow{r}v$, each head compares the destination query with a
+relation-transformed source key and transforms the source value with a second
+relation matrix:
+
+$$
+s^{r,h}_{uv}=\frac{\left(\mathbf{q}^{h}_v\right)^\top
+\mathbf{R}^{r,h}_{K}\mathbf{k}^{h}_u}{\sqrt{d_h}}\,\mu_{r,h},
+\qquad
+\mathbf{m}^{r,h}_{uv}=\sigma(s^{r,h}_{uv})
+\mathbf{R}^{r,h}_{V}\mathbf{v}^{h}_u.
+$$
+
+**Presentation wording:** score each source-to-destination message using the
+edge type and attention head, use that score as a gate, and pass a
+relation-transformed source value to the destination.
+
+Messages are mean-aggregated at the destination, projected, passed through
+GELU/dropout, and added residually before LayerNorm.  Relation-specific key and
+value transforms plus the learned priority $\mu_{r,h}$ let, for example, a
+`CONTRADICTS_CLAIM` edge affect a node differently from a temporal or self-loop
+edge.  Separate two-layer MLP heads map the shared 32-dimensional encoding to
+aircraft-variant, radar-mode, radar-type, and operator-country logits.  The
+notebook trains these heads with summed cross-entropy and optional L1
+regularization, using one full-graph step per epoch.  Edge chunking, CUDA mixed
+precision, gradient checkpointing, and early stopping control memory and
+overfitting.
+
+### Dirichlet evidential output: formulae and advantages
+
+The advanced notebook currently ends in ordinary classification logits.  A
+natural evidential extension is to replace or augment a $K$-class task head
+with the Dirichlet construction already implemented by the packaged r-GCN.  For
+head logits $\mathbf{z}$, define non-negative evidence and concentration as
+
+$$
+e_k=\mathrm{softplus}(z_k),\qquad
+\alpha_k=e_k+1,\qquad S=\sum_{j=1}^{K}\alpha_j.
+$$
+
+**Presentation wording:** turn each logit into non-negative evidence, add one to
+obtain its Dirichlet concentration, and sum all concentrations to obtain the
+total evidence strength.
+
+The expected class probability is $\mathbb{E}[p_k]=\alpha_k/S$.  In the
+subjective-logic/DS view, committed singleton belief and uncommitted uncertainty
+are
+
+$$
+b_k=\frac{e_k}{S},\qquad u=\frac{K}{S},\qquad
+\sum_{k=1}^{K}b_k+u=1.
+$$
+
+**Presentation wording:** divide each class's evidence by the total strength to
+obtain committed belief; the unevidenced share is the number of classes divided
+by that same strength.
+
+For the repository's DS mass head, whose $K$ outputs are focal-element masses,
+the implemented prediction is $m_k=\alpha_k/S$, with the same concentration
+diagnostic $u=K/S$.  This distinction should be stated on a slide: normalized
+Dirichlet means over focal elements are the model's masses, whereas
+$b_k=e_k/S$ and $u=K/S$ give the conventional evidential decomposition.
+
+The approach has four presentation-worthy advantages over a bare softmax:
+
+- it cannot create negative evidence, and $\alpha_k\geq1$ provides a clear
+  zero-evidence prior;
+- total concentration $S$ records how much evidence the network has gathered,
+  so identical class rankings can carry different uncertainty;
+- uncertainty rises toward one when all evidence is weak and falls only when
+  accumulated evidence is strong, making ignorance explicit rather than forcing
+  all output mass among classes; and
+- the output can be connected to DS focal-element masses and therefore to
+  belief/plausibility reporting and evidence-fusion workflows.
+
+These quantities are useful uncertainty indicators, not automatic guarantees of
+calibration.  Evidence from correlated graph neighbours or reports must not be
+treated as independent without validation, and an evidential version of the
+advanced notebook would require calibration and out-of-distribution evaluation.
+
+### Equation encoding and presentation reuse
+
+The equations above use GitHub-supported Markdown math delimiters: single dollar
+signs for inline expressions (`$...$`) and double dollar signs on their own lines
+for display equations (`$$ ... $$`).  Their contents are LaTeX math commands;
+GitHub renders that combination in Chrome, whereas the generic LaTeX delimiters
+`\\(...\\)` and `\\[...\\]` are not reliably recognized by GitHub Markdown.
+Function names use the supported `\\mathrm{...}` styling command rather than
+`\\operatorname{...}`, which GitHub's math renderer rejects in this context.
+
+For presentation generation, use the bold **Presentation wording** below each
+formula as speaker notes or a plain-text fallback.  For a visual equation on a
+slide, paste the contents between the dollar-sign delimiters into PowerPoint's
+equation editor in LaTeX input mode; do not paste the dollar signs themselves.
+This keeps the source readable in raw Markdown, rendered GitHub notes, and slide
+software without relying on a screenshot of the equation.
 
 ## Data splits, evaluation, and leakage controls
 
@@ -387,9 +505,10 @@ and experimental results.
 8. **Dempster-Shafer** — focal elements, masses, belief/plausibility, conflict.
 9. **Constrained frame** — bit masks; full subsets for <=10 vs compact
    singleton/group/uncertainty frame for larger identity sets.
-10. **Two model paths** — packaged residual r-GCN with Dirichlet/multitask
-    heads; experimental deep GraphSAGE plus HGT notebook for report-enriched
-    series classification.
+10. **Advanced network** — linear property projection, 12-hop tapered
+    GraphSAGE, relation-aware four-head HGT, multitask heads, and the Dirichlet
+    evidential-head extension; identify clearly what is notebook-local versus
+    already implemented in the packaged r-GCN.
 11. **Leakage-safe training/evaluation** — observation-only supervision,
     grouped series split, removed shortcut/cross-split edges, 50/30/20 default.
 12. **Results/artifacts, limitations, and roadmap** — artifact outputs; clarify
