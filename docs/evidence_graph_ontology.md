@@ -32,8 +32,10 @@ classDiagram
     EvidenceEntity <|-- ReportClaim
 
     Observation "1" --> "1..*" CandidateEvidence : HAS_CANDIDATE
+    Observation --> Observation : next_observation
+    Observation --> Observation : prev_observation
+    Observation --> Observation : same_emitter
     CandidateEvidence --> CandidateEvidence : CONTRADICTS_CANDIDATE
-    Observation --> CandidateEvidence : GROUND_TRUTH_CANDIDATE
     Observation --> Observation : SHARES_BEST_MODE
     IntelligenceReport "1" --> "0..*" ReportClaim : REPORT_CONTAINS_CLAIM
     ReportClaim --> Observation : CLAIM_SUPPORTS_OBSERVATION
@@ -88,9 +90,15 @@ for recency.
 ### `ReportClaim`
 
 An extracted assertion from an intelligence report, identified as
-`evidence:claim:<claim_id>`. It records `claim_id`, `report_id`, `series_id`,
-`claim_type`, `stance`, `object_id` or `object_value`, source credibility,
-recency, claim/extraction confidence, and the shared evidence properties.
+`evidence:claim:<claim_id>`.
+
+| Property group | Properties | Meaning |
+| --- | --- | --- |
+| Identity and provenance | `id`, `claim_id`, `report_id`, `series_id` | Claim identity, its containing report, and the observation series to which the report applies. |
+| Assertion | `claim_type`, `stance`, `object_id`, `object_value` | The kind of assertion, whether it supports or refutes the object, and the canonical identifier or literal value being asserted. |
+| Source and extraction quality | `credibility_score`, `claim_confidence`, `extraction_confidence` | Reliability of the source, the assertion itself, and the extraction process. |
+| Shared model inputs | `degree_score`, `text_score`, `recency_score` | Common numeric features; `text_score` is the blended claim-support score and `recency_score` applies time decay. |
+| Evidence target | `ds_masses` | Claim Dempster-Shafer masses in `[non_match, match, uncertain]` order; the uncertainty allocation depends on the claim stance. |
 
 The supported claim vocabulary is:
 
@@ -110,6 +118,9 @@ canonical KG fact.
 | Relationship | Direction | Properties | Semantics |
 | --- | --- | --- | --- |
 | `HAS_CANDIDATE` | `Observation` → `CandidateEvidence` | `score`, `rank` | Associates an observation with a ranked hypothesis. |
+| `next_observation` | earlier `Observation` → immediately following `Observation` | none | Provides forward temporal adjacency within a series. The notebook graph derives it by sorting observations on `sequence_index`. |
+| `prev_observation` | later `Observation` → immediately preceding `Observation` | none | Provides the reverse relation for temporal message passing without treating `next_observation` as symmetric. |
+| `same_emitter` | `Observation` ↔ `Observation` | none | Reinforces track continuity between non-adjacent observations from the same emitter series. The notebook graph currently adds a pair of directed edges between observations two samples apart. |
 | `CONTRADICTS_CANDIDATE` | stronger `CandidateEvidence` → weaker `CandidateEvidence` | `score_delta`, `reason` | Marks incompatible candidate hypotheses for the same observation when their score difference crosses the configured threshold. `reason` lists differing hypothesis fields. |
 | `GROUND_TRUTH_CANDIDATE` | `Observation` → `CandidateEvidence` | none | Evaluation-only link to a candidate matching the supplied truth. It exists only when truth ingestion is enabled and should normally be excluded from leakage-safe training. |
 | `SHARES_BEST_MODE` | `Observation` ↔ `Observation` | none | A pair of directed edges between observations whose best candidate has the same radar mode. This is candidate-derived and may also be excluded from leakage-safe training. |
@@ -120,6 +131,14 @@ canonical KG fact.
 Relationship direction is part of the r-GCN relation semantics. In particular,
 contradiction edges point from the stronger item to the weaker one; they should
 not be assumed to be symmetric.
+
+The lowercase temporal relations (`next_observation`, `prev_observation`, and
+`same_emitter`) are constructed by the series-classification notebooks for the
+in-memory r-GCN graph. The Neo4j observation ETL currently preserves the
+`series_id` and `sequence_index` needed to derive them, but does not materialise
+these three relationships. Their uppercase spellings in design notes describe
+the same concepts; relation names passed to the current notebook models are
+lowercase and case-sensitive.
 
 ## Connection to the canonical knowledge graph
 
