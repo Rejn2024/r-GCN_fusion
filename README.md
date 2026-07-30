@@ -237,6 +237,11 @@ authoritative technical database.
   https://doi.org/10.1214/aoms/1177698950
 - Shafer, G. (1976). *A Mathematical Theory of Evidence*. Princeton University
   Press. ISBN 9780691100425.
+- Sensoy, M., Kaplan, L., & Kandemir, M. (2018). *Evidential Deep Learning to
+  Quantify Classification Uncertainty*. Advances in Neural Information
+  Processing Systems 31. https://proceedings.neurips.cc/paper/2018/hash/a981f2b708044d6fb4a71a1463242520-Abstract.html
+- Jøsang, A. (2016). *Subjective Logic: A Formalism for Reasoning Under
+  Uncertainty*. Springer. https://doi.org/10.1007/978-3-319-42337-1
 - PyTorch contributors. *PyTorch documentation*. https://pytorch.org/docs/stable/
 - PyTorch Geometric contributors. *RGCNConv documentation*.
   https://pytorch-geometric.readthedocs.io/en/2.6.1/generated/torch_geometric.nn.conv.RGCNConv.html

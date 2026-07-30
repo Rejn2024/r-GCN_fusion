@@ -376,8 +376,12 @@ overfitting.
 ### Dirichlet evidential output: formulae and advantages
 
 The advanced notebook augments every ordinary $K$-class task head with the
-Dirichlet construction also implemented by the packaged r-GCN. For evidential
-head logits $\mathbf{z}$, it defines non-negative evidence and concentration as
+Dirichlet construction also implemented by the packaged r-GCN. This follows the
+evidential-classification parameterization of [Sensoy, Kaplan, and Kandemir
+(2018)](https://proceedings.neurips.cc/paper/2018/hash/a981f2b708044d6fb4a71a1463242520-Abstract.html),
+which uses Dempster-Shafer/subjective-logic quantities to connect a Dirichlet
+distribution to belief masses and uncertainty. For evidential head logits
+$\mathbf{z}$, it defines non-negative evidence and concentration as
 
 $$
 e_k=\mathrm{softplus}(z_k),\qquad
@@ -390,7 +394,8 @@ total evidence strength.
 
 The expected class probability is $\mathbb{E}[p_k]=\alpha_k/S$.  In the
 subjective-logic/DS view, committed singleton belief and uncommitted uncertainty
-are
+are (see also Jøsang's treatment of the Dirichlet--multinomial opinion mapping
+in [*Subjective Logic*](https://doi.org/10.1007/978-3-319-42337-1))
 
 $$
 b_k=\frac{e_k}{S},\qquad u=\frac{K}{S},\qquad
