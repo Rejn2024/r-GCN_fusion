@@ -15,8 +15,9 @@ The current repository also generates **synthetic intelligence reports** for
 observation series. Report and claim provenance, credibility, recency, and
 contradictions are represented as evidence nodes instead of overwriting the
 canonical KG. In addition to the packaged r-GCN training path, an advanced
-notebook experiments with a deeper GraphSAGE-plus-HGT classifier for the
-combined series, candidate, and intelligence-report graph.
+notebook experiments with a deep relation-aware r-GCN-plus-HGT classifier and
+a locally hosted LLM explanation layer for the combined series, candidate, and
+intelligence-report graph.
 
 **Important framing:** the aircraft and radar numbers are representative,
 open-source-inspired simulation inputs.  They are not authoritative technical
@@ -49,10 +50,11 @@ Synthetic ESM generator -> uncertain observations -+-> candidate-scoring ETL
 Synthetic intelligence reports -> claims/provenance -+-> evidence subgraph
                                                         -> leakage-safe splits
                                                         -> packaged r-GCN or
-                                                           notebook GraphSAGE/HGT
+                                                           notebook r-GCN/HGT
                                                         -> DS evidence outputs
                                                            (packaged r-GCN) and/or
                                                            class predictions
+                                                        -> local LLM explanation
 ```
 
 1. Encode radar, radar-mode, aircraft-variant, family, and operator facts in a
@@ -69,10 +71,11 @@ Synthetic intelligence reports -> claims/provenance -+-> evidence subgraph
 6. Load observations, candidates, reports, and claims into Neo4j as an evidence
    graph without changing canonical KG facts.
 7. Train the packaged shared r-GCN to predict DS masses and optional categorical
-   labels, or run the advanced notebook's classification-only GraphSAGE/HGT
-   experiment.
+   labels, or run the advanced notebook's paired categorical and evidential
+   r-GCN/HGT experiment.
 8. Report normalized masses, uncertainty, belief/plausibility intervals, class
-   probabilities, train/test metrics, and training history.
+   probabilities, train/test metrics, and training history; the LLM notebook
+   can then turn its evidential outputs into a constrained analyst explanation.
 
 ## Knowledge-graph ontology
 
@@ -270,9 +273,77 @@ frames.  A two-hypothesis example in `configs/example.yaml` (`benign`,
 
 ## Neural-network architecture
 
-The presentation should lead with the architecture in
-`observation_series_and_intel_rgcn_classification_advanced_network.ipynb`: a
-deep GraphSAGE encoder followed by relation-aware HGT attention.  It is designed
+### New relation-aware r-GCN/HGT network and LLM integration
+
+The presentation should lead with
+`observation_series_and_intel_rgcn_classification_advanced_network_llm.ipynb`.
+It replaces the earlier notebook's relation-agnostic GraphSAGE stage with a
+relation-aware r-GCN encoder, retains HGT attention, adds paired categorical and
+Dirichlet/DS heads, and passes a deliberately limited evidence packet to a local
+LLM after inference. This is an explanation layer, not another classifier: the
+LLM does not alter graph embeddings, class scores, or training.
+
+The input is one typed graph containing observations, scored KG candidates,
+intelligence reports, and report claims. Its relations cover temporal order and
+same-emitter continuity; observation-to-candidate, report, and claim links;
+provenance; support; contradiction; and self-loops. Ground-truth labels and
+synthetic report truth markers are recursively removed from the feature view.
+Splits are made by `series_id` and stratified on the joint aircraft/operator
+target, preventing adjacent observations from the same track leaking across the
+50/30/20 train/test/validation partitions.
+
+The network first projects every node's numeric feature row through a linear
+layer, LayerNorm, GELU, and dropout. It then applies a configurable stack of
+residual r-GCN blocks (25 blocks in the notebook configuration, tapering from
+40 to 32 hidden dimensions). Each block learns a transform for every relation;
+four shared bases and learned relation coefficients bound parameter growth. A
+root transform preserves the node's own state, typed neighbour messages are
+degree-normalized, and a residual projection plus LayerNorm stabilizes the deep
+stack. Unlike GraphSAGE, every r-GCN block consumes the full typed edge set, so
+the relation semantics remain explicit throughout message passing.
+
+One four-head, relation-aware HGT layer then refines those encodings. Per
+relation and attention head it transforms source keys and values and learns an
+attention priority. A destination query scores each incoming message, a sigmoid
+gate bounds its contribution, and the mean aggregated message is projected and
+added through another residual/LayerNorm path. The common encoding feeds four
+task-specific two-layer MLPs for aircraft variant, radar mode, radar type, and
+operator country. A parallel evidential MLP for each task produces non-negative
+evidence, Dirichlet concentration, expected probabilities, singleton belief,
+total strength, and residual uncommitted uncertainty. Training combines summed
+categorical cross-entropy with expected Dirichlet cross-entropy and L1
+regularization in one full-graph optimizer step per epoch. Edge chunking, mixed
+precision, activation checkpointing, and early stopping address the memory and
+overfitting costs of deep full-graph propagation.
+
+After inference, the notebook constructs a label-free JSON evidence packet for
+each observation. For every task the packet contains only the leading and
+runner-up hypotheses, their probabilities, leading singleton belief,
+Dirichlet strength, and DS uncommitted uncertainty. A deterministic policy
+classifies the largest critical aircraft/radar/radar-mode uncertainty as
+`supported`, `limited`, or `extreme`. The prompt instructs the LLM to identify
+the emitter jointly across all four tasks, distinguish probability from belief
+and uncertainty, mention alternatives and contradictions, avoid unsupported
+facts, and return a concise assessment with evidence, uncertainty, and action
+bullets.
+
+The integration calls Ollama's `/api/generate` endpoint for every observation,
+using `qwen3.5:9b` by default at `http://localhost:11434`. A loopback-only URL
+check prevents evidence from being sent accidentally to a remote host, and
+connection or malformed-response errors fail visibly rather than falling back
+to invented text. Temperature is held at 0.1 for consistency. When critical
+uncertainty is at least 0.60, deterministic post-processing ensures the result
+states that identification is not decision-grade and recommends further
+time-linked ESM, corroborating intelligence, and active collection (including
+an active RADAR when operationally appropriate). Thus the neural network owns
+the predictions and quantified uncertainty, the LLM communicates them, and
+hard-coded policy retains control of the safety-critical recommendation.
+
+### Earlier GraphSAGE/HGT comparison architecture
+
+For comparison,
+`observation_series_and_intel_rgcn_classification_advanced_network.ipynb` uses
+a deep GraphSAGE encoder followed by relation-aware HGT attention. It is designed
 for a heterogeneous series graph containing observations, scored candidates,
 intelligence reports, and report claims.  The installable CLI's residual r-GCN
 is a separate, production-facing path and should be mentioned only as another
