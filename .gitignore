@@ -1,3 +1,7 @@
 __pycache__/
 *.py[cod]
 .venv/
+/generated/demo_esm_observation_series_01.json
+/generated/esm_observation_series_visualisation_demo.json
+/generated/demo_esm_observation_series_with_intel.json
+/generated/esm_observation_series_with_intelligence_reports_visualisation_demo.json
