@@ -66,6 +66,17 @@ RECOMMENDED_CANDIDATE_FEATURES = [
     "observation_uncertainty_width",
     "candidate_ambiguity_count",
     "missing_feature_count",
+    "sensor_score",
+    "intel_support_score",
+    "intel_refute_score",
+    "intel_net_score",
+    "intel_score",
+    "intel_conflict",
+    "intel_uncertainty",
+    "intel_claim_count",
+    "intel_source_count",
+    "intel_effective_weight",
+    "final_score",
 ]
 
 
