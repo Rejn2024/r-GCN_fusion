@@ -317,15 +317,33 @@ precision, activation checkpointing, and early stopping address the memory and
 overfitting costs of deep full-graph propagation.
 
 After inference, the notebook constructs a label-free JSON evidence packet for
-each observation. For every task the packet contains only the leading and
-runner-up hypotheses, their probabilities, leading singleton belief,
-Dirichlet strength, and DS uncommitted uncertainty. A deterministic policy
-classifies the largest critical aircraft/radar/radar-mode uncertainty as
+each observation. Each task explicitly describes its modified DS frame:
+the task labels are the mutually exclusive singleton hypotheses and the only
+learned focal elements are those singletons plus the complete task frame
+`Theta`. This singleton-plus-`Theta` subjective-logic frame avoids a power-set
+head while retaining an explicit mass for evidence that does not distinguish
+any label. It is a separate marginal frame for each task, not a joint
+KG-consistent world frame, so the LLM must assess cross-task compatibility and
+must not imply that the four marginal predictions constitute one learned joint
+mass function.
+
+For the leading and runner-up hypotheses, the packet now supplies all of the
+GNN evidential outputs and their DS interpretation: non-negative raw evidence,
+singleton belief (committed mass), plausibility (belief plus the mass on
+`Theta`), pignistic probability (the `Theta` mass shared equally among all task
+hypotheses), and uncertainty/imprecision (the belief-plausibility interval
+width). It also includes the number of hypotheses, Dirichlet strength, and
+full-frame uncommitted mass so the quantities can be interpreted against the
+actual frame rather than as interchangeable confidence scores. A deterministic
+policy classifies the largest critical aircraft/radar/radar-mode uncertainty as
 `supported`, `limited`, or `extreme`. The prompt instructs the LLM to identify
-the emitter jointly across all four tasks, distinguish probability from belief
-and uncertainty, mention alternatives and contradictions, avoid unsupported
-facts, and return a concise assessment with evidence, uncertainty, and action
-bullets.
+the emitter jointly across all four task assessments; explain what belief,
+plausibility, evidence, uncertainty, and pignistic probability mean in this
+modified frame; compare alternatives and identify contradictions; avoid
+unsupported facts; and return a concise assessment with evidence, uncertainty,
+and action bullets. In particular, a large belief-plausibility interval must be
+reported as unresolved ignorance, while pignistic probability is described as
+a decision allocation rather than additional committed evidence.
 
 The integration calls Ollama's `/api/generate` endpoint for every observation,
 using `qwen3.5:9b` by default at `http://localhost:11434`. A loopback-only URL
