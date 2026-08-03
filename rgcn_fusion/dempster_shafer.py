@@ -11,7 +11,7 @@ hypotheses ``["A", "B"]`` the full-subset vector is ``[{A}, {B}, {A,B}]``.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Iterable, Sequence
+from typing import Any, Iterable, Mapping, Sequence
 
 import numpy as np
 
@@ -26,6 +26,17 @@ class Interval:
     hypothesis: str
     belief: float
     plausibility: float
+
+
+@dataclass(frozen=True)
+class AttributeAssessment:
+    """Projected evidence for one value of an attribute in a joint-world frame."""
+
+    value: Any
+    belief: float
+    plausibility: float
+    probability: float
+    uncertainty: float
 
 
 def _aircraft_type_key(hypothesis: str) -> str:
@@ -139,6 +150,63 @@ def belief_plausibility(
         plausibility = sum(value for mask, value in zip(masks, mass) if mask & singleton)
         intervals.append(Interval(hypothesis, float(belief), float(plausibility)))
     return intervals
+
+
+def attribute_assessments(
+    masses: Iterable[float],
+    worlds: Sequence[Mapping[str, Any]],
+    attribute: str,
+    *,
+    focal_masks: Sequence[int] | None = None,
+) -> list[AttributeAssessment]:
+    """Project a joint-world mass function onto one categorical attribute.
+
+    Each mutually exclusive ``world`` should be a KG-valid complete combination.
+    A focal mask can cover several worlds, allowing evidence to support a radar,
+    family, or operator without selecting a variant. ``probability`` is the
+    pignistic transform, which divides each focal mass equally among its worlds;
+    ``uncertainty`` is the belief-plausibility interval width.
+    """
+    if not worlds:
+        raise ValueError("worlds must contain at least one joint hypothesis")
+    if any(attribute not in world for world in worlds):
+        raise ValueError(f"attribute {attribute!r} must be present in every world")
+    masks = list(focal_masks) if focal_masks is not None else subset_masks(len(worlds))
+    mass = validate_masses(np.asarray(list(masses), dtype=np.float64))
+    if len(masks) != mass.shape[0]:
+        raise ValueError(f"expected {len(masks)} masses for supplied focal masks, got {mass.shape[0]}")
+    full_mask = (1 << len(worlds)) - 1
+    if any(mask <= 0 or mask & ~full_mask for mask in masks) or len(set(masks)) != len(masks):
+        raise ValueError("focal masks must be unique, non-empty subsets of the joint worlds")
+
+    values = list(dict.fromkeys(world[attribute] for world in worlds))
+    pignistic_worlds = np.zeros(len(worlds), dtype=np.float64)
+    for mask, value in zip(masks, mass):
+        member_indices = [index for index in range(len(worlds)) if mask & (1 << index)]
+        pignistic_worlds[member_indices] += value / len(member_indices)
+
+    assessments: list[AttributeAssessment] = []
+    for attribute_value in values:
+        event_mask = sum(
+            1 << index for index, world in enumerate(worlds) if world[attribute] == attribute_value
+        )
+        belief = sum(value for mask, value in zip(masks, mass) if mask & ~event_mask == 0)
+        plausibility = sum(value for mask, value in zip(masks, mass) if mask & event_mask)
+        probability = sum(
+            pignistic_worlds[index]
+            for index, world in enumerate(worlds)
+            if world[attribute] == attribute_value
+        )
+        assessments.append(
+            AttributeAssessment(
+                attribute_value,
+                float(belief),
+                float(plausibility),
+                float(probability),
+                float(plausibility - belief),
+            )
+        )
+    return assessments
 
 
 def combine_masses(
