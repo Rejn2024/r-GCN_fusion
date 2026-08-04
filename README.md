@@ -140,6 +140,20 @@ variant do not need to match the hypothesis set. The emitted `node_evidence.json
 includes Dempster-Shafer masses, belief/plausibility intervals, and per-task
 class predictions.
 
+Because those task heads are independent, their separate argmax labels must not
+be treated as a coherent radar/aircraft/operator identification. See the
+[KG-consistent output design](docs/kg_consistent_outputs.md) and use
+`decode_kg_constrained` to emit only a complete combination represented in the
+knowledge graph, or one explicit `unknown` result.
+For an unseen radar mode attached to an otherwise known identity, the
+hierarchical decoder preserves the KG-valid radar/aircraft/operator tuple while
+returning `radar_mode: null` as a partially known result.
+For attribute-specific belief, plausibility, pignistic probability, and
+uncertainty without losing cross-attribute consistency, model KG-valid joint
+worlds as the frame of discernment and project their mass onto each attribute.
+The [KG-consistent output design](docs/kg_consistent_outputs.md#a-structured-frame-of-discernment)
+includes an India/MiG-29 variant example.
+
 If training the full observation graph exhausts GPU memory, see
 [`docs/training_memory.md`](docs/training_memory.md) for model, graph, and
 runtime settings that reduce CUDA memory pressure.

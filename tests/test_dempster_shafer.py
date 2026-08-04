@@ -1,5 +1,11 @@
 import numpy as np
-from rgcn_fusion.dempster_shafer import belief_plausibility, combine_masses, grouped_type_masks, subset_masks
+from rgcn_fusion.dempster_shafer import (
+    attribute_assessments,
+    belief_plausibility,
+    combine_masses,
+    grouped_type_masks,
+    subset_masks,
+)
 
 
 def test_belief_plausibility_for_two_hypotheses():
@@ -14,6 +20,28 @@ def test_combine_masses_normalizes_conflict():
     combined = combine_masses([0.6, 0.1, 0.3], [0.2, 0.7, 0.1])
     assert np.isclose(combined.sum(), 1.0)
     assert combined.shape == (3,)
+
+
+def test_joint_frame_projects_high_identity_and_low_variant_confidence():
+    worlds = [
+        {"operator": "India", "family": "MiG-29", "variant": "MiG-29UPG", "radar": "Zhuk-ME"},
+        {"operator": "India", "family": "MiG-29", "variant": "MiG-29K", "radar": "Zhuk-ME"},
+        {"operator": "Other", "family": "Other", "variant": "Other", "radar": "Other"},
+    ]
+    # Evidence supports either Indian MiG-29 world, without choosing its variant.
+    masses = [0.9, 0.1]
+    focal_masks = [0b011, 0b111]
+
+    operator = attribute_assessments(masses, worlds, "operator", focal_masks=focal_masks)
+    variants = attribute_assessments(masses, worlds, "variant", focal_masks=focal_masks)
+
+    india = next(item for item in operator if item.value == "India")
+    upg = next(item for item in variants if item.value == "MiG-29UPG")
+    assert np.isclose(india.belief, 0.9)
+    assert np.isclose(india.probability, 0.9 + 2 * 0.1 / 3)
+    assert upg.belief == 0.0
+    assert np.isclose(upg.plausibility, 1.0)
+    assert np.isclose(sum(item.probability for item in variants), 1.0)
 
 
 def test_subset_masks_use_singletons_type_groups_plus_uncertainty_for_more_than_ten_hypotheses():
