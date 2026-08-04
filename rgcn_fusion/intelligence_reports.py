@@ -20,6 +20,7 @@ from typing import Any, Iterable
 
 from kg_generator import AIRCRAFT, RADARS, slug
 from rgcn_fusion.observation_etl import ds_masses_from_score
+from rgcn_fusion.dempster_shafer import combine_masses
 
 CLAIM_TYPES = (
     "operator",
@@ -34,6 +35,8 @@ MIN_REPORTS_PER_OBSERVATION = 10
 MAX_REPORTS_PER_OBSERVATION = 12
 MIN_ORDERS_OF_BATTLE_PER_OBSERVATION = 2
 DEFAULT_REPORT_RECENCY_HALF_LIFE_DAYS = 14.0
+DEFAULT_INTELLIGENCE_WEIGHT = 0.15
+ALTERNATIVE_REFUTATION_DISCOUNT = 0.15
 
 
 @dataclass(frozen=True)
@@ -115,6 +118,175 @@ def report_claim_score(
         + 0.05 * specificity
     )
     return round(max(0.0, min(1.0, score)), 6)
+
+
+def final_signed_compatibility(claim: dict[str, Any], candidate: dict[str, Any]) -> float:
+    """Return the claim's final signed effect on a candidate in ``[-1, 1]``.
+
+    This implements the *final signed compatibility* convention: positive values
+    support the candidate and negative values refute it, so callers must not
+    apply a second stance sign.  Exact identifiers receive full weight, while
+    family and relation matches may be supplied on candidate rows as resolved KG
+    context.  Refuting an incompatible alternative is deliberately weak positive
+    evidence because eliminating one alternative does not establish this one.
+    """
+    claim_type = str(claim.get("claim_type") or "")
+    object_id = claim.get("object_id") or claim.get("object_value")
+    field_by_type = {
+        "operator": "operator",
+        "aircraft_variant": "aircraft_id",
+        "aircraft_family": "aircraft_family_id",
+        "radar_type": "radar_id",
+        "radar_mode": "mode_id",
+        "location": "location_id",
+        "relation": "relation_id",
+    }
+    candidate_field = field_by_type.get(claim_type)
+    if candidate_field is None or object_id is None:
+        return 0.0
+    candidate_value = candidate.get(candidate_field)
+    if candidate_value is None:
+        return 0.0
+
+    alignment = 1.0 if str(candidate_value) == str(object_id) else -1.0
+    stance = str(claim.get("stance") or "supports").lower()
+    if stance in {"refutes", "refute", "denies", "denied"}:
+        return -1.0 if alignment > 0 else ALTERNATIVE_REFUTATION_DISCOUNT
+    if stance not in {"supports", "support", "asserts", "asserted"}:
+        return 0.0
+    return alignment
+
+
+def claim_candidate_contribution(claim: dict[str, Any], candidate: dict[str, Any]) -> float:
+    """Return quality-weighted final compatibility without reapplying stance."""
+    quality = max(0.0, min(1.0, float(claim.get("text_score", claim.get("claim_score", 0.0)))))
+    return round(quality * final_signed_compatibility(claim, candidate), 6)
+
+
+def _candidate_specific_claim_masses(contribution: float) -> list[float]:
+    """Convert a signed contribution to candidate-specific DS masses."""
+    strength = min(1.0, abs(float(contribution)))
+    uncertainty = 1.0 - strength
+    committed = strength
+    if contribution >= 0.0:
+        return [0.0, round(committed, 6), round(uncertainty, 6)]
+    return [round(committed, 6), 0.0, round(uncertainty, 6)]
+
+
+def aggregate_candidate_intelligence(
+    candidate: dict[str, Any],
+    claims: Iterable[dict[str, Any]],
+    *,
+    intelligence_weight: float = DEFAULT_INTELLIGENCE_WEIGHT,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Aggregate independent claim evidence and fuse it with sensor evidence.
+
+    Claims are deduplicated by source: only the largest absolute contribution
+    from one source is retained.  The returned edges preserve every non-zero
+    compatibility for graph learning, while scalar/DS features use the
+    source-independent subset.
+    """
+    if not 0.0 <= intelligence_weight <= 1.0:
+        raise ValueError("intelligence_weight must be between 0 and 1")
+    all_edges: list[dict[str, Any]] = []
+    strongest_by_source: dict[str, tuple[float, dict[str, Any]]] = {}
+    for claim in claims:
+        compatibility = final_signed_compatibility(claim, candidate)
+        if compatibility == 0.0:
+            continue
+        contribution = claim_candidate_contribution(claim, candidate)
+        edge = {
+            "source": claim["id"],
+            "target": candidate["id"],
+            "compatibility": compatibility,
+            "claim_score": float(claim.get("text_score", 0.0)),
+            "contribution": contribution,
+            "match_basis": str(claim.get("claim_type") or "unknown"),
+        }
+        all_edges.append(edge)
+        source = str(claim.get("source_id") or claim.get("report_id") or claim["id"])
+        previous = strongest_by_source.get(source)
+        if previous is None or abs(contribution) > abs(previous[0]):
+            strongest_by_source[source] = (contribution, claim)
+
+    retained = list(strongest_by_source.values())
+    positive = sum(value for value, _claim in retained if value > 0.0)
+    negative = sum(-value for value, _claim in retained if value < 0.0)
+    total_strength = positive + negative
+    intel_score = 0.5 if total_strength == 0.0 else positive / total_strength
+    conflict = 0.0 if total_strength == 0.0 else min(positive, negative) / total_strength
+    coverage = min(1.0, len(retained) / 3.0)
+    effective_weight = intelligence_weight * coverage
+    sensor_score = float(candidate.get("sensor_score", candidate.get("text_score", 0.0)))
+    final_score = (1.0 - effective_weight) * sensor_score + effective_weight * intel_score
+
+    sensor_masses = candidate.get("sensor_ds_masses") or candidate.get("ds_masses")
+    fused_masses = list(sensor_masses) if sensor_masses else ds_masses_from_score(sensor_score, 0.2)
+    sensor_masses = list(fused_masses)
+    for contribution, _claim in retained:
+        try:
+            fused_masses = combine_masses(
+                fused_masses, _candidate_specific_claim_masses(contribution)
+            ).round(6).tolist()
+        except ValueError:
+            # Total conflict is itself useful information; retain the previous
+            # valid masses and expose conflict through ``intel_conflict``.
+            conflict = 1.0
+            break
+
+    features = {
+        "sensor_score": round(sensor_score, 6),
+        "sensor_ds_masses": sensor_masses,
+        "intel_support_score": round(positive, 6),
+        "intel_refute_score": round(negative, 6),
+        "intel_net_score": round(positive - negative, 6),
+        "intel_score": round(intel_score, 6),
+        "intel_conflict": round(conflict, 6),
+        "intel_uncertainty": round(float(fused_masses[2]), 6),
+        "intel_claim_count": float(len(retained)),
+        "intel_source_count": float(len(retained)),
+        "intel_effective_weight": round(effective_weight, 6),
+        "final_score": round(final_score, 6),
+        "text_score": round(final_score, 6),
+        "ds_masses": fused_masses,
+    }
+    return features, all_edges
+
+
+def build_candidate_intelligence_rows(
+    report_rows: dict[str, list[dict[str, Any]]],
+    candidates: Iterable[dict[str, Any]],
+    *,
+    intelligence_weight: float = DEFAULT_INTELLIGENCE_WEIGHT,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Build candidate updates and direct claim-to-candidate evidence edges."""
+    candidates = list(candidates)
+    claims_by_series: dict[str, list[dict[str, Any]]] = {}
+    for claim in report_rows["claims"]:
+        claims_by_series.setdefault(str(claim.get("series_id")), []).append(claim)
+    updates: list[dict[str, Any]] = []
+    edges: list[dict[str, Any]] = []
+    for candidate in candidates:
+        if candidate.get("aircraft_id") and candidate.get("radar_id"):
+            candidate.setdefault(
+                "relation_id",
+                f"relation:{candidate['aircraft_id']}:USES_RADAR:{candidate['radar_id']}",
+            )
+        claims = claims_by_series.get(str(candidate.get("series_id")), [])
+        features, candidate_edges = aggregate_candidate_intelligence(
+            candidate, claims, intelligence_weight=intelligence_weight
+        )
+        updates.append({"id": candidate["id"], **features})
+        edges.extend(candidate_edges)
+    updates_by_observation: dict[str, list[dict[str, Any]]] = {}
+    observation_by_id = {candidate["id"]: candidate.get("observation_id") for candidate in candidates}
+    for update in updates:
+        updates_by_observation.setdefault(str(observation_by_id.get(update["id"])), []).append(update)
+    for observation_updates in updates_by_observation.values():
+        observation_updates.sort(key=lambda row: row["final_score"], reverse=True)
+        for rank, update in enumerate(observation_updates, start=1):
+            update["intel_rank"] = rank
+    return updates, edges
 
 
 def _iso(dt: datetime) -> str:
@@ -361,6 +533,7 @@ def build_report_evidence_rows(
                     "series_id": series.get("series_id"), "claim_type": claim.get("claim_type"),
                     "stance": claim.get("stance", "supports"), "object_id": claim.get("object_id"),
                     "object_value": claim.get("object_value"),
+                    "source_id": report.get("source_id"),
                     "credibility_score": float(report.get("credibility_score", 0.5)),
                     "recency_score": round(recency, 6),
                     "claim_confidence": float(claim.get("claim_confidence", 0.5)),
@@ -400,6 +573,19 @@ class ReportNeo4jETL:
     def ingest(self, series_records: list[dict[str, Any]]) -> dict[str, int]:
         rows = build_report_evidence_rows(series_records)
         with self.driver.session(database=self.database) as session:
+            candidates = []
+            for record in session.run("""
+                MATCH (c:CandidateEvidence)
+                OPTIONAL MATCH (aircraft:AircraftVariant {id: c.aircraft_id})
+                    -[:VARIANT_OF]->(family:AircraftFamily)
+                RETURN properties(c) AS candidate, family.id AS aircraft_family_id
+                """):
+                candidate = dict(record["candidate"])
+                candidate["aircraft_family_id"] = record["aircraft_family_id"]
+                candidates.append(candidate)
+            candidate_updates, candidate_edges = build_candidate_intelligence_rows(rows, candidates)
+            rows["candidate_updates"] = candidate_updates
+            rows["candidate_edges"] = candidate_edges
             session.execute_write(_write_report_evidence_rows, rows)
         return {name: len(values) for name, values in rows.items()}
 
@@ -435,6 +621,36 @@ def _write_report_evidence_rows(tx, rows: dict[str, list[dict[str, Any]]]) -> No
     MERGE (s)-[r:CONTRADICTS_CLAIM]->(t)
     SET r.score_delta = row.score_delta, r.reason = row.reason
     """, rows=rows["contradiction_edges"])
+    tx.run("""
+    UNWIND $rows AS row
+    MATCH (c:CandidateEvidence {id: row.id})
+    SET c += row
+    WITH c, row
+    OPTIONAL MATCH (:Observation)-[r:HAS_CANDIDATE]->(c)
+    SET r.sensor_score = row.sensor_score,
+        r.score = row.final_score,
+        r.rank = row.intel_rank
+    """, rows=rows.get("candidate_updates", []))
+    tx.run("""
+    UNWIND $rows AS row
+    MATCH (s:ReportClaim {id: row.source})
+    MATCH (t:CandidateEvidence {id: row.target})
+    MERGE (s)-[r:CLAIM_SUPPORTS_CANDIDATE]->(t)
+    SET r.compatibility = row.compatibility,
+        r.claim_score = row.claim_score,
+        r.contribution = row.contribution,
+        r.match_basis = row.match_basis
+    """, rows=[row for row in rows.get("candidate_edges", []) if row["contribution"] > 0])
+    tx.run("""
+    UNWIND $rows AS row
+    MATCH (s:ReportClaim {id: row.source})
+    MATCH (t:CandidateEvidence {id: row.target})
+    MERGE (s)-[r:CLAIM_REFUTES_CANDIDATE]->(t)
+    SET r.compatibility = row.compatibility,
+        r.claim_score = row.claim_score,
+        r.contribution = row.contribution,
+        r.match_basis = row.match_basis
+    """, rows=[row for row in rows.get("candidate_edges", []) if row["contribution"] < 0])
 
 
 def load_reports_json(path: str | Path) -> list[dict[str, Any]]:

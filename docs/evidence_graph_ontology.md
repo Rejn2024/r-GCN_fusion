@@ -39,6 +39,8 @@ classDiagram
     Observation --> Observation : SHARES_BEST_MODE
     IntelligenceReport "1" --> "0..*" ReportClaim : REPORT_CONTAINS_CLAIM
     ReportClaim --> Observation : CLAIM_SUPPORTS_OBSERVATION
+    ReportClaim --> CandidateEvidence : CLAIM_SUPPORTS_CANDIDATE
+    ReportClaim --> CandidateEvidence : CLAIM_REFUTES_CANDIDATE
     ReportClaim --> ReportClaim : CONTRADICTS_CLAIM
 ```
 
@@ -126,6 +128,8 @@ canonical KG fact.
 | `SHARES_BEST_MODE` | `Observation` ↔ `Observation` | none | A pair of directed edges between observations whose best candidate has the same radar mode. This is candidate-derived and may also be excluded from leakage-safe training. |
 | `REPORT_CONTAINS_CLAIM` | `IntelligenceReport` → `ReportClaim` | none | Preserves claim provenance. |
 | `CLAIM_SUPPORTS_OBSERVATION` | `ReportClaim` → `Observation` | `score`, `stance` | Applies a scored report claim to every observation in its series. The historical relationship name is retained even when `stance` is not `supports`; consumers must inspect `stance`. |
+| `CLAIM_SUPPORTS_CANDIDATE` | `ReportClaim` → `CandidateEvidence` | `compatibility`, `claim_score`, `contribution`, `match_basis` | Direct positive, candidate-specific intelligence evidence. `compatibility` is already final and signed; stance must not be applied again. |
+| `CLAIM_REFUTES_CANDIDATE` | `ReportClaim` → `CandidateEvidence` | `compatibility`, `claim_score`, `contribution`, `match_basis` | Direct negative, candidate-specific intelligence evidence. |
 | `CONTRADICTS_CLAIM` | stronger `ReportClaim` → weaker `ReportClaim` | `score_delta`, `reason` | Connects claims of the same type that refer to different object identifiers; direction follows claim score. |
 
 Relationship direction is part of the r-GCN relation semantics. In particular,
@@ -152,15 +156,40 @@ flowchart LR
     AircraftVariant -->|VARIANT_OF| AircraftFamily
 ```
 
-The current evidence writer stores the selected domain identifiers as node
-properties rather than creating direct edges from evidence nodes to canonical
-KG nodes. Consequently:
+The evidence writer stores selected domain identifiers as properties rather
+than creating direct edges to canonical KG nodes. Claims do create direct
+support/refutation edges to the uncertain `CandidateEvidence` hypotheses, not
+to canonical nodes. Consequently:
 
 1. the base KG supplies candidate hypotheses and technical bounds;
 2. `Observation`, `CandidateEvidence`, `IntelligenceReport`, and `ReportClaim`
    retain uncertain and potentially contradictory evidence;
 3. the r-GCN consumes typed evidence relationships and numeric properties; and
 4. predicted masses and classifications are outputs, not new canonical facts.
+
+## Intelligence-aware candidate ranking
+
+The report ETL enriches an existing observation candidate shortlist in three
+stages, so observation ingestion must run before report ingestion:
+
+1. **Final signed compatibility.** Exact operator, aircraft, radar, and mode
+   identifiers are compared with each candidate. Aircraft-family claims use the
+   canonical `VARIANT_OF` path resolved during ingestion. A positive value means
+   net support and a negative value means net refutation; no second stance sign
+   is applied. Refutation of a different alternative receives only a small
+   positive discount rather than full support.
+2. **Provenance-aware aggregation and DS fusion.** All direct graph edges are
+   retained, but scalar evidence uses only the strongest absolute contribution
+   per `source_id`. Support, refutation, conflict, coverage, and uncertainty are
+   stored separately. Candidate-specific claim masses are combined with sensor
+   masses using Dempster's rule; total conflict is exposed without writing an
+   invalid mass vector.
+3. **Graph and learned-ranking inputs.** The bounded intelligence score is
+   blended with the original `sensor_score` using a default maximum weight of
+   0.15. `HAS_CANDIDATE.score` and rank are updated, direct claim/candidate
+   relations are materialised, and the component scores are available as
+   recommended numeric r-GCN features. This preserves the sensor-only score for
+   explanations, ablations, and learned re-ranking experiments.
 
 ## Dempster-Shafer interpretation
 
