@@ -110,3 +110,27 @@ Its match belief is 0.64 and its match plausibility is 0.84.
 The claim's substantive direction is not encoded solely by this mass vector.
 The graph also retains its stance on the claim-to-observation edge and represents
 incompatible same-type assertions with directed `CONTRADICTS_CLAIM` edges.
+
+## Candidate compatibility and fusion
+
+When candidate nodes already exist, report ingestion compares every series
+claim with every shortlisted candidate. Compatibility follows the **final
+signed** convention in `[-1, 1]`: its sign already includes both object
+alignment and claim stance. The quality-weighted contribution is therefore:
+
+```text
+contribution(q, c) = claim_quality(q) * compatibility(q, c)
+```
+
+There is intentionally no additional `stance_sign`; adding one would count
+stance twice. Direct matches and refutations receive full magnitude. Refuting a
+different alternative receives only weak positive weight because eliminating
+one alternative does not establish the candidate under consideration.
+
+The aggregation retains all non-neutral claim-to-candidate edges for provenance
+and graph learning, while using only the strongest contribution per source for
+numeric fusion. It exposes separate sensor, support, refutation, net,
+uncertainty, conflict, source-count, and final-score features. Claim evidence is
+also converted into candidate-specific two-hypothesis masses and combined with
+the sensor mass. The default scalar blend caps intelligence influence at 15%
+and reduces it further when fewer than three independent sources apply.
