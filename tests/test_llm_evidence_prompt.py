@@ -76,3 +76,36 @@ def test_llm_prompt_explains_frame_semantics_and_rejects_joint_ds_claims():
     assert "plausibility is belief plus the full-frame Theta mass" in prompt
     assert "pignistic probability shares the Theta mass equally" in prompt
     assert "not one learned joint frame" in prompt
+
+
+def test_ollama_request_disables_thinking_to_require_a_response():
+    notebook = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+    source = "\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "code"
+    )
+    tree = ast.parse(source)
+    ollama_generate = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "ollama_generate"
+    )
+    payload = next(
+        node.value
+        for node in ast.walk(ollama_generate)
+        if isinstance(node, ast.Assign)
+        and any(isinstance(target, ast.Name) and target.id == "payload" for target in node.targets)
+        and isinstance(node.value, ast.Call)
+    )
+    request_options = next(
+        node for node in ast.walk(payload) if isinstance(node, ast.Dict)
+    )
+
+    options = {
+        key.value: value
+        for key, value in zip(request_options.keys, request_options.values)
+        if isinstance(key, ast.Constant)
+    }
+    assert isinstance(options["think"], ast.Constant)
+    assert options["think"].value is False
