@@ -37,6 +37,15 @@ def _explanation_functions():
         "EXTREME_UNCERTAINTY": 0.60,
         "HIGH_UNCERTAINTY": 0.35,
         "node_meta": [{"observation_id": "obs-1"}],
+        "observation_node_indices": [0],
+        "predictions": [{
+            "observation_id": "obs-1",
+            "kg_structured_prediction": {
+                "status": "known",
+                "labels": {"radar_type": "radar-a"},
+                "confidence": {},
+            },
+        }],
         "label_vocab": {"radar_type": ["radar-a", "radar-b"]},
         "evidential_outputs": {
             "radar_type": {
@@ -66,6 +75,7 @@ def test_llm_packet_reports_modified_ds_frame_and_all_evidential_quantities():
     assert np.isclose(leading["plausibility"], 5.0 / 6.0)
     assert np.isclose(leading["uncertainty"], 1.0 / 3.0)
     assert np.isclose(leading["pignistic_probability"], 2.0 / 3.0)
+    assert packet["kg_structured_prediction"]["labels"]["radar_type"] == "radar-a"
 
 
 def test_llm_prompt_explains_frame_semantics_and_rejects_joint_ds_claims():
@@ -111,7 +121,7 @@ def test_ollama_request_disables_thinking_to_require_a_response():
     assert options["think"].value is False
 
 
-def test_llm_explanation_generation_is_bounded_and_configurable():
+def test_llm_explanation_ingests_one_positionally_selected_result():
     notebook = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
     source = "\n".join(
         "".join(cell.get("source", []))
@@ -119,8 +129,8 @@ def test_llm_explanation_generation_is_bounded_and_configurable():
         if cell.get("cell_type") == "code"
     )
 
-    assert 'LLM_EXPLANATION_LIMIT = int(os.environ.get("LLM_EXPLANATION_LIMIT", "100"))' in source
-    assert 'LLM_EXPLANATION_WORKERS = int(os.environ.get("LLM_EXPLANATION_WORKERS", "1"))' in source
+    assert 'LLM_RESULT_INDEX = int(os.environ.get("LLM_RESULT_INDEX", "0"))' in source
+    assert "selected_result = predictions[LLM_RESULT_INDEX]" in source
+    assert "explanation = explain_emitter(LLM_RESULT_INDEX)" in source
     assert '"num_predict": OLLAMA_NUM_PREDICT' in source
-    assert "ThreadPoolExecutor(max_workers=LLM_EXPLANATION_WORKERS)" in source
-    assert 'desc="Generating Ollama explanations"' in source
+    assert "LLM_EXPLANATION_WORKERS" not in source
