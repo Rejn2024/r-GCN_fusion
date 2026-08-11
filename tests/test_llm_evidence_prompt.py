@@ -109,3 +109,18 @@ def test_ollama_request_disables_thinking_to_require_a_response():
     }
     assert isinstance(options["think"], ast.Constant)
     assert options["think"].value is False
+
+
+def test_llm_explanation_generation_is_bounded_and_configurable():
+    notebook = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+    source = "\n".join(
+        "".join(cell.get("source", []))
+        for cell in notebook["cells"]
+        if cell.get("cell_type") == "code"
+    )
+
+    assert 'LLM_EXPLANATION_LIMIT = int(os.environ.get("LLM_EXPLANATION_LIMIT", "100"))' in source
+    assert 'LLM_EXPLANATION_WORKERS = int(os.environ.get("LLM_EXPLANATION_WORKERS", "1"))' in source
+    assert '"num_predict": OLLAMA_NUM_PREDICT' in source
+    assert "ThreadPoolExecutor(max_workers=LLM_EXPLANATION_WORKERS)" in source
+    assert 'desc="Generating Ollama explanations"' in source
