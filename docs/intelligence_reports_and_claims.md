@@ -8,11 +8,11 @@ A **claim** is one structured assertion extracted from that report. In short:
 
 > **Report = source and context. Claim = assertion being evaluated.**
 
-For example, a liaison report collected on a particular date might claim that
-Country X operates a MiG-29 in the Baltic region. The report holds the liaison
-source, timestamps, report type, and overall credibility. Separate claims can
-represent the asserted operator, aircraft variant, and location, each with its
-own stance and confidence.
+For example, a sighting report can record that a particular aircraft, operator,
+and radar were last observed near a track location at a given time. The report
+holds the observer source, timestamps, report type, and overall credibility.
+Separate claims represent the asserted operator, aircraft variant, radar,
+location, and last-observed time, each with its own stance and confidence.
 
 | Aspect | Intelligence report | Report claim |
 |---|---|---|
@@ -23,11 +23,26 @@ own stance and confidence.
 | Neo4j label | `IntelligenceReport` + `EvidenceEntity` | `ReportClaim` + `EvidenceEntity` |
 
 Reports are stored once for an observation series rather than copied into each
-observation. A report can contain multiple claims, although the current
-synthetic generator normally creates one claim per report. During ETL,
+observation. Current generation creates two complementary products:
+
+- **Sighting reports** describe aircraft near the generated track, their
+  operators and radars, the reported location, and when they were last seen.
+  Most are correct, while controlled identity, location, and time errors create
+  contradictory evidence for evaluation.
+- **Pattern-of-life reports** describe expected behavior for an aircraft family
+  and variant, including its operator, radar, role, typical radar modes,
+  operating area, and performance ceilings.
+
+Each report contains multiple structured claims. During ETL,
 `REPORT_CONTAINS_CLAIM` links each report to its claims, while
-`CLAIM_SUPPORTS_OBSERVATION` links each claim to every applicable observation
-and retains its `supports` or `refutes` stance. Contradictions are modeled
+`REPORT_NEAR_OBSERVATION` and `CLAIM_SUPPORTS_OBSERVATION` link reports and
+claims only to observations that satisfy their temporal/geographical
+applicability test. Sighting reports require nearby coordinates and time;
+pattern-of-life reports require the expected operating area and a wider time
+window. `REPORT_APPLIES_TO_TRACK` then connects an applicable report to the
+track containing those observations. `CLAIM_ASSERTS_KG_ENTITY` also links
+structured claims directly to existing `AircraftVariant`, `AircraftFamily`,
+`Radar`, `RadarMode`, or `Operator` nodes. Contradictions are modeled
 between incompatible claims, not between their containing reports.
 
 Keeping these entities separate preserves provenance, permits multiple sources

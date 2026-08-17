@@ -30,10 +30,11 @@ CLAIM_TYPES = (
     "radar_mode",
     "location",
     "relation",
+    "last_observed_time",
+    "expected_behavior",
 )
 MIN_REPORTS_PER_OBSERVATION = 10
 MAX_REPORTS_PER_OBSERVATION = 12
-MIN_ORDERS_OF_BATTLE_PER_OBSERVATION = 2
 DEFAULT_REPORT_RECENCY_HALF_LIFE_DAYS = 14.0
 DEFAULT_INTELLIGENCE_WEIGHT = 0.15
 ALTERNATIVE_REFUTATION_DISCOUNT = 0.15
@@ -73,12 +74,18 @@ def report_recency_score(
     return math.exp(-math.log(2.0) * age_days / half_life_days)
 
 
-def _external_prior_score(context: dict[str, Any], prior_name: str, candidate_value: Any) -> float:
+def _external_prior_score(
+    context: dict[str, Any], prior_name: str, candidate_value: Any
+) -> float:
     if candidate_value is None:
         return 0.5
     prior_maps = [
         context.get(f"{prior_name}_priors"),
-        (context.get("priors") or {}).get(prior_name) if isinstance(context.get("priors"), dict) else None,
+        (
+            (context.get("priors") or {}).get(prior_name)
+            if isinstance(context.get("priors"), dict)
+            else None
+        ),
     ]
     for prior_map in prior_maps:
         if isinstance(prior_map, dict) and candidate_value in prior_map:
@@ -101,7 +108,11 @@ def report_claim_score(
     context = report.get("external_context") or {}
     claim_type = str(claim.get("claim_type", ""))
     value = claim.get("object_id") or claim.get("object_value")
-    prior = _external_prior_score(context, claim_type, value) if isinstance(context, dict) else 0.5
+    prior = (
+        _external_prior_score(context, claim_type, value)
+        if isinstance(context, dict)
+        else 0.5
+    )
     recency = report_recency_score(report, reference_time=observation_time)
     credibility = max(0.0, min(1.0, float(report.get("credibility_score", 0.5))))
     extraction = max(0.0, min(1.0, float(claim.get("extraction_confidence", 0.5))))
@@ -120,7 +131,9 @@ def report_claim_score(
     return round(max(0.0, min(1.0, score)), 6)
 
 
-def final_signed_compatibility(claim: dict[str, Any], candidate: dict[str, Any]) -> float:
+def final_signed_compatibility(
+    claim: dict[str, Any], candidate: dict[str, Any]
+) -> float:
     """Return the claim's final signed effect on a candidate in ``[-1, 1]``.
 
     This implements the *final signed compatibility* convention: positive values
@@ -157,9 +170,13 @@ def final_signed_compatibility(claim: dict[str, Any], candidate: dict[str, Any])
     return alignment
 
 
-def claim_candidate_contribution(claim: dict[str, Any], candidate: dict[str, Any]) -> float:
+def claim_candidate_contribution(
+    claim: dict[str, Any], candidate: dict[str, Any]
+) -> float:
     """Return quality-weighted final compatibility without reapplying stance."""
-    quality = max(0.0, min(1.0, float(claim.get("text_score", claim.get("claim_score", 0.0)))))
+    quality = max(
+        0.0, min(1.0, float(claim.get("text_score", claim.get("claim_score", 0.0))))
+    )
     return round(quality * final_signed_compatibility(claim, candidate), 6)
 
 
@@ -214,20 +231,34 @@ def aggregate_candidate_intelligence(
     negative = sum(-value for value, _claim in retained if value < 0.0)
     total_strength = positive + negative
     intel_score = 0.5 if total_strength == 0.0 else positive / total_strength
-    conflict = 0.0 if total_strength == 0.0 else min(positive, negative) / total_strength
+    conflict = (
+        0.0 if total_strength == 0.0 else min(positive, negative) / total_strength
+    )
     coverage = min(1.0, len(retained) / 3.0)
     effective_weight = intelligence_weight * coverage
-    sensor_score = float(candidate.get("sensor_score", candidate.get("text_score", 0.0)))
-    final_score = (1.0 - effective_weight) * sensor_score + effective_weight * intel_score
+    sensor_score = float(
+        candidate.get("sensor_score", candidate.get("text_score", 0.0))
+    )
+    final_score = (
+        1.0 - effective_weight
+    ) * sensor_score + effective_weight * intel_score
 
     sensor_masses = candidate.get("sensor_ds_masses") or candidate.get("ds_masses")
-    fused_masses = list(sensor_masses) if sensor_masses else ds_masses_from_score(sensor_score, 0.2)
+    fused_masses = (
+        list(sensor_masses)
+        if sensor_masses
+        else ds_masses_from_score(sensor_score, 0.2)
+    )
     sensor_masses = list(fused_masses)
     for contribution, _claim in retained:
         try:
-            fused_masses = combine_masses(
-                fused_masses, _candidate_specific_claim_masses(contribution)
-            ).round(6).tolist()
+            fused_masses = (
+                combine_masses(
+                    fused_masses, _candidate_specific_claim_masses(contribution)
+                )
+                .round(6)
+                .tolist()
+            )
         except ValueError:
             # Total conflict is itself useful information; retain the previous
             # valid masses and expose conflict through ``intel_conflict``.
@@ -279,9 +310,13 @@ def build_candidate_intelligence_rows(
         updates.append({"id": candidate["id"], **features})
         edges.extend(candidate_edges)
     updates_by_observation: dict[str, list[dict[str, Any]]] = {}
-    observation_by_id = {candidate["id"]: candidate.get("observation_id") for candidate in candidates}
+    observation_by_id = {
+        candidate["id"]: candidate.get("observation_id") for candidate in candidates
+    }
     for update in updates:
-        updates_by_observation.setdefault(str(observation_by_id.get(update["id"])), []).append(update)
+        updates_by_observation.setdefault(
+            str(observation_by_id.get(update["id"])), []
+        ).append(update)
     for observation_updates in updates_by_observation.values():
         observation_updates.sort(key=lambda row: row["final_score"], reverse=True)
         for rank, update in enumerate(observation_updates, start=1):
@@ -294,158 +329,287 @@ def _iso(dt: datetime) -> str:
 
 
 def _wrong_aircraft(rng: random.Random, truth: dict[str, Any]) -> Any:
-    options = [a for a in AIRCRAFT if f"aircraft:{slug(a.variant)}" != truth.get("aircraft_id")]
+    options = [
+        a for a in AIRCRAFT if f"aircraft:{slug(a.variant)}" != truth.get("aircraft_id")
+    ]
     return rng.choice(options)
 
 
-def _wrong_radar_and_mode(rng: random.Random, truth: dict[str, Any]) -> tuple[Any, Any]:
-    radar_options = [r for r in RADARS.values() if f"radar:{slug(r.name)}" != truth.get("radar_id")]
-    radar = rng.choice(radar_options)
-    return radar, rng.choice(list(radar.modes))
-
-
-def _claim_value_for_type(
-    rng: random.Random,
-    claim_type: str,
-    truth: dict[str, Any],
-    observation: dict[str, Any],
+def _claim(
     *,
+    claim_type: str,
+    subject_id: str,
+    object_id: str,
+    object_value: str,
     correct: bool,
-) -> tuple[str, str, str]:
-    if claim_type == "operator":
-        if correct:
-            value = truth["operator"]
-        else:
-            operators = sorted({op for a in AIRCRAFT for op in a.operators if op != truth["operator"]})
-            value = rng.choice(operators)
-        return value, value, "operator"
-    if claim_type == "aircraft_variant":
-        aircraft = None if correct else _wrong_aircraft(rng, truth)
-        value = truth["aircraft_id"] if correct else f"aircraft:{slug(aircraft.variant)}"
-        text = truth["aircraft_variant"] if correct else aircraft.variant
-        return value, text, "aircraft_variant"
-    if claim_type == "aircraft_family":
-        if correct:
-            value = f"aircraft_family:{slug(truth['aircraft_family'])}"
-            text = truth["aircraft_family"]
-        else:
-            aircraft = _wrong_aircraft(rng, truth)
-            value = f"aircraft_family:{slug(aircraft.family)}"
-            text = aircraft.family
-        return value, text, "aircraft_family"
-    if claim_type == "radar_type":
-        if correct:
-            return truth["radar_id"], truth["radar"], "radar"
-        radar, _ = _wrong_radar_and_mode(rng, truth)
-        return f"radar:{slug(radar.name)}", radar.name, "radar"
-    if claim_type == "radar_mode":
-        if correct:
-            return truth["mode_id"], truth["mode"], "radar_mode"
-        radar, mode = _wrong_radar_and_mode(rng, truth)
-        return f"radar_mode:{slug(radar.name)}:{slug(mode.name)}", mode.name, "radar_mode"
-    if claim_type == "location":
-        loc = observation.get("estimated_emitter_location", {})
-        if correct:
-            area = loc.get("area", "unknown area")
-        else:
-            areas = ["North Sea", "Eastern Mediterranean", "Baltic Sea", "Arabian Gulf", "South China Sea", "Bay of Bengal", "Sea of Japan", "Western Pacific"]
-            area = rng.choice([a for a in areas if a != loc.get("area")])
-        return f"area:{slug(area)}", area, "area"
-    if claim_type == "relation":
-        if correct:
-            value = f"relation:{truth['aircraft_id']}:USES_RADAR:{truth['radar_id']}"
-            text = f"{truth['aircraft_variant']} uses {truth['radar']}"
-        else:
-            aircraft = _wrong_aircraft(rng, truth)
-            radar, _ = _wrong_radar_and_mode(rng, truth)
-            value = f"relation:aircraft:{slug(aircraft.variant)}:USES_RADAR:radar:{slug(radar.name)}"
-            text = f"{aircraft.variant} uses {radar.name}"
-        return value, text, "relation_hypothesis"
-    raise ValueError(f"unsupported claim type: {claim_type}")
+    rng: random.Random,
+    stance: str = "supports",
+    kg_entity_id: str | None = None,
+) -> dict[str, Any]:
+    """Build one scored synthetic assertion without exposing truth to inference."""
+    confidence = rng.uniform(0.68, 0.95) if correct else rng.uniform(0.35, 0.76)
+    return {
+        "claim_type": claim_type,
+        "stance": stance,
+        "subject_id": subject_id,
+        "predicate": "SUPPORTS" if stance == "supports" else "REFUTES",
+        "object_id": object_id,
+        "object_value": object_value,
+        "object_kind": claim_type,
+        "claim_text": f"{claim_type.replace('_', ' ').title()}: {object_value}.",
+        "claim_confidence": round(confidence, 6),
+        "extraction_confidence": round(rng.uniform(0.72, 0.98), 6),
+        "specificity_score": round(rng.uniform(0.65, 0.96), 6),
+        "kg_consistency_score": round(
+            rng.uniform(0.72, 0.98) if correct else rng.uniform(0.18, 0.66), 6
+        ),
+        "synthetic_truth_value": "correct" if correct else "contradictory",
+        "kg_entity_id": kg_entity_id,
+    }
 
 
-def generate_intelligence_reports_for_observation(
-    observation: dict[str, Any],
+def _aircraft_for_truth(truth: dict[str, Any]) -> Any:
+    return next(
+        aircraft
+        for aircraft in AIRCRAFT
+        if f"aircraft:{slug(aircraft.variant)}" == truth["aircraft_id"]
+    )
+
+
+def _reported_identity(
+    rng: random.Random, truth: dict[str, Any], *, correct: bool
+) -> tuple[Any, str]:
+    aircraft = _aircraft_for_truth(truth) if correct else _wrong_aircraft(rng, truth)
+    if correct:
+        operator = truth["operator"]
+    else:
+        alternatives = [
+            value for value in aircraft.operators if value != truth["operator"]
+        ]
+        operator = rng.choice(
+            alternatives
+            or [
+                value
+                for item in AIRCRAFT
+                for value in item.operators
+                if value != truth["operator"]
+            ]
+        )
+    return aircraft, operator
+
+
+def generate_intelligence_reports_for_series(
+    series: dict[str, Any],
     *,
     seed: int | None = None,
     min_reports: int = MIN_REPORTS_PER_OBSERVATION,
     max_reports: int = MAX_REPORTS_PER_OBSERVATION,
 ) -> list[dict[str, Any]]:
-    """Generate 10--12 synthetic intelligence reports for one ESM observation.
-
-    Reports intentionally mix correct, incorrect, and explicitly refuting claims
-    so downstream demos can exercise corroboration and contradiction handling.
-    """
+    """Generate track-aware sighting and pattern-of-life intelligence reports."""
     if min_reports < 1 or max_reports < min_reports:
         raise ValueError("report count bounds must be positive and ordered")
-    truth = observation.get("ground_truth_label") or {}
+    observations = series.get("observations") or []
+    if not observations:
+        return []
+    first_observation, last_observation = observations[0], observations[-1]
+    truth = (
+        series.get("ground_truth_track_label")
+        or first_observation.get("ground_truth_label")
+        or {}
+    )
     if not truth:
         raise ValueError("synthetic intelligence reports require ground_truth_label")
-    rng = random.Random(seed if seed is not None else hash(observation["observation_id"]) & ((1 << 63) - 1))
-    obs_time = _parse_utc(observation.get("timestamp_iso8601")) or datetime.now(UTC)
+    rng = random.Random(
+        seed if seed is not None else hash(series["series_id"]) & ((1 << 63) - 1)
+    )
+    track_start = _parse_utc(
+        first_observation.get("timestamp_iso8601")
+    ) or datetime.now(UTC)
+    track_end = _parse_utc(last_observation.get("timestamp_iso8601")) or track_start
     report_count = rng.randint(min_reports, max_reports)
-    claim_cycle = list(CLAIM_TYPES)
     reports: list[dict[str, Any]] = []
+    sighting_count = max(1, round(report_count * 0.65))
     for idx in range(report_count):
-        is_order_of_battle = idx < MIN_ORDERS_OF_BATTLE_PER_OBSERVATION
-        claim_type = "operator" if is_order_of_battle else claim_cycle[(idx - 2) % len(claim_cycle)]
-        correct = rng.random() < 0.72
-        # The first order of battle always identifies the true operator country;
-        # the second provides a competing assessment for fusion experiments.
-        if idx == 0:
-            correct = True
-        elif idx in (1, 5):
-            correct = False
-        stance = "supports" if idx == 0 or rng.random() > 0.12 else "refutes"
-        value, text_value, value_kind = _claim_value_for_type(rng, claim_type, truth, observation, correct=correct)
-        offset_s = rng.uniform(-1800.0, 900.0)
-        collected_at = obs_time + timedelta(seconds=offset_s)
+        is_sighting = idx < sighting_count
+        # Sightings are mostly accurate, with a deterministic erroneous example
+        # whenever there is more than one report of that kind.
+        correct = idx == 0 or (idx != 1 and rng.random() < 0.82)
+        aircraft, operator = _reported_identity(rng, truth, correct=correct)
+        radar = RADARS[aircraft.radar]
+        location = last_observation["estimated_emitter_location"]
+        if correct:
+            reported_area = location["area"]
+            reported_lat = float(location["estimated_latitude_deg"]) + rng.gauss(
+                0, 0.025
+            )
+            reported_lon = float(location["estimated_longitude_deg"]) + rng.gauss(
+                0, 0.025
+            )
+            last_seen = track_end + timedelta(seconds=rng.uniform(-90, 20))
+        else:
+            areas = [
+                "North Sea",
+                "Eastern Mediterranean",
+                "Baltic Sea",
+                "Arabian Gulf",
+                "South China Sea",
+                "Bay of Bengal",
+                "Sea of Japan",
+                "Western Pacific",
+            ]
+            reported_area = rng.choice(
+                [area for area in areas if area != location["area"]]
+            )
+            reported_lat = float(location["estimated_latitude_deg"]) + rng.uniform(
+                1.0, 5.0
+            )
+            reported_lon = float(location["estimated_longitude_deg"]) + rng.uniform(
+                1.0, 5.0
+            )
+            last_seen = track_end + timedelta(hours=rng.uniform(-12, -2))
+        collected_at = last_seen + timedelta(seconds=rng.uniform(15, 240))
         published_at = collected_at + timedelta(seconds=rng.uniform(30.0, 900.0))
-        credibility = rng.uniform(0.62, 0.95) if correct else rng.uniform(0.25, 0.78)
-        confidence = rng.uniform(0.60, 0.92) if correct else rng.uniform(0.35, 0.82)
-        claim = {
-            "claim_id": f"intel_claim:{observation['observation_id']}:{idx + 1:02d}",
-            "claim_type": claim_type,
-            "stance": stance,
-            "subject_id": observation["observation_id"],
-            "predicate": "SUPPORTS" if stance == "supports" else "REFUTES",
-            "object_id": value,
-            "object_value": text_value,
-            "object_kind": value_kind,
-            "claim_text": f"{stance.title()} {claim_type.replace('_', ' ')} assessment: {text_value}.",
-            "claim_confidence": round(confidence, 6),
-            "extraction_confidence": round(rng.uniform(0.70, 0.98), 6),
-            "specificity_score": round(rng.uniform(0.55, 0.95), 6),
-            "kg_consistency_score": round(rng.uniform(0.70, 0.98) if correct else rng.uniform(0.15, 0.70), 6),
-            "synthetic_truth_value": "correct" if correct else "contradictory",
-        }
+        credibility = rng.uniform(0.68, 0.95) if correct else rng.uniform(0.32, 0.72)
+        aircraft_id = f"aircraft:{slug(aircraft.variant)}"
+        radar_id = f"radar:{slug(radar.name)}"
+        common_claims = [
+            _claim(
+                claim_type="aircraft_variant",
+                subject_id=series["series_id"],
+                object_id=aircraft_id,
+                object_value=aircraft.variant,
+                correct=correct,
+                rng=rng,
+                kg_entity_id=aircraft_id,
+            ),
+            _claim(
+                claim_type="operator",
+                subject_id=series["series_id"],
+                object_id=operator,
+                object_value=operator,
+                correct=correct,
+                rng=rng,
+                kg_entity_id=f"operator:{slug(operator)}",
+            ),
+            _claim(
+                claim_type="radar_type",
+                subject_id=series["series_id"],
+                object_id=radar_id,
+                object_value=radar.name,
+                correct=correct,
+                rng=rng,
+                kg_entity_id=radar_id,
+            ),
+        ]
+        if is_sighting:
+            claims = common_claims + [
+                _claim(
+                    claim_type="location",
+                    subject_id=series["series_id"],
+                    object_id=f"area:{slug(reported_area)}",
+                    object_value=reported_area,
+                    correct=correct,
+                    rng=rng,
+                ),
+                _claim(
+                    claim_type="last_observed_time",
+                    subject_id=series["series_id"],
+                    object_id=f"time:{_iso(last_seen)}",
+                    object_value=_iso(last_seen),
+                    correct=correct,
+                    rng=rng,
+                ),
+            ]
+            report_type = "sighting_report"
+            detail = {
+                "aircraft_variant": aircraft.variant,
+                "aircraft_family": aircraft.family,
+                "operator": operator,
+                "radar": radar.name,
+                "last_observed_at": _iso(last_seen),
+                "location": {
+                    "area": reported_area,
+                    "latitude_deg": round(reported_lat, 6),
+                    "longitude_deg": round(reported_lon, 6),
+                },
+                "track_time_window": {
+                    "start": _iso(track_start),
+                    "end": _iso(track_end),
+                },
+            }
+        else:
+            typical_modes = [mode.name for mode in radar.modes[:3]]
+            behavior = f"{aircraft.role} operations by {operator}; typical {radar.name} modes: {', '.join(typical_modes)}"
+            claims = common_claims + [
+                _claim(
+                    claim_type="aircraft_family",
+                    subject_id=series["series_id"],
+                    object_id=f"aircraft_family:{slug(aircraft.family)}",
+                    object_value=aircraft.family,
+                    correct=correct,
+                    rng=rng,
+                    kg_entity_id=f"aircraft_family:{slug(aircraft.family)}",
+                ),
+                _claim(
+                    claim_type="expected_behavior",
+                    subject_id=series["series_id"],
+                    object_id=f"behavior:{slug(aircraft.variant)}:{slug(aircraft.role)}",
+                    object_value=behavior,
+                    correct=correct,
+                    rng=rng,
+                ),
+            ]
+            report_type = "pattern_of_life_report"
+            detail = {
+                "aircraft_family": aircraft.family,
+                "aircraft_variant": aircraft.variant,
+                "operator": operator,
+                "radar": radar.name,
+                "role": aircraft.role,
+                "expected_radar_modes": typical_modes,
+                "expected_operating_area": reported_area,
+                "expected_altitude_ceiling_m": aircraft.service_ceiling_m,
+                "expected_speed_ceiling_mach": aircraft.max_speed_mach,
+            }
         report = {
-            "report_id": f"intel_report:{observation['observation_id']}:{idx + 1:02d}",
-            "observation_id": observation["observation_id"],
-            "series_id": observation.get("series_id"),
-            "source_id": f"source:{rng.choice(['sigint_a', 'osint_b', 'liaison_c', 'analyst_d'])}",
-            "source_type": rng.choice(["sigint", "osint", "liaison", "analyst_assessment"]),
-            "report_type": "order_of_battle" if is_order_of_battle else "automated_synthetic_intelligence",
+            "report_id": f"intel_report:{series['series_id']}:{idx + 1:02d}",
+            "series_id": series["series_id"],
+            "source_id": f"source:{rng.choice(['visual_observer_a', 'air_defence_b', 'liaison_c', 'pattern_analyst_d'])}",
+            "source_type": "observer_network" if is_sighting else "pattern_analysis",
+            "report_type": report_type,
             "published_at": _iso(published_at),
             "collected_at": _iso(collected_at),
-            "ingested_at": _iso(published_at + timedelta(seconds=rng.uniform(5.0, 120.0))),
+            "ingested_at": _iso(
+                published_at + timedelta(seconds=rng.uniform(5.0, 120.0))
+            ),
             "credibility_score": round(credibility, 6),
             "external_context": {
                 "operator_priors": {truth["operator"]: 0.75},
-                "aircraft_family_priors": {f"aircraft_family:{slug(truth['aircraft_family'])}": 0.70},
+                "aircraft_family_priors": {
+                    f"aircraft_family:{slug(truth['aircraft_family'])}": 0.70
+                },
                 "radar_type_priors": {truth["radar_id"]: 0.70},
                 "radar_mode_priors": {truth["mode_id"]: 0.65},
             },
-            "claims": [claim],
+            "claims": claims,
+            "sighting" if is_sighting else "pattern_of_life": detail,
         }
-        if is_order_of_battle:
-            report["order_of_battle"] = {
-                "operator_country": text_value,
-                "assessed_aircraft_variant": truth["aircraft_variant"],
-                "assessment_scope": observation.get("estimated_emitter_location", {}).get("area", "unknown area"),
-            }
         reports.append(report)
     return reports
+
+
+def generate_intelligence_reports_for_observation(
+    observation: dict[str, Any], **kwargs: Any
+) -> list[dict[str, Any]]:
+    """Backward-compatible wrapper for callers that have a single observation."""
+    return generate_intelligence_reports_for_series(
+        {
+            "series_id": observation.get("series_id", observation["observation_id"]),
+            "ground_truth_track_label": observation.get("ground_truth_label"),
+            "observations": [observation],
+        },
+        **kwargs,
+    )
 
 
 def add_intelligence_reports_to_series(
@@ -468,9 +632,11 @@ def add_intelligence_reports_to_series(
         if not observations:
             series["intelligence_reports"] = []
             continue
-        reports = generate_intelligence_reports_for_observation(
-            observations[0], seed=rng.getrandbits(64),
-            min_reports=min_reports, max_reports=max_reports,
+        reports = generate_intelligence_reports_for_series(
+            series,
+            seed=rng.getrandbits(64),
+            min_reports=min_reports,
+            max_reports=max_reports,
         )
         observation_ids = [obs["observation_id"] for obs in observations]
         for report_index, report in enumerate(reports, start=1):
@@ -489,6 +655,7 @@ def add_intelligence_reports_to_series(
         series["intelligence_reports"] = reports
     meta = enriched.setdefault("metadata", {})
     meta["intelligence_reports_per_series"] = [min_reports, max_reports]
+    meta["intelligence_report_types"] = ["sighting_report", "pattern_of_life_report"]
     meta["intelligence_claim_types"] = list(CLAIM_TYPES)
     return enriched
 
@@ -500,62 +667,239 @@ def flatten_reports_from_series(data: dict[str, Any]) -> list[dict[str, Any]]:
     return reports
 
 
+def _great_circle_distance_km(
+    latitude_a: float, longitude_a: float, latitude_b: float, longitude_b: float
+) -> float:
+    """Return the great-circle distance between two WGS84 positions."""
+    lat_a, lat_b = math.radians(latitude_a), math.radians(latitude_b)
+    delta_lat = lat_b - lat_a
+    delta_lon = math.radians(longitude_b - longitude_a)
+    haversine = (
+        math.sin(delta_lat / 2.0) ** 2
+        + math.cos(lat_a) * math.cos(lat_b) * math.sin(delta_lon / 2.0) ** 2
+    )
+    return 6371.0088 * 2.0 * math.asin(min(1.0, math.sqrt(haversine)))
+
+
+def report_observation_proximity(
+    report: dict[str, Any],
+    observation: dict[str, Any],
+    *,
+    max_sighting_distance_km: float = 200.0,
+    max_sighting_time_delta_s: float = 1800.0,
+    max_pattern_time_delta_s: float = 86400.0,
+) -> dict[str, float | str] | None:
+    """Describe a report/observation proximity match, or return ``None``.
+
+    Sighting reports must be close in both time and geographic position. Pattern
+    reports use their expected operating area and a wider temporal window. This
+    prevents a series-level container from making every report applicable to
+    every observation merely because their ``series_id`` values match.
+    """
+    observation_time = _parse_utc(observation.get("timestamp_iso8601"))
+    observation_location = observation.get("estimated_emitter_location") or {}
+    if report.get("report_type") == "sighting_report":
+        sighting = report.get("sighting") or {}
+        reported_location = sighting.get("location") or {}
+        reported_time = _parse_utc(sighting.get("last_observed_at"))
+        required = (
+            observation_time,
+            reported_time,
+            observation_location.get("estimated_latitude_deg"),
+            observation_location.get("estimated_longitude_deg"),
+            reported_location.get("latitude_deg"),
+            reported_location.get("longitude_deg"),
+        )
+        if any(value is None for value in required):
+            return None
+        time_delta_s = abs((observation_time - reported_time).total_seconds())
+        distance_km = _great_circle_distance_km(
+            float(observation_location["estimated_latitude_deg"]),
+            float(observation_location["estimated_longitude_deg"]),
+            float(reported_location["latitude_deg"]),
+            float(reported_location["longitude_deg"]),
+        )
+        if (
+            time_delta_s > max_sighting_time_delta_s
+            or distance_km > max_sighting_distance_km
+        ):
+            return None
+        return {
+            "match_basis": "time_and_geography",
+            "time_delta_s": round(time_delta_s, 3),
+            "distance_km": round(distance_km, 3),
+        }
+
+    pattern = report.get("pattern_of_life") or {}
+    expected_area = pattern.get("expected_operating_area")
+    observed_area = observation_location.get("area")
+    report_time = _parse_utc(report.get("collected_at") or report.get("published_at"))
+    if (
+        not expected_area
+        or expected_area != observed_area
+        or not observation_time
+        or not report_time
+    ):
+        return None
+    time_delta_s = abs((observation_time - report_time).total_seconds())
+    if time_delta_s > max_pattern_time_delta_s:
+        return None
+    return {
+        "match_basis": "time_and_operating_area",
+        "time_delta_s": round(time_delta_s, 3),
+        "distance_km": 0.0,
+    }
+
+
 def build_report_evidence_rows(
     series_records: Iterable[dict[str, Any]],
 ) -> dict[str, list[dict[str, Any]]]:
     """Build unique report/claim nodes and link claims to all series observations."""
     report_rows, claim_rows, contains_edges, support_edges = [], [], [], []
+    track_rows, track_observation_edges = [], []
+    report_proximity_edges, report_track_edges, kg_entity_edges = [], [], []
     contradiction_edges: list[dict[str, Any]] = []
     for series in series_records:
         observations = series.get("observations", [])
         reports = series.get("intelligence_reports") or []
+        track_id = f"evidence:track:{series.get('series_id')}"
+        track_rows.append({"id": track_id, "series_id": series.get("series_id")})
+        track_observation_edges.extend(
+            {
+                "source": track_id,
+                "target": f"evidence:observation:{observation['observation_id']}",
+            }
+            for observation in observations
+        )
         claims_for_series: list[dict[str, Any]] = []
-        reference_time = _parse_utc(observations[0].get("timestamp_iso8601")) if observations else None
+        reference_time = (
+            _parse_utc(observations[0].get("timestamp_iso8601"))
+            if observations
+            else None
+        )
         for report in reports:
             recency = report_recency_score(report, reference_time=reference_time)
             report_id = f"evidence:report:{report['report_id']}"
-            report_rows.append({
-                "id": report_id, "report_id": report["report_id"],
-                "series_id": series.get("series_id"), "source_id": report.get("source_id"),
-                "source_type": report.get("source_type"), "published_at": report.get("published_at"),
-                "collected_at": report.get("collected_at"),
-                "credibility_score": float(report.get("credibility_score", 0.5)),
-                "recency_score": round(recency, 6),
-                "degree_score": float(len(report.get("claims") or [])),
-                "text_score": float(report.get("credibility_score", 0.5)),
-                "ds_masses": ds_masses_from_score(float(report.get("credibility_score", 0.5)) * recency, 0.25),
-            })
+            report_rows.append(
+                {
+                    "id": report_id,
+                    "report_id": report["report_id"],
+                    "series_id": series.get("series_id"),
+                    "source_id": report.get("source_id"),
+                    "report_type": report.get("report_type"),
+                    "source_type": report.get("source_type"),
+                    "published_at": report.get("published_at"),
+                    "collected_at": report.get("collected_at"),
+                    "credibility_score": float(report.get("credibility_score", 0.5)),
+                    "recency_score": round(recency, 6),
+                    "degree_score": float(len(report.get("claims") or [])),
+                    "text_score": float(report.get("credibility_score", 0.5)),
+                    "ds_masses": ds_masses_from_score(
+                        float(report.get("credibility_score", 0.5)) * recency, 0.25
+                    ),
+                }
+            )
+            applicable_observations = []
+            for observation in observations:
+                proximity = report_observation_proximity(report, observation)
+                if proximity is None:
+                    continue
+                observation_id = f"evidence:observation:{observation['observation_id']}"
+                applicable_observations.append(observation_id)
+                report_proximity_edges.append(
+                    {"source": report_id, "target": observation_id, **proximity}
+                )
+            if applicable_observations:
+                report_track_edges.append({"source": report_id, "target": track_id})
             for claim in report.get("claims") or []:
-                score = report_claim_score(report, claim, observation_time=reference_time)
+                score = report_claim_score(
+                    report, claim, observation_time=reference_time
+                )
                 claim_id = f"evidence:claim:{claim['claim_id']}"
                 claim_row = {
-                    "id": claim_id, "claim_id": claim["claim_id"], "report_id": report["report_id"],
-                    "series_id": series.get("series_id"), "claim_type": claim.get("claim_type"),
-                    "stance": claim.get("stance", "supports"), "object_id": claim.get("object_id"),
+                    "id": claim_id,
+                    "claim_id": claim["claim_id"],
+                    "report_id": report["report_id"],
+                    "series_id": series.get("series_id"),
+                    "claim_type": claim.get("claim_type"),
+                    "stance": claim.get("stance", "supports"),
+                    "object_id": claim.get("object_id"),
                     "object_value": claim.get("object_value"),
+                    "kg_entity_id": claim.get("kg_entity_id"),
                     "source_id": report.get("source_id"),
                     "credibility_score": float(report.get("credibility_score", 0.5)),
                     "recency_score": round(recency, 6),
                     "claim_confidence": float(claim.get("claim_confidence", 0.5)),
-                    "extraction_confidence": float(claim.get("extraction_confidence", 0.5)),
-                    "degree_score": 1.0, "text_score": score,
-                    "ds_masses": ds_masses_from_score(score, 0.2 if claim.get("stance") == "supports" else 0.35),
+                    "extraction_confidence": float(
+                        claim.get("extraction_confidence", 0.5)
+                    ),
+                    "degree_score": 1.0,
+                    "text_score": score,
+                    "ds_masses": ds_masses_from_score(
+                        score, 0.2 if claim.get("stance") == "supports" else 0.35
+                    ),
                 }
                 claim_rows.append(claim_row)
                 claims_for_series.append(claim_row)
                 contains_edges.append({"source": report_id, "target": claim_id})
-                for obs in observations:
-                    support_edges.append({"source": claim_id, "target": f"evidence:observation:{obs['observation_id']}", "score": score, "stance": claim.get("stance", "supports")})
+                if claim.get("kg_entity_id"):
+                    kg_entity_edges.append(
+                        {
+                            "source": claim_id,
+                            "target": claim["kg_entity_id"],
+                            "claim_type": claim.get("claim_type"),
+                            "stance": claim.get("stance", "supports"),
+                            "score": score,
+                        }
+                    )
+                for observation_id in applicable_observations:
+                    support_edges.append(
+                        {
+                            "source": claim_id,
+                            "target": observation_id,
+                            "score": score,
+                            "stance": claim.get("stance", "supports"),
+                        }
+                    )
         for left_idx, left in enumerate(claims_for_series):
-            for right in claims_for_series[left_idx + 1:]:
-                if left.get("claim_type") == right.get("claim_type") and left.get("object_id") != right.get("object_id"):
-                    contradiction_edges.append({
-                        "source": left["id"] if left["text_score"] >= right["text_score"] else right["id"],
-                        "target": right["id"] if left["text_score"] >= right["text_score"] else left["id"],
-                        "reason": str(left.get("claim_type")),
-                        "score_delta": round(abs(float(left["text_score"]) - float(right["text_score"])), 6),
-                    })
-    return {"reports": report_rows, "claims": claim_rows, "contains_edges": contains_edges, "support_edges": support_edges, "contradiction_edges": contradiction_edges}
+            for right in claims_for_series[left_idx + 1 :]:
+                if left.get("claim_type") == right.get("claim_type") and left.get(
+                    "object_id"
+                ) != right.get("object_id"):
+                    contradiction_edges.append(
+                        {
+                            "source": (
+                                left["id"]
+                                if left["text_score"] >= right["text_score"]
+                                else right["id"]
+                            ),
+                            "target": (
+                                right["id"]
+                                if left["text_score"] >= right["text_score"]
+                                else left["id"]
+                            ),
+                            "reason": str(left.get("claim_type")),
+                            "score_delta": round(
+                                abs(
+                                    float(left["text_score"])
+                                    - float(right["text_score"])
+                                ),
+                                6,
+                            ),
+                        }
+                    )
+    return {
+        "reports": report_rows,
+        "claims": claim_rows,
+        "contains_edges": contains_edges,
+        "support_edges": support_edges,
+        "contradiction_edges": contradiction_edges,
+        "tracks": track_rows,
+        "track_observation_edges": track_observation_edges,
+        "report_proximity_edges": report_proximity_edges,
+        "report_track_edges": report_track_edges,
+        "kg_entity_edges": kg_entity_edges,
+    }
 
 
 class ReportNeo4jETL:
@@ -583,7 +927,9 @@ class ReportNeo4jETL:
                 candidate = dict(record["candidate"])
                 candidate["aircraft_family_id"] = record["aircraft_family_id"]
                 candidates.append(candidate)
-            candidate_updates, candidate_edges = build_candidate_intelligence_rows(rows, candidates)
+            candidate_updates, candidate_edges = build_candidate_intelligence_rows(
+                rows, candidates
+            )
             rows["candidate_updates"] = candidate_updates
             rows["candidate_edges"] = candidate_edges
             session.execute_write(_write_report_evidence_rows, rows)
@@ -591,37 +937,104 @@ class ReportNeo4jETL:
 
 
 def _write_report_evidence_rows(tx, rows: dict[str, list[dict[str, Any]]]) -> None:
-    tx.run("""
+    tx.run(
+        """
+    UNWIND $rows AS row
+    MERGE (n:EvidenceEntity:Track {id: row.id})
+    SET n += row
+    """,
+        rows=rows["tracks"],
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MERGE (n:EvidenceEntity:IntelligenceReport {id: row.id})
     SET n += row
-    """, rows=rows["reports"])
-    tx.run("""
+    """,
+        rows=rows["reports"],
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MERGE (n:EvidenceEntity:ReportClaim {id: row.id})
     SET n += row
-    """, rows=rows["claims"])
-    tx.run("""
+    """,
+        rows=rows["claims"],
+    )
+    tx.run(
+        """
+    UNWIND $rows AS row
+    MATCH (s:Track {id: row.source})
+    MATCH (t:Observation {id: row.target})
+    MERGE (s)-[:TRACK_HAS_OBSERVATION]->(t)
+    """,
+        rows=rows["track_observation_edges"],
+    )
+    tx.run(
+        """
+    UNWIND $rows AS row
+    MATCH (s:IntelligenceReport {id: row.source})
+    MATCH (t:Observation {id: row.target})
+    MERGE (s)-[r:REPORT_NEAR_OBSERVATION]->(t)
+    SET r.match_basis = row.match_basis,
+        r.time_delta_s = row.time_delta_s,
+        r.distance_km = row.distance_km
+    """,
+        rows=rows["report_proximity_edges"],
+    )
+    tx.run(
+        """
+    UNWIND $rows AS row
+    MATCH (s:IntelligenceReport {id: row.source})
+    MATCH (t:Track {id: row.target})
+    MERGE (s)-[:REPORT_APPLIES_TO_TRACK]->(t)
+    """,
+        rows=rows["report_track_edges"],
+    )
+    tx.run(
+        """
+    UNWIND $rows AS row
+    MATCH (s:ReportClaim {id: row.source})
+    MATCH (t {id: row.target})
+    WHERE t:AircraftVariant OR t:AircraftFamily OR t:Radar OR t:Operator OR t:RadarMode
+    MERGE (s)-[r:CLAIM_ASSERTS_KG_ENTITY]->(t)
+    SET r.claim_type = row.claim_type,
+        r.stance = row.stance,
+        r.score = row.score
+    """,
+        rows=rows["kg_entity_edges"],
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MATCH (s:EvidenceEntity {id: row.source})
     MATCH (t:EvidenceEntity {id: row.target})
     MERGE (s)-[:REPORT_CONTAINS_CLAIM]->(t)
-    """, rows=rows["contains_edges"])
-    tx.run("""
+    """,
+        rows=rows["contains_edges"],
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MATCH (s:EvidenceEntity {id: row.source})
     MATCH (t:EvidenceEntity {id: row.target})
     MERGE (s)-[r:CLAIM_SUPPORTS_OBSERVATION]->(t)
     SET r.score = row.score, r.stance = row.stance
-    """, rows=rows["support_edges"])
-    tx.run("""
+    """,
+        rows=rows["support_edges"],
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MATCH (s:EvidenceEntity {id: row.source})
     MATCH (t:EvidenceEntity {id: row.target})
     MERGE (s)-[r:CONTRADICTS_CLAIM]->(t)
     SET r.score_delta = row.score_delta, r.reason = row.reason
-    """, rows=rows["contradiction_edges"])
-    tx.run("""
+    """,
+        rows=rows["contradiction_edges"],
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MATCH (c:CandidateEvidence {id: row.id})
     SET c += row
@@ -630,8 +1043,11 @@ def _write_report_evidence_rows(tx, rows: dict[str, list[dict[str, Any]]]) -> No
     SET r.sensor_score = row.sensor_score,
         r.score = row.final_score,
         r.rank = row.intel_rank
-    """, rows=rows.get("candidate_updates", []))
-    tx.run("""
+    """,
+        rows=rows.get("candidate_updates", []),
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MATCH (s:ReportClaim {id: row.source})
     MATCH (t:CandidateEvidence {id: row.target})
@@ -640,8 +1056,13 @@ def _write_report_evidence_rows(tx, rows: dict[str, list[dict[str, Any]]]) -> No
         r.claim_score = row.claim_score,
         r.contribution = row.contribution,
         r.match_basis = row.match_basis
-    """, rows=[row for row in rows.get("candidate_edges", []) if row["contribution"] > 0])
-    tx.run("""
+    """,
+        rows=[
+            row for row in rows.get("candidate_edges", []) if row["contribution"] > 0
+        ],
+    )
+    tx.run(
+        """
     UNWIND $rows AS row
     MATCH (s:ReportClaim {id: row.source})
     MATCH (t:CandidateEvidence {id: row.target})
@@ -650,7 +1071,11 @@ def _write_report_evidence_rows(tx, rows: dict[str, list[dict[str, Any]]]) -> No
         r.claim_score = row.claim_score,
         r.contribution = row.contribution,
         r.match_basis = row.match_basis
-    """, rows=[row for row in rows.get("candidate_edges", []) if row["contribution"] < 0])
+    """,
+        rows=[
+            row for row in rows.get("candidate_edges", []) if row["contribution"] < 0
+        ],
+    )
 
 
 def load_reports_json(path: str | Path) -> list[dict[str, Any]]:
@@ -661,20 +1086,30 @@ def load_reports_json(path: str | Path) -> list[dict[str, Any]]:
         return data["reports"]
     if isinstance(data, list):
         return data
-    raise ValueError("report JSON must be a series dataset, {'reports': [...]}, or a list")
+    raise ValueError(
+        "report JSON must be a series dataset, {'reports': [...]}, or a list"
+    )
 
 
 def series_from_series_json(path: str | Path) -> list[dict[str, Any]]:
     """Load series records with their shared intelligence reports."""
     data = json.loads(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or not isinstance(data.get("observation_series"), list):
+    if not isinstance(data, dict) or not isinstance(
+        data.get("observation_series"), list
+    ):
         raise ValueError("series JSON must contain an 'observation_series' list")
     return data["observation_series"]
 
 
 def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Load synthetic intelligence reports into Neo4j as evidence nodes.")
-    parser.add_argument("--series", type=Path, default=Path("generated/demo_esm_observation_series_with_intel.json"))
+    parser = argparse.ArgumentParser(
+        description="Load synthetic intelligence reports into Neo4j as evidence nodes."
+    )
+    parser.add_argument(
+        "--series",
+        type=Path,
+        default=Path("generated/demo_esm_observation_series_with_intel.json"),
+    )
     parser.add_argument("--neo4j-uri", default="bolt://localhost:7687")
     parser.add_argument("--neo4j-user", default="neo4j")
     parser.add_argument("--neo4j-password", default="password")
@@ -685,7 +1120,9 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
 def main(argv: Iterable[str] | None = None) -> None:
     args = parse_args(argv)
     series_records = series_from_series_json(args.series)
-    etl = ReportNeo4jETL(args.neo4j_uri, args.neo4j_user, args.neo4j_password, args.neo4j_database)
+    etl = ReportNeo4jETL(
+        args.neo4j_uri, args.neo4j_user, args.neo4j_password, args.neo4j_database
+    )
     try:
         result = etl.ingest(series_records)
     finally:
