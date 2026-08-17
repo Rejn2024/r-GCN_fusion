@@ -145,6 +145,15 @@ be treated as a coherent radar/aircraft/operator identification. See the
 [KG-consistent output design](docs/kg_consistent_outputs.md) and use
 `decode_kg_constrained` to emit only a complete combination represented in the
 knowledge graph, or one explicit `unknown` result.
+For series in which aircraft, radar, and operator are invariant but radar mode
+may change, see the
+[track-level RAO classification design](docs/track_level_rao_classification.md).
+It proposes a hierarchical track-pooling architecture, one KG-valid joint RAO
+head per series, a conditioned per-observation radar-mode head, track-balanced
+losses, and sequence-aware evaluation. The runnable
+[`Track_identification.ipynb`](notebooks/Track_identification.ipynb) notebook
+implements that design, including track-shaped dashboards, prediction artifacts,
+and evidence-grounded LLM explanations.
 For an unseen radar mode attached to an otherwise known identity, the
 hierarchical decoder preserves the KG-valid radar/aircraft/operator tuple while
 returning `radar_mode: null` as a partially known result.
