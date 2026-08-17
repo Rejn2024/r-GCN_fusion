@@ -1,0 +1,55 @@
+import ast
+import json
+from pathlib import Path
+
+
+NOTEBOOK = Path("notebooks/Track_identification.ipynb")
+
+
+def _notebook():
+    return json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+
+
+def _code_source():
+    return "\n".join(
+        "".join(cell.get("source", []))
+        for cell in _notebook()["cells"]
+        if cell.get("cell_type") == "code"
+    )
+
+
+def test_track_identification_notebook_code_cells_parse():
+    for index, cell in enumerate(_notebook()["cells"]):
+        if cell.get("cell_type") == "code":
+            ast.parse("".join(cell.get("source", [])), filename=f"cell {index}")
+
+
+def test_track_notebook_has_one_joint_rao_head_and_observation_mode_head():
+    source = _code_source()
+    assert "class TrackAttentionPool" in source
+    assert "class TrackRGCNHGTClassifier" in source
+    assert 'self.rao_head = head(hidden_dim, num_rao_classes)' in source
+    assert 'self.mode_head = head(2 * hidden_dim, num_mode_classes)' in source
+    assert '"track_rao": rao_logits' in source
+    assert '"radar_mode": mode_logits' in source
+    assert "rao_mode_compatibility" in source
+
+
+def test_track_notebook_balances_mode_loss_and_enforces_output_constraints():
+    source = _code_source()
+    assert "def mean_modes_per_track" in source
+    assert "rao_target_by_series" in source
+    assert "observation_track_index" in source
+    assert "constrained_mode_logits" in source
+    assert "RAO_VIOLATION_COUNT = 0" in source
+    assert '"rao_invariant": True' in source
+
+
+def test_dashboard_and_llm_use_track_shaped_outputs():
+    source = _code_source()
+    assert '"track_rao_exact_accuracy"' in source
+    assert '"mode_transition_f1"' in source
+    assert "LLM_TRACK_INDEX" in source
+    assert '"invariant_track_rao"' in source
+    assert '"ordered_radar_mode_sequence"' in source
+    assert "Never imply that aircraft, radar, or operator changes" in source
