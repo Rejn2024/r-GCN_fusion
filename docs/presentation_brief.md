@@ -167,12 +167,14 @@ radar, aircraft, and operator evidence can remain continuous.
 
 The series API can enrich each emitter series with one shared set of 10--12
 reports; reports are deliberately stored once on the series wrapper rather than
-copied into every observation. The report mix covers operator,
-aircraft-variant, aircraft-family, radar-type, radar-mode, location, and
-relationship claims. At least two reports are order-of-battle assessments. The
-synthetic mix includes correct, incorrect, supporting, and refuting claims so
-that corroboration and contradiction can be tested. Synthetic truth fields
-exist only to evaluate the generator and must not become inference features.
+copied into every observation. Roughly two thirds are track-aware sighting
+reports describing a nearby aircraft, its operator and radar, its geographic
+location, and its last-observed time. The remainder are pattern-of-life reports
+describing the expected role, radar modes, operating area, and performance
+envelope for an aircraft family/variant and operator. Sightings are largely
+correct but include controlled identity, location, and timing errors so that
+corroboration and contradiction can be tested. Synthetic truth fields exist
+only to evaluate the generator and must not become inference features.
 
 Claim scoring blends claim confidence (25%), source credibility (20%), recency
 (15%), extraction confidence (15%), optional external prior (10%), KG

@@ -127,10 +127,14 @@ canonical KG fact.
 | `GROUND_TRUTH_CANDIDATE` | `Observation` → `CandidateEvidence` | none | Evaluation-only link to a candidate matching the supplied truth. It exists only when truth ingestion is enabled and should normally be excluded from leakage-safe training. |
 | `SHARES_BEST_MODE` | `Observation` ↔ `Observation` | none | A pair of directed edges between observations whose best candidate has the same radar mode. This is candidate-derived and may also be excluded from leakage-safe training. |
 | `REPORT_CONTAINS_CLAIM` | `IntelligenceReport` → `ReportClaim` | none | Preserves claim provenance. |
-| `CLAIM_SUPPORTS_OBSERVATION` | `ReportClaim` → `Observation` | `score`, `stance` | Applies a scored report claim to every observation in its series. The historical relationship name is retained even when `stance` is not `supports`; consumers must inspect `stance`. |
+| `CLAIM_SUPPORTS_OBSERVATION` | `ReportClaim` → `Observation` | `score`, `stance` | Applies a scored report claim only to observations passing its report's proximity test. The historical relationship name is retained even when `stance` is not `supports`; consumers must inspect `stance`. |
 | `CLAIM_SUPPORTS_CANDIDATE` | `ReportClaim` → `CandidateEvidence` | `compatibility`, `claim_score`, `contribution`, `match_basis` | Direct positive, candidate-specific intelligence evidence. `compatibility` is already final and signed; stance must not be applied again. |
 | `CLAIM_REFUTES_CANDIDATE` | `ReportClaim` → `CandidateEvidence` | `compatibility`, `claim_score`, `contribution`, `match_basis` | Direct negative, candidate-specific intelligence evidence. |
 | `CONTRADICTS_CLAIM` | stronger `ReportClaim` → weaker `ReportClaim` | `score_delta`, `reason` | Connects claims of the same type that refer to different object identifiers; direction follows claim score. |
+| `REPORT_NEAR_OBSERVATION` | `IntelligenceReport` → `Observation` | `match_basis`, `time_delta_s`, `distance_km` | Connects sightings by time and coordinates and patterns of life by time and expected operating area. |
+| `REPORT_APPLIES_TO_TRACK` | `IntelligenceReport` → `Track` | none | Marks a report as applicable when it has at least one proximity-qualified observation on the track. |
+| `TRACK_HAS_OBSERVATION` | `Track` → `Observation` | none | Materializes the series/track hierarchy for report applicability and downstream pooling. |
+| `CLAIM_ASSERTS_KG_ENTITY` | `ReportClaim` → aircraft/radar/operator KG node | `claim_type`, `stance`, `score` | Grounds a structured intelligence assertion in an existing canonical KG entity. |
 
 Relationship direction is part of the r-GCN relation semantics. In particular,
 contradiction edges point from the stronger item to the weaker one; they should

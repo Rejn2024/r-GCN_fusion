@@ -2,7 +2,6 @@ import ast
 import json
 from pathlib import Path
 
-
 NOTEBOOK = Path("notebooks/Track_identification.ipynb")
 
 
@@ -28,8 +27,8 @@ def test_track_notebook_has_one_joint_rao_head_and_observation_mode_head():
     source = _code_source()
     assert "class TrackAttentionPool" in source
     assert "class TrackRGCNHGTClassifier" in source
-    assert 'self.rao_head = head(hidden_dim, num_rao_classes)' in source
-    assert 'self.mode_head = head(2 * hidden_dim, num_mode_classes)' in source
+    assert "self.rao_head = head(hidden_dim, num_rao_classes)" in source
+    assert "self.mode_head = head(2 * hidden_dim, num_mode_classes)" in source
     assert '"track_rao": rao_logits' in source
     assert '"radar_mode": mode_logits' in source
     assert "rao_mode_compatibility" in source
@@ -53,3 +52,14 @@ def test_dashboard_and_llm_use_track_shaped_outputs():
     assert '"invariant_track_rao"' in source
     assert '"ordered_radar_mode_sequence"' in source
     assert "Never imply that aircraft, radar, or operator changes" in source
+
+
+def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities():
+    source = _code_source()
+    assert "demo_esm_observation_series_with_sightings_and_patterns.json" in source
+    assert "report_observation_proximity" in source
+    assert "proximity_by_observation" in source
+    assert '"claim_asserts_kg_entity"' in source
+    assert '"kg_entity_asserted_by_claim"' in source
+    assert "kg_entity_node_indices" in source
+    assert "report_kg_edges" in source
