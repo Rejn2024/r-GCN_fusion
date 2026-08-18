@@ -128,8 +128,11 @@ incompatible same-type assertions with directed `CONTRADICTS_CLAIM` edges.
 
 ## Candidate compatibility and fusion
 
-When candidate nodes already exist, report ingestion compares every series
-claim with every shortlisted candidate. Compatibility follows the **final
+During observation ingestion, report claims are quality-scored in memory and
+compared with every KG candidate before the shortlist is limited and before any
+candidate nodes are produced. Report ingestion subsequently materialises the
+report/claim provenance graph and idempotently refreshes the same candidate
+fusion fields. Compatibility follows the **final
 signed** convention in `[-1, 1]`: its sign already includes both object
 alignment and claim stance. The quality-weighted contribution is therefore:
 
