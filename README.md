@@ -97,6 +97,10 @@ sensor/ESM candidate **before** applying the candidate limit or creating any
 contribution (default 0.15). The report loader can still be run afterward to
 materialise report/claim nodes and provenance edges, but candidate nodes are
 already ranked and populated with sensor, intelligence, and final scores.
+See [Candidate scoring and selection strategy](docs/candidate_scoring_strategy.md)
+for effective default contributions, calibration and weight-tuning guidance,
+and alternatives such as learned ranking, conformal sets, dynamic thresholds,
+and diversity-aware shortlists.
 
 The ETL creates `Observation` and `CandidateEvidence` nodes, both labelled
 `EvidenceEntity`, with `degree_score`, `text_score`, `recency_score`,
