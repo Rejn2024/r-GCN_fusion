@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from kg_generator import AIRCRAFT, RADARS, slug
-from rgcn_fusion.observation_etl import ds_masses_from_score
+from rgcn_fusion.evidence_scoring import ds_masses_from_score
 from rgcn_fusion.dempster_shafer import combine_masses
 
 CLAIM_TYPES = (

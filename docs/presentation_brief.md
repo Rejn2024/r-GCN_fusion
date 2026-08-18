@@ -185,8 +185,8 @@ reproducible.
 ## Observation ETL and evidence-graph preparation
 
 The ETL queries Neo4j for each `RadarMode` and its associated radar, aircraft,
-and operator context.  It ranks up to five candidates per observation by a
-weighted score:
+family, and operator context. It first calculates this sensor score for every
+candidate:
 
 ```text
 total = 0.75 * radar-mode match
@@ -203,6 +203,12 @@ total = 0.75 * radar-mode match
 - **Operator prior:** optional external deployment/context input only; it does
   not read `ground_truth_label`.
 
+Available series intelligence claims are then quality-scored and fused with
+each sensor score using a default maximum intelligence weight of 15%. Only
+after fusion does the ETL rank and retain up to five candidates, so intelligence
+can affect which candidate nodes are produced rather than merely reranking an
+already-materialised shortlist.
+
 For each observation, the ETL writes one `Observation` node and ranked
 `CandidateEvidence` nodes.  It adds `HAS_CANDIDATE` edges, directed
 `CONTRADICTS_CANDIDATE` edges from a materially stronger incompatible candidate
@@ -213,7 +219,8 @@ residual, kinematic-consistency, uncertainty-width, ambiguity-count, and
 missing-feature signals.
 
 The separate report ETL writes `IntelligenceReport` and `ReportClaim` evidence
-nodes. `REPORT_CONTAINS_CLAIM` preserves provenance,
+nodes and idempotently refreshes the candidate fusion fields.
+`REPORT_CONTAINS_CLAIM` preserves provenance,
 `CLAIM_SUPPORTS_OBSERVATION` connects every shared series claim to every
 observation for which it is valid (and retains the claim stance), and directed
 `CONTRADICTS_CLAIM` edges connect incompatible same-type claims from the

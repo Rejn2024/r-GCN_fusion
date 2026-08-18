@@ -19,6 +19,13 @@ from typing import Any, Iterable
 
 from neo4j import GraphDatabase
 
+from rgcn_fusion.evidence_scoring import ds_masses_from_score
+from rgcn_fusion.intelligence_reports import (
+    DEFAULT_INTELLIGENCE_WEIGHT,
+    aggregate_candidate_intelligence,
+    build_report_evidence_rows,
+)
+
 MEASURED_TO_KG_FIELDS = {
     "measured_centre_frequency_ghz": ("centre_frequency_min_ghz", "centre_frequency_max_ghz"),
     "measured_bandwidth_mhz": ("bandwidth_min_mhz", "bandwidth_max_mhz"),
@@ -57,10 +64,12 @@ class CandidateScore:
     operator: str | None
     mode_score: float
     aircraft_score: float
+    sensor_score: float
     total_score: float
     matched_fields: int
     compared_fields: int
     feature_scores: dict[str, float] | None = None
+    intelligence_features: dict[str, Any] | None = None
 
 
 def load_observations(path: str | Path) -> list[dict[str, Any]]:
@@ -96,6 +105,15 @@ def load_observations(path: str | Path) -> list[dict[str, Any]]:
             "'observation_series' list, or be a list of observations"
         )
     return observations
+
+
+def load_intelligence_claims(path: str | Path) -> list[dict[str, Any]]:
+    """Load and quality-score series intelligence claims for candidate scoring."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    series = data.get("observation_series") if isinstance(data, dict) else None
+    if not isinstance(series, list):
+        return []
+    return build_report_evidence_rows(series)["claims"]
 
 
 def _interval_overlap_score(obs_min: float, obs_max: float, kg_min: float, kg_max: float) -> float:
@@ -268,19 +286,12 @@ def _recency_score(observation: dict[str, Any], *, now: datetime | None = None, 
     return math.exp(-math.log(2.0) * age_days / half_life_days)
 
 
-def ds_masses_from_score(score: float, ambiguity: float) -> list[float]:
-    """Build a two-hypothesis DS mass vector: [non_match, match, uncertain]."""
-    uncertainty = min(0.6, max(0.05, ambiguity))
-    committed = 1.0 - uncertainty
-    match = committed * max(0.0, min(1.0, score))
-    non_match = committed - match
-    return [round(non_match, 6), round(match, 6), round(uncertainty, 6)]
-
-
 def score_candidates(
     observation: dict[str, Any],
     kg_rows: Iterable[dict[str, Any]],
     max_candidates: int = DEFAULT_MAX_CANDIDATES,
+    intelligence_claims: Iterable[dict[str, Any]] = (),
+    intelligence_weight: float = DEFAULT_INTELLIGENCE_WEIGHT,
 ) -> list[CandidateScore]:
     """Score KG rows against one observation without using supervised truth labels.
 
@@ -290,11 +301,33 @@ def score_candidates(
     ``ground_truth_label``.
     """
     scored: list[CandidateScore] = []
+    claims = list(intelligence_claims)
     for row in kg_rows:
         mode_score, matched_fields, compared_fields, feature_scores = _mode_feature_scores(observation, row["mode_props"])
         aircraft_score = _aircraft_score(observation, row)
         operator_score = _external_prior_score(observation, "operator", row.get("operator"))
-        total = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
+        sensor_score = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
+        candidate_context = {
+            "id": f"candidate-context:{row['mode_id']}:{row.get('aircraft_id')}",
+            "series_id": observation.get("series_id"),
+            "mode_id": row["mode_id"],
+            "radar_id": row.get("radar_id"),
+            "aircraft_id": row.get("aircraft_id"),
+            "aircraft_family_id": row.get("aircraft_family_id"),
+            "operator": row.get("operator"),
+            "relation_id": (
+                f"relation:{row['aircraft_id']}:USES_RADAR:{row['radar_id']}"
+                if row.get("aircraft_id") and row.get("radar_id")
+                else None
+            ),
+            "sensor_score": sensor_score,
+            "text_score": sensor_score,
+            "ds_masses": ds_masses_from_score(sensor_score, 0.2),
+        }
+        intelligence_features, _edges = aggregate_candidate_intelligence(
+            candidate_context, claims, intelligence_weight=intelligence_weight
+        )
+        total = intelligence_features["final_score"]
         scored.append(CandidateScore(
             mode_id=row["mode_id"],
             radar_id=row.get("radar_id"),
@@ -302,10 +335,12 @@ def score_candidates(
             operator=row.get("operator"),
             mode_score=round(mode_score, 6),
             aircraft_score=round(aircraft_score, 6),
+            sensor_score=round(sensor_score, 6),
             total_score=round(total, 6),
             matched_fields=matched_fields,
             compared_fields=compared_fields,
             feature_scores=feature_scores,
+            intelligence_features=intelligence_features,
         ))
 
     return sorted(scored, key=lambda item: item.total_score, reverse=True)[:max_candidates]
@@ -361,6 +396,7 @@ class ObservationNeo4jETL:
         query = """
         MATCH (radar:Radar)-[:HAS_MODE]->(mode:RadarMode)
         OPTIONAL MATCH (aircraft:AircraftVariant)-[:USES_RADAR]->(radar)
+        OPTIONAL MATCH (aircraft)-[:VARIANT_OF]->(family:AircraftFamily)
         OPTIONAL MATCH (operator:Operator)-[:OPERATES]->(aircraft)
         RETURN mode.id AS mode_id,
                properties(mode) AS mode_props,
@@ -368,6 +404,7 @@ class ObservationNeo4jETL:
                properties(radar) AS radar_props,
                aircraft.id AS aircraft_id,
                properties(aircraft) AS aircraft_props,
+               family.id AS aircraft_family_id,
                aircraft IS NOT NULL AS aircraft_uses_radar,
                operator.name AS operator
         """
@@ -390,6 +427,8 @@ class ObservationNeo4jETL:
         *,
         max_candidates: int = DEFAULT_MAX_CANDIDATES,
         include_ground_truth_labels: bool = False,
+        intelligence_claims: Iterable[dict[str, Any]] = (),
+        intelligence_weight: float = DEFAULT_INTELLIGENCE_WEIGHT,
     ) -> dict[str, int]:
         """Ingest scored observations without leaking truth labels by default.
 
@@ -407,10 +446,19 @@ class ObservationNeo4jETL:
         truth_edges: list[dict[str, Any]] = []
         similarity_edges: list[dict[str, Any]] = []
         by_best_mode: dict[str, list[str]] = {}
+        claims_by_series: dict[str, list[dict[str, Any]]] = {}
+        for claim in intelligence_claims:
+            claims_by_series.setdefault(str(claim.get("series_id")), []).append(claim)
 
         now = datetime.now(UTC)
         for observation in observations:
-            candidates = score_candidates(observation, kg_rows, max_candidates=max_candidates)
+            candidates = score_candidates(
+                observation,
+                kg_rows,
+                max_candidates=max_candidates,
+                intelligence_claims=claims_by_series.get(str(observation.get("series_id")), []),
+                intelligence_weight=intelligence_weight,
+            )
             if not candidates:
                 continue
             best = candidates[0]
@@ -466,6 +514,7 @@ class ObservationNeo4jETL:
                     "operator": candidate.operator,
                     "mode_score": candidate.mode_score,
                     "aircraft_score": candidate.aircraft_score,
+                    "sensor_score": candidate.sensor_score,
                     "speed_consistency_score": _speed_consistency_score(observation, candidate_aircraft_props),
                     "altitude_consistency_score": _altitude_consistency_score(observation, candidate_aircraft_props),
                     "heading_consistency_score": 1.0,
@@ -479,6 +528,7 @@ class ObservationNeo4jETL:
                     ),
                     "candidate_ambiguity_count": float(len(candidates)),
                     **(candidate.feature_scores or {}),
+                    **(candidate.intelligence_features or {}),
                 })
                 candidate_edges.append({"source": obs_node_id, "target": candidate_id, "score": candidate.total_score, "rank": rank})
                 if (
@@ -589,6 +639,20 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--neo4j-database", default="neo4j")
     parser.add_argument("--max-candidates", type=int, default=DEFAULT_MAX_CANDIDATES)
     parser.add_argument(
+        "--intelligence-reports",
+        type=Path,
+        help=(
+            "Optional observation-series JSON containing intelligence reports; "
+            "the observations file itself is used when this is omitted"
+        ),
+    )
+    parser.add_argument(
+        "--intelligence-weight",
+        type=float,
+        default=DEFAULT_INTELLIGENCE_WEIGHT,
+        help="Maximum intelligence contribution to the pre-persistence candidate score",
+    )
+    parser.add_argument(
         "--include-ground-truth-labels",
         action="store_true",
         help="Copy supervised truth labels and truth edges into Neo4j for offline evaluation only",
@@ -599,12 +663,15 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
 def main(argv: Iterable[str] | None = None) -> None:
     args = parse_args(argv)
     observations = load_observations(args.observations)
+    intelligence_claims = load_intelligence_claims(args.intelligence_reports or args.observations)
     etl = ObservationNeo4jETL(args.neo4j_uri, args.neo4j_user, args.neo4j_password, args.neo4j_database)
     try:
         result = etl.ingest(
             observations,
             max_candidates=args.max_candidates,
             include_ground_truth_labels=args.include_ground_truth_labels,
+            intelligence_claims=intelligence_claims,
+            intelligence_weight=args.intelligence_weight,
         )
     finally:
         etl.close()
