@@ -48,6 +48,10 @@ def test_dashboard_and_llm_use_track_shaped_outputs():
     source = _code_source()
     assert '"track_rao_exact_accuracy"' in source
     assert '"mode_transition_f1"' in source
+    assert (
+        'final_outputs["evidential"]["radar_mode"]["uncertainty"]'
+        "[test_observation_positions]" in source
+    )
     assert "LLM_TRACK_INDEX" in source
     assert '"invariant_track_rao"' in source
     assert '"ordered_radar_mode_sequence"' in source
