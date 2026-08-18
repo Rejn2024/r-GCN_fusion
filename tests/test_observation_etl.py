@@ -106,6 +106,62 @@ def test_score_candidates_prefers_overlapping_radar_mode():
     assert candidates[0].total_score > candidates[1].total_score
 
 
+def test_score_candidates_fuses_intelligence_before_shortlisting():
+    rows = [
+        {
+            "mode_id": "radar_mode:sensor-favourite",
+            "mode_props": {
+                "waveform": "pulse_doppler",
+                "scan_type": "sector",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:sensor-favourite",
+            "aircraft_id": "aircraft:sensor-favourite",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "operator": "Testland",
+        },
+        {
+            "mode_id": "radar_mode:intel-favourite",
+            "mode_props": {
+                "waveform": "other",
+                "scan_type": "other",
+                "centre_frequency_min_ghz": 9.4,
+                "centre_frequency_max_ghz": 9.8,
+            },
+            "radar_id": "radar:intel-favourite",
+            "aircraft_id": "aircraft:intel-favourite",
+            "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+            "operator": "Testland",
+        },
+    ]
+    claims = [
+        {
+            "id": f"claim:{index}",
+            "source_id": f"source:{index}",
+            "claim_type": "radar_type",
+            "object_id": "radar:intel-favourite",
+            "stance": "supports",
+            "text_score": 1.0,
+        }
+        for index in range(3)
+    ]
+
+    sensor_only = score_candidates(_observation(), rows, max_candidates=1)
+    fused = score_candidates(
+        _observation(),
+        rows,
+        max_candidates=1,
+        intelligence_claims=claims,
+        intelligence_weight=0.75,
+    )
+
+    assert sensor_only[0].radar_id == "radar:sensor-favourite"
+    assert fused[0].radar_id == "radar:intel-favourite"
+    assert fused[0].total_score > fused[0].sensor_score
+    assert fused[0].intelligence_features["intel_source_count"] == 3.0
+
+
 def test_ds_masses_are_normalized():
     masses = ds_masses_from_score(0.8, 0.25)
 

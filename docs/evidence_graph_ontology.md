@@ -173,8 +173,10 @@ to canonical nodes. Consequently:
 
 ## Intelligence-aware candidate ranking
 
-The report ETL enriches an existing observation candidate shortlist in three
-stages, so observation ingestion must run before report ingestion:
+Observation ETL quality-scores available series claims and fuses them with all
+KG candidates before limiting the shortlist or producing candidate nodes. The
+report ETL can subsequently materialise provenance nodes and edges and
+idempotently refresh the fusion fields in three stages:
 
 1. **Final signed compatibility.** Exact operator, aircraft, radar, and mode
    identifiers are compared with each candidate. Aircraft-family claims use the
@@ -190,8 +192,9 @@ stages, so observation ingestion must run before report ingestion:
    invalid mass vector.
 3. **Graph and learned-ranking inputs.** The bounded intelligence score is
    blended with the original `sensor_score` using a default maximum weight of
-   0.15. `HAS_CANDIDATE.score` and rank are updated, direct claim/candidate
-   relations are materialised, and the component scores are available as
+   0.15. `HAS_CANDIDATE.score` and rank are set from the fused score during
+   candidate creation; report ingestion later materialises direct
+   claim/candidate relations. The component scores are available as
    recommended numeric r-GCN features. This preserves the sensor-only score for
    explanations, ablations, and learned re-ranking experiments.
 

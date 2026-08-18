@@ -89,6 +89,15 @@ rgcn-fusion-load-observations --observations generated/esm_observations.json \
   --neo4j-uri bolt://localhost:7687 --neo4j-user neo4j --neo4j-password password
 ```
 
+When the input contains `observation_series` with `intelligence_reports`, the
+loader quality-scores those claims in memory and fuses them with every KG
+sensor/ESM candidate **before** applying the candidate limit or creating any
+`CandidateEvidence` nodes. A separate series file can be supplied with
+`--intelligence-reports`; `--intelligence-weight` controls its maximum scalar
+contribution (default 0.15). The report loader can still be run afterward to
+materialise report/claim nodes and provenance edges, but candidate nodes are
+already ranked and populated with sensor, intelligence, and final scores.
+
 The ETL creates `Observation` and `CandidateEvidence` nodes, both labelled
 `EvidenceEntity`, with `degree_score`, `text_score`, `recency_score`,
 `ds_masses`, and optional class-label properties (`radar_id`, `mode_id`,
