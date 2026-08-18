@@ -44,7 +44,7 @@ def test_track_notebook_balances_mode_loss_and_enforces_output_constraints():
     assert '"rao_invariant": True' in source
 
 
-def test_dashboard_and_llm_use_track_shaped_outputs():
+def test_dashboard_and_llm_keep_explanation_focused_on_track_rao():
     source = _code_source()
     assert '"track_rao_exact_accuracy"' in source
     assert '"mode_transition_f1"' in source
@@ -54,8 +54,10 @@ def test_dashboard_and_llm_use_track_shaped_outputs():
     )
     assert "LLM_TRACK_INDEX" in source
     assert '"invariant_track_rao"' in source
-    assert '"ordered_radar_mode_sequence"' in source
+    assert '"ordered_radar_mode_sequence"' not in source
     assert "Never imply that aircraft, radar, or operator changes" in source
+    assert "radar mode is outside the scope of this explanation" in source
+    assert "RAO identity, RAO evidence, RAO uncertainty" in source
 
 
 def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities():
