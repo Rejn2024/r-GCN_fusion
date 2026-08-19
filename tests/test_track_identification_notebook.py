@@ -69,3 +69,13 @@ def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities()
     assert '"kg_entity_asserted_by_claim"' in source
     assert "kg_entity_node_indices" in source
     assert "report_kg_edges" in source
+
+
+def test_candidate_recall_at_k_is_vectorised_and_visualised():
+    source = _code_source()
+    assert "RECALL_K_START = 5" in source
+    assert "first_correct_rank" in source
+    assert "np.bincount" in source
+    assert "np.cumsum" in source
+    assert 'candidate_recall_at_k.png' in source
+    assert 'axis.plot(recall_k_values, recall_at_k' in source
