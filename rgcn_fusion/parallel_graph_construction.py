@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from array import array
 from datetime import UTC, datetime
 from typing import Any
 
@@ -38,6 +39,14 @@ def score_series_observations(
     results: dict[str, Any] = {}
     report_proximities: dict[str, dict[str, dict[str, float | str]]] = {}
     observations = sorted(series["observations"], key=lambda obs: obs["sequence_index"])
+    claim_ordinal_by_evidence_id = {
+        f"evidence:claim:{claim['claim_id']}": claim_ordinal
+        for claim_ordinal, claim in enumerate(
+            claim
+            for report in series.get("intelligence_reports") or []
+            for claim in report.get("claims") or []
+        )
+    }
     for obs in observations:
         timestamp = obs.get("timestamp_iso8601")
         observation_time = (
@@ -94,6 +103,19 @@ def score_series_observations(
             intelligence, direct_edges = aggregate_candidate_intelligence(
                 candidate, applicable_claims
             )
+            # The notebook needs only claim identity and contribution polarity.
+            # Pack both into one signed int32 instead of returning an edge dictionary
+            # for every claim/candidate pair through the process-pool pickle channel.
+            compact_direct_edges = array("i")
+            for edge in direct_edges:
+                contribution = edge["contribution"]
+                claim_ordinal = claim_ordinal_by_evidence_id.get(edge["source"])
+                if claim_ordinal is None or contribution == 0.0:
+                    continue
+                encoded_ordinal = claim_ordinal + 1
+                compact_direct_edges.append(
+                    encoded_ordinal if contribution > 0.0 else -encoded_ordinal
+                )
             enriched_candidates.append(
                 (
                     intelligence["final_score"],
@@ -102,7 +124,7 @@ def score_series_observations(
                     operator,
                     candidate,
                     intelligence,
-                    direct_edges,
+                    compact_direct_edges,
                 )
             )
         enriched_candidates.sort(key=lambda item: item[0], reverse=True)

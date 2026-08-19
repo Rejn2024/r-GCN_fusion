@@ -87,7 +87,7 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
 
 def test_graph_artifact_omits_redundant_feature_row_dictionaries():
     source = _code_source()
-    assert '"version": 5' in source
+    assert '"version": 6' in source
     assert '"feature_rows": feature_rows' not in source
     assert '"observation_segment_indices": observation_segment_indices' in source
     assert 'graph_outputs["observation_segment_indices"]' in source
