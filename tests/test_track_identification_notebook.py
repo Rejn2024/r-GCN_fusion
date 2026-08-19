@@ -103,3 +103,13 @@ def test_claim_candidate_edges_use_signed_zero_copy_int32_buffers():
     assert "np.vstack" not in source
     assert "claim_candidate_edge_sign" not in source
     assert "claim_evidence" not in source
+
+
+def test_graph_construction_batches_process_work_and_uses_gpu_for_dense_features():
+    source = _code_source()
+    assert 'GRAPH_SCORING_CHUNKSIZE = os.getenv(' in source
+    assert 'chunksize=scoring_chunksize' in source
+    assert 'GRAPH_FEATURE_DEVICE = torch.device(' in source
+    assert 'X_work = torch.as_tensor(X_np, device=GRAPH_FEATURE_DEVICE)' in source
+    assert 'sigma = X_work.std(dim=0, correction=0)' in source
+    assert 'with torch.inference_mode()' in source
