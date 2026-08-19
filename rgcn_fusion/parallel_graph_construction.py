@@ -21,7 +21,9 @@ def initialise_scoring_worker(context: dict[str, Any]) -> None:
     _WORKER_CONTEXT = context
 
 
-def score_series_in_worker(task: tuple[int, dict[str, Any]]) -> tuple[int, dict[str, Any]]:
+def score_series_in_worker(
+    task: tuple[int, dict[str, Any]],
+) -> tuple[int, dict[str, Any], dict[str, dict[str, dict[str, float | str]]]]:
     """Process-pool entry point; results retain their source-series position."""
     if _WORKER_CONTEXT is None:
         raise RuntimeError("scoring worker has not been initialised")
@@ -30,10 +32,11 @@ def score_series_in_worker(task: tuple[int, dict[str, Any]]) -> tuple[int, dict[
 
 def score_series_observations(
     task: tuple[int, dict[str, Any]], context: dict[str, Any]
-) -> tuple[int, dict[str, Any]]:
+) -> tuple[int, dict[str, Any], dict[str, dict[str, dict[str, float | str]]]]:
     """Score every observation in one series without assigning global node indices."""
     series_position, series = task
     results: dict[str, Any] = {}
+    report_proximities: dict[str, dict[str, dict[str, float | str]]] = {}
     observations = sorted(series["observations"], key=lambda obs: obs["sequence_index"])
     for obs in observations:
         timestamp = obs.get("timestamp_iso8601")
@@ -43,9 +46,12 @@ def score_series_observations(
             else None
         )
         applicable_claims = []
+        observation_report_proximities = {}
         for report in series.get("intelligence_reports") or []:
-            if report_observation_proximity(report, obs) is None:
+            proximity = report_observation_proximity(report, obs)
+            if proximity is None:
                 continue
+            observation_report_proximities[report["report_id"]] = proximity
             for claim in report.get("claims") or []:
                 applicable_claims.append(
                     {
@@ -59,6 +65,8 @@ def score_series_observations(
                         ),
                     }
                 )
+
+        report_proximities[obs["observation_id"]] = observation_report_proximities
 
         enriched_candidates = []
         for sensor_rank, (sensor_score, score, operator) in enumerate(
@@ -99,7 +107,7 @@ def score_series_observations(
             )
         enriched_candidates.sort(key=lambda item: item[0], reverse=True)
         results[obs["observation_id"]] = enriched_candidates
-    return series_position, results
+    return series_position, results, report_proximities
 
 
 def _candidate_scores(

@@ -63,7 +63,11 @@ def test_dashboard_and_llm_keep_explanation_focused_on_track_rao():
 def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities():
     source = _code_source()
     assert "demo_esm_observation_series_with_sightings_and_patterns.json" in source
-    assert "report_observation_proximity" in source
+    assert "report_proximity_by_pair" in source
+    assert "observation_nodes_by_series" in source
+    assert "for node_idx, meta in enumerate(node_meta)" in source
+    assert "for report_idx, meta in enumerate(node_meta)" not in source
+    assert "for claim_idx, meta in enumerate(node_meta)" not in source
     assert "proximity_by_observation" in source
     assert '"claim_asserts_kg_entity"' in source
     assert '"kg_entity_asserted_by_claim"' in source
