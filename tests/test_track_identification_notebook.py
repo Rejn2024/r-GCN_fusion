@@ -79,3 +79,12 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
     assert "np.cumsum" in source
     assert 'candidate_recall_at_k.png' in source
     assert 'axis.plot(recall_k_values, recall_at_k' in source
+
+
+def test_graph_artifact_omits_redundant_feature_row_dictionaries():
+    source = _code_source()
+    assert '"version": 4' in source
+    assert '"feature_rows": feature_rows' not in source
+    assert '"observation_segment_indices": observation_segment_indices' in source
+    assert 'graph_outputs["observation_segment_indices"]' in source
+    assert 'dict(zip(observation_node_indices, observation_segment_indices.tolist()))' in source
