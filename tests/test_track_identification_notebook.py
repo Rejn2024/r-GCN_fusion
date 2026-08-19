@@ -83,6 +83,14 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
     assert "np.cumsum" in source
     assert 'candidate_recall_at_k.png' in source
     assert 'axis.plot(recall_k_values, recall_at_k' in source
+    assert "radars_without_aircraft" in source
+    assert 'aircraft_by_radar.get(radar_id) or [None]' in source
+    assert "def kg_property(entity_id, property_name)" in source
+    assert 'kg_property(score.aircraft_id, "variant")' in source
+    assert 'kg_property(score.mode_id, "name")' in source
+    assert 'kg_property(score.radar_id, "name")' in source
+    assert "if entity_id is None" in source
+    assert 'node = kg_nodes[entity_id]' in source
 
 
 def test_graph_artifact_omits_redundant_feature_row_dictionaries():

@@ -94,6 +94,8 @@ def score_series_observations(
                 "operator": operator,
                 "relation_id": (
                     f"relation:{score.aircraft_id}:USES_RADAR:{score.radar_id}"
+                    if score.aircraft_id is not None and score.radar_id is not None
+                    else None
                 ),
                 "sensor_score": sensor_score,
                 "sensor_ds_masses": ds_masses_from_score(
