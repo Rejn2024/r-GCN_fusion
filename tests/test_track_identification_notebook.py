@@ -87,8 +87,19 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
 
 def test_graph_artifact_omits_redundant_feature_row_dictionaries():
     source = _code_source()
-    assert '"version": 4' in source
+    assert '"version": 6' in source
     assert '"feature_rows": feature_rows' not in source
     assert '"observation_segment_indices": observation_segment_indices' in source
     assert 'graph_outputs["observation_segment_indices"]' in source
     assert 'dict(zip(observation_node_indices, observation_segment_indices.tolist()))' in source
+
+
+def test_claim_candidate_edges_use_signed_zero_copy_int32_buffers():
+    source = _code_source()
+    assert 'claim_candidate_signed_claim_indices = array("i")' in source
+    assert 'claim_candidate_node_indices = array("i")' in source
+    assert "claim_candidate_signed_claim_index = torch.frombuffer(" in source
+    assert "claim_candidate_node_index = torch.frombuffer(" in source
+    assert "np.vstack" not in source
+    assert "claim_candidate_edge_sign" not in source
+    assert "claim_evidence" not in source

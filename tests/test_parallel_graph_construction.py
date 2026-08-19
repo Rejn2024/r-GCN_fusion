@@ -56,6 +56,15 @@ def _task():
             "last_observed_at": "2026-01-01T00:05:00Z",
             "location": {"latitude_deg": 51.5, "longitude_deg": -0.1},
         },
+        "claims": [
+            {
+                "claim_id": "claim-1",
+                "claim_type": "radar_type",
+                "object_id": "radar:test",
+                "stance": "supports",
+                "claim_confidence": 1.0,
+            }
+        ],
     }
     return 0, {
         "series_id": "series-1",
@@ -80,6 +89,9 @@ def test_process_worker_matches_serial_scoring():
     candidate = observations["obs-1"][0][4]
     assert candidate["aircraft_family_id"] == "family:test"
     assert candidate["operator"] == "Testland"
+    compact_edges = observations["obs-1"][0][6]
+    assert compact_edges.typecode == "i"
+    assert compact_edges.tolist() == [1]
     assert report_proximities == {
         "obs-1": {
             "report-1": {
