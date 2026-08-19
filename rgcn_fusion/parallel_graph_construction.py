@@ -134,7 +134,9 @@ def score_series_observations(
                 )
             )
         enriched_candidates.sort(key=lambda item: item[0], reverse=True)
-        results[obs["observation_id"]] = enriched_candidates
+        results[obs["observation_id"]] = enriched_candidates[
+            : context["max_kg_candidates"]
+        ]
     return series_position, results, report_proximities
 
 
@@ -174,6 +176,9 @@ def _candidate_scores(
                 6,
             )
             expanded.append((final_score, score, operator))
+    # Keep retrieval broad enough for intelligence to rescue a candidate that is
+    # plausible but not in the final sensor-only shortlist.  Graph size is bounded
+    # separately after intelligence-aware reranking in score_series_observations.
     return sorted(expanded, key=lambda item: item[0], reverse=True)[
-        : context["max_kg_candidates"]
+        : context["max_kg_retrieval_candidates"]
     ]

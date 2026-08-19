@@ -77,6 +77,9 @@ def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities()
 
 def test_candidate_recall_at_k_is_vectorised_and_visualised():
     source = _code_source()
+    assert "MAX_KG_RETRIEVAL_CANDIDATES = 100" in source
+    assert "MAX_KG_CANDIDATES = 5" in source
+    assert '"max_kg_retrieval_candidates": MAX_KG_RETRIEVAL_CANDIDATES' in source
     assert "RECALL_K_START = 5" in source
     assert "first_correct_rank" in source
     assert "np.bincount" in source

@@ -29,6 +29,7 @@ def _context():
         "candidate_variants": {key: [row]},
         "aircraft_family_by_aircraft": {"aircraft:test": "family:test"},
         "max_kg_candidates": 5,
+        "max_kg_retrieval_candidates": 100,
     }
 
 
@@ -120,3 +121,41 @@ def test_radar_only_candidate_does_not_invent_none_relation_id():
 
     assert candidate["aircraft_id"] is None
     assert candidate["relation_id"] is None
+
+
+def test_intelligence_reranks_broad_retrieval_pool_before_final_limit():
+    context = _context()
+    sensor_favourite = context["candidate_templates"][0]
+    intel_favourite = {
+        **sensor_favourite,
+        "mode_id": "radar_mode:intel",
+        "radar_id": "radar:intel",
+        "mode_props": {
+            **sensor_favourite["mode_props"],
+            "waveform": "other",
+            "scan_type": "other",
+        },
+    }
+    context["candidate_templates"].append({**intel_favourite, "operator": None})
+    context["candidate_variants"][
+        (intel_favourite["mode_id"], intel_favourite["radar_id"], intel_favourite["aircraft_id"])
+    ] = [intel_favourite]
+    context["max_kg_retrieval_candidates"] = 2
+    context["max_kg_candidates"] = 1
+    task_position, series = _task()
+    series["intelligence_reports"][0]["claims"] = [
+        {
+            "claim_id": f"claim-{index}",
+            "claim_type": "radar_type",
+            "object_id": "radar:intel",
+            "stance": "supports",
+            "claim_confidence": 1.0,
+        }
+        for index in range(3)
+    ]
+
+    candidates = score_series_observations((task_position, series), context)[1]["obs-1"]
+
+    assert len(candidates) == 1
+    assert candidates[0][4]["radar_id"] == "radar:intel"
+    assert candidates[0][1] == 2
