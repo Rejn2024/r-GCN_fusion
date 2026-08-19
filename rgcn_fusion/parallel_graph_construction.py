@@ -112,7 +112,11 @@ def score_series_observations(
             for edge in direct_edges:
                 contribution = edge["contribution"]
                 claim_ordinal = claim_ordinal_by_evidence_id.get(edge["source"])
-                if claim_ordinal is None or contribution == 0.0:
+                if (
+                    claim_ordinal is None
+                    or abs(contribution)
+                    < context.get("claim_candidate_min_abs_contribution", 0.0)
+                ):
                     continue
                 encoded_ordinal = claim_ordinal + 1
                 compact_direct_edges.append(

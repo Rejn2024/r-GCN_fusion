@@ -105,9 +105,11 @@ def test_graph_artifact_omits_redundant_feature_row_dictionaries():
 def test_track_notebook_prunes_and_collapses_claim_candidate_edges():
     source = _code_source()
     assert "CLAIM_CANDIDATE_MIN_ABS_CONTRIBUTION = 0.15" in source
-    assert "abs(contribution) < CLAIM_CANDIDATE_MIN_ABS_CONTRIBUTION" in source
+    assert '"claim_candidate_min_abs_contribution": CLAIM_CANDIDATE_MIN_ABS_CONTRIBUTION' in source
     assert "COLLAPSE_RECIPROCAL_CLAIM_CANDIDATE_EDGES = True" in source
     assert 'if not COLLAPSE_RECIPROCAL_CLAIM_CANDIDATE_EDGES:' in source
+    assert "for signed_claim_index, candidate_idx in zip(" in source
+    assert "for direct_edge in claim_candidate_edges:" not in source
 
 
 def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches():
