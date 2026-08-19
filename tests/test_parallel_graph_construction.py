@@ -101,3 +101,22 @@ def test_process_worker_matches_serial_scoring():
             }
         }
     }
+
+
+def test_radar_only_candidate_does_not_invent_none_relation_id():
+    context = _context()
+    row = context["candidate_templates"][0]
+    row.update(
+        aircraft_id=None,
+        aircraft_props=None,
+        aircraft_uses_radar=False,
+        operator=None,
+    )
+    context["candidate_variants"] = {
+        (row["mode_id"], row["radar_id"], None): [row]
+    }
+
+    candidate = score_series_observations(_task(), context)[1]["obs-1"][0][4]
+
+    assert candidate["aircraft_id"] is None
+    assert candidate["relation_id"] is None
