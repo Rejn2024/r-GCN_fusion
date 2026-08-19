@@ -27,7 +27,7 @@ def test_track_notebook_has_one_joint_rao_head_and_observation_mode_head():
     source = _code_source()
     assert "class TrackAttentionPool" in source
     assert "class TrackRGCNHGTClassifier" in source
-    assert "self.rao_head = head(hidden_dim, num_rao_classes)" in source
+    assert "self.rao_head, self.rao_evidential_head = head(hidden_dim, num_rao_classes), head(hidden_dim, num_rao_classes)" in source
     assert "self.mode_head = head(2 * hidden_dim, num_mode_classes)" in source
     assert '"track_rao": rao_logits' in source
     assert '"radar_mode": mode_logits' in source
@@ -94,22 +94,27 @@ def test_graph_artifact_omits_redundant_feature_row_dictionaries():
     assert 'dict(zip(observation_node_indices, observation_segment_indices.tolist()))' in source
 
 
-def test_claim_candidate_edges_use_signed_zero_copy_int32_buffers():
+def test_track_notebook_prunes_and_collapses_claim_candidate_edges():
     source = _code_source()
-    assert 'claim_candidate_signed_claim_indices = array("i")' in source
-    assert 'claim_candidate_node_indices = array("i")' in source
-    assert "claim_candidate_signed_claim_index = torch.frombuffer(" in source
-    assert "claim_candidate_node_index = torch.frombuffer(" in source
-    assert "np.vstack" not in source
-    assert "claim_candidate_edge_sign" not in source
-    assert "claim_evidence" not in source
+    assert "CLAIM_CANDIDATE_MIN_ABS_CONTRIBUTION = 0.15" in source
+    assert "abs(contribution) < CLAIM_CANDIDATE_MIN_ABS_CONTRIBUTION" in source
+    assert "COLLAPSE_RECIPROCAL_CLAIM_CANDIDATE_EDGES = True" in source
+    assert 'if not COLLAPSE_RECIPROCAL_CLAIM_CANDIDATE_EDGES:' in source
 
 
-def test_graph_construction_batches_process_work_and_uses_gpu_for_dense_features():
+def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches():
     source = _code_source()
-    assert 'GRAPH_SCORING_CHUNKSIZE = os.getenv(' in source
-    assert 'chunksize=scoring_chunksize' in source
-    assert 'GRAPH_FEATURE_DEVICE = torch.device(' in source
-    assert 'X_work = torch.as_tensor(X_np, device=GRAPH_FEATURE_DEVICE)' in source
-    assert 'sigma = X_work.std(dim=0, correction=0)' in source
-    assert 'with torch.inference_mode()' in source
+    assert "partition_edges_by_relation" in source
+    assert "for relation_id, edges in enumerate(relation_edges)" in source
+    assert "mask = edge_types == relation_id" not in source
+    assert "segment_softmax" in source
+    assert 'scatter_reduce_(0, observation_to_track[:, None].expand_as(observations)' in source
+    assert "build_track_graph_batches" in source
+    assert "TRACKS_PER_BATCH" in source
+    assert "model_forward_batch" in source
+
+
+def test_track_notebook_densifies_only_present_features():
+    source = _code_source()
+    assert "densify_feature_rows(feature_rows, feature_names, dtype=X_NP_DTYPE)" in source
+    assert "row.get(name, 0.0) for name in feature_names" not in source
