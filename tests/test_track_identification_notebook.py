@@ -122,6 +122,7 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert "build_track_graph_batches" in source
     assert "TRACKS_PER_BATCH" in source
     assert "model_forward_batch" in source
+    assert "local_x = X[batch.node_indices.to(X.device)].to(DEVICE, dtype=MODEL_DTYPE, non_blocking=True)" in source
 
 
 def test_track_notebook_densifies_only_present_features():
