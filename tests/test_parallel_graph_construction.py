@@ -44,8 +44,24 @@ def _task():
             "measured_centre_frequency_ghz": 9.6,
         },
         "approximate_kinematics": {"speed_mach": 1.2, "altitude_m": 10_000},
+        "estimated_emitter_location": {
+            "estimated_latitude_deg": 51.5,
+            "estimated_longitude_deg": -0.1,
+        },
     }
-    return 0, {"series_id": "series-1", "observations": [observation]}
+    report = {
+        "report_id": "report-1",
+        "report_type": "sighting_report",
+        "sighting": {
+            "last_observed_at": "2026-01-01T00:05:00Z",
+            "location": {"latitude_deg": 51.5, "longitude_deg": -0.1},
+        },
+    }
+    return 0, {
+        "series_id": "series-1",
+        "observations": [observation],
+        "intelligence_reports": [report],
+    }
 
 
 def test_process_worker_matches_serial_scoring():
@@ -60,7 +76,16 @@ def test_process_worker_matches_serial_scoring():
         actual = list(executor.map(score_series_in_worker, [_task()]))[0]
 
     assert actual == expected
-    _, observations = actual
+    _, observations, report_proximities = actual
     candidate = observations["obs-1"][0][4]
     assert candidate["aircraft_family_id"] == "family:test"
     assert candidate["operator"] == "Testland"
+    assert report_proximities == {
+        "obs-1": {
+            "report-1": {
+                "match_basis": "time_and_geography",
+                "time_delta_s": 300.0,
+                "distance_km": 0.0,
+            }
+        }
+    }
