@@ -44,6 +44,8 @@ def test_segment_softmax_handles_autocast_promoting_exp(monkeypatch):
     assert weights.dtype == scores.dtype
     totals = torch.zeros(2, dtype=weights.dtype).index_add_(0, segments, weights)
     torch.testing.assert_close(totals, torch.ones(2, dtype=weights.dtype))
+    expected = torch.softmax(scores.float().reshape(2, 2), dim=1).flatten().half()
+    torch.testing.assert_close(weights, expected)
 
 
 def test_track_batches_keep_tracks_whole_and_reindex_shared_nodes():

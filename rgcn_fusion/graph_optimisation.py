@@ -57,7 +57,9 @@ def segment_softmax(
     # scores unchanged.  Build the reduction buffer from the operation result
     # so index_add_ always receives a source and destination of the same dtype.
     exponentials = torch.exp(scores - maxima[segment_ids])
-    denominators = exponentials.new_zeros(num_segments)
+    denominators = torch.zeros(
+        num_segments, dtype=exponentials.dtype, device=exponentials.device
+    )
     denominators.index_add_(0, segment_ids, exponentials)
     weights = exponentials / denominators[segment_ids].clamp_min(
         torch.finfo(exponentials.dtype).tiny
