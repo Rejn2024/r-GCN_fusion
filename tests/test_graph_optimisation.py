@@ -33,6 +33,19 @@ def test_segment_softmax_normalizes_each_track():
     assert weights[1] > weights[0]
 
 
+def test_segment_softmax_handles_autocast_promoting_exp(monkeypatch):
+    original_exp = torch.exp
+    monkeypatch.setattr(torch, "exp", lambda values: original_exp(values).float())
+    scores = torch.tensor([0.0, 1.0, 2.0, 2.0], dtype=torch.float16)
+    segments = torch.tensor([0, 0, 1, 1])
+
+    weights = segment_softmax(scores, segments, 2)
+
+    assert weights.dtype == scores.dtype
+    totals = torch.zeros(2, dtype=weights.dtype).index_add_(0, segments, weights)
+    torch.testing.assert_close(totals, torch.ones(2, dtype=weights.dtype))
+
+
 def test_track_batches_keep_tracks_whole_and_reindex_shared_nodes():
     # nodes 0 and 3 are shared; tracks 0 and 1 own nodes 1 and 2 respectively
     edges = torch.tensor([[0, 1, 3, 2], [1, 0, 2, 3]])
