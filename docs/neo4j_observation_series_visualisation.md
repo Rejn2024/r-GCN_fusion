@@ -61,42 +61,37 @@ ORDER BY observation.sequence_index, has_candidate.rank;
 After loading both the observation ETL and report ETL outputs, run the following
 query to display the complete series evidence graph. The `OPTIONAL MATCH`
 clauses are intentional: every observation remains in the result even when it
-has no candidate, nearby report, or applicable claim. No candidate limit is
-applied, so this returns the full candidate set for every observation.
+has no candidate, intelligence report, or applicable claim. No candidate limit
+is applied, so this returns the full candidate set for every observation.
 
 ```cypher
 MATCH (observation:Observation {series_id: $seriesId})
 OPTIONAL MATCH (observation)-[has_candidate:HAS_CANDIDATE]
                ->(candidate:CandidateEvidence)
 OPTIONAL MATCH (report:IntelligenceReport)
-               -[near:REPORT_NEAR_OBSERVATION]->(observation)
-OPTIONAL MATCH (report)-[contains:REPORT_CONTAINS_CLAIM]
-               ->(claim:ReportClaim)
-OPTIONAL MATCH (claim)-[applies:CLAIM_SUPPORTS_OBSERVATION]
-               ->(observation)
-OPTIONAL MATCH (claim)-[candidate_evidence:CLAIM_SUPPORTS_CANDIDATE|CLAIM_REFUTES_CANDIDATE]
-               ->(candidate)
+               -[contains:REPORT_CONTAINS_CLAIM]->(claim:ReportClaim)
+               -[applies:CLAIM_SUPPORTS_OBSERVATION]->(observation)
 RETURN observation,
        has_candidate,
        candidate,
        report,
-       near,
        contains,
        claim,
-       applies,
-       candidate_evidence
+       applies
 ORDER BY observation.sequence_index, has_candidate.rank,
          report.published_at, claim.claim_id;
 ```
 
-`REPORT_NEAR_OBSERVATION` identifies reports associated with each observation.
-The two claim matches expose both observation-level applicability and the
-positive or negative intelligence evidence attached to a particular candidate.
-Neo4j's graph view deduplicates nodes and relationships that recur in rows, so
-the repeated tabular rows caused by multiple candidates and claims do not create
-duplicate graph elements. For a very large series, use the candidate-limited
-query above first or add `WHERE has_candidate.rank <= $candidateLimit` after the
-first `OPTIONAL MATCH`.
+The report-to-claim-to-observation path identifies the intelligence reports for
+each observation using the relationships materialised by the report loader. It
+does not require the optional `REPORT_NEAR_OBSERVATION`,
+`CLAIM_SUPPORTS_CANDIDATE`, or `CLAIM_REFUTES_CANDIDATE` relationship types, so
+the query also works in databases where those enriched links have not been
+created. Neo4j's graph view deduplicates nodes and relationships that recur in
+rows, so the repeated tabular rows caused by multiple candidates and claims do
+not create duplicate graph elements. For a very large series, use the
+candidate-limited query above first or add
+`WHERE has_candidate.rank <= $candidateLimit` after the first `OPTIONAL MATCH`.
 
 To inspect only the contradiction links as a graph, run this path query
 separately (the source candidate is limited to the same top ranks):
