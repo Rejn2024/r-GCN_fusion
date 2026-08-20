@@ -53,10 +53,16 @@ def segment_softmax(
         raise ValueError("scores and segment_ids must be one-dimensional and aligned")
     maxima = scores.new_full((num_segments,), -torch.inf)
     maxima.scatter_reduce_(0, segment_ids, scores, reduce="amax", include_self=True)
+    # Autocast may promote ``exp`` to float32 while leaving half-precision
+    # scores unchanged.  Build the reduction buffer from the operation result
+    # so index_add_ always receives a source and destination of the same dtype.
     exponentials = torch.exp(scores - maxima[segment_ids])
-    denominators = scores.new_zeros(num_segments)
+    denominators = exponentials.new_zeros(num_segments)
     denominators.index_add_(0, segment_ids, exponentials)
-    return exponentials / denominators[segment_ids].clamp_min(torch.finfo(scores.dtype).tiny)
+    weights = exponentials / denominators[segment_ids].clamp_min(
+        torch.finfo(exponentials.dtype).tiny
+    )
+    return weights.to(scores.dtype)
 
 
 @dataclass(frozen=True)
