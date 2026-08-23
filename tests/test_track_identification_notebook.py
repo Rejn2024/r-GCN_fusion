@@ -137,3 +137,14 @@ def test_track_notebook_densifies_only_present_features():
     source = _code_source()
     assert "densify_feature_rows(feature_rows, feature_names, dtype=X_NP_DTYPE)" in source
     assert "row.get(name, 0.0) for name in feature_names" not in source
+
+
+def test_track_notebook_ports_vacuity_dissonance_plots_by_rao_outcome():
+    source = _code_source()
+    assert "def _singleton_dissonance" in source
+    assert 'final_outputs["evidential"]["track_rao"]["belief"]' in source
+    assert 'final_outputs["evidential"]["track_rao"]["uncertainty"]' in source
+    assert '(rao_correct, "Correct identifications"' in source
+    assert '(~rao_correct, "Incorrect identifications"' in source
+    assert "rao_vacuity[selected], rao_dissonance[selected]" in source
+    assert "track_rao_vacuity_vs_dissonance_by_outcome" in source
