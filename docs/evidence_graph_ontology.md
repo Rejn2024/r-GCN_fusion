@@ -1,5 +1,9 @@
 # Evidence Graph Ontology
 
+For an assessment of this model and the canonical aircraft/radar graph against
+the W3C SKOS framework, including a proposed terminology-layer migration, see
+[SKOS alignment assessment](skos_alignment.md).
+
 This note describes the ontology materialised in Neo4j by the observation and
 intelligence-report ETL pipelines. It is a descriptive schema of the current
 implementation, rather than a separate OWL/RDF ontology. The evidence graph is
