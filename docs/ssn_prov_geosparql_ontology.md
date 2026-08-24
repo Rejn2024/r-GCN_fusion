@@ -16,6 +16,14 @@ It reuses rather than duplicates three established vocabularies:
 The design is intentionally an alternative interchange and reasoning model. It
 does not require replacing the current Neo4j labels or r-GCN relation names.
 
+The graph-population notebooks call
+`rgcn_fusion.ontology_projection.materialize_ontology_view` after loading their
+canonical or evidential data. The projection retains legacy labels and edges
+for existing queries while adding ontology class IRIs, stable resource IRIs,
+standards-aligned relationship aliases, named evidence masses, and GeoSPARQL
+geometry nodes. This makes the ontology part of population rather than a
+documentation-only mapping.
+
 ## Design rules
 
 1. An ESM sample is an `esm:ESMObservation` and therefore a
@@ -170,4 +178,3 @@ geometry datatypes, and monotonically increasing track sequence indexes. Keep
 units as URIs from one selected unit vocabulary. Treat `owl:imports` as logical
 dependencies; deployments that cannot dereference the web should load pinned
 local copies of SSN/SOSA, PROV-O, and GeoSPARQL for deterministic validation.
-

@@ -18,6 +18,25 @@
 
 ### ESM observations (SOSA/SSN)
 
+esm:CanonicalEntity a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "canonical domain entity"@en .
+
+esm:AircraftFamily a owl:Class ; rdfs:subClassOf esm:CanonicalEntity .
+esm:AircraftVariant a owl:Class ; rdfs:subClassOf esm:CanonicalEntity, geo:Feature .
+esm:Radar a owl:Class ; rdfs:subClassOf esm:CanonicalEntity, sosa:FeatureOfInterest .
+esm:RadarMode a owl:Class ; rdfs:subClassOf esm:CanonicalEntity .
+esm:Operator a owl:Class ; rdfs:subClassOf esm:CanonicalEntity, prov:Agent .
+
+esm:operates a owl:ObjectProperty ;
+    rdfs:domain esm:Operator ; rdfs:range esm:AircraftVariant .
+esm:usesRadar a owl:ObjectProperty ;
+    rdfs:domain esm:AircraftVariant ; rdfs:range esm:Radar .
+esm:hasMode a owl:ObjectProperty ;
+    rdfs:domain esm:Radar ; rdfs:range esm:RadarMode .
+esm:variantOf a owl:ObjectProperty ;
+    rdfs:domain esm:AircraftVariant ; rdfs:range esm:AircraftFamily .
+
 esm:ESMObservation a owl:Class ;
     rdfs:subClassOf sosa:Observation, prov:Entity ;
     rdfs:label "ESM observation"@en .
@@ -58,7 +77,7 @@ esm:uncertaintyWidth a owl:DatatypeProperty ;
 ### Tracks, locations and trajectories (GeoSPARQL)
 
 esm:Track a owl:Class ;
-    rdfs:subClassOf prov:Entity, geo:Feature ;
+    rdfs:subClassOf prov:Entity, geo:Feature, sosa:FeatureOfInterest ;
     rdfs:label "emitter track"@en .
 
 esm:Trajectory a owl:Class ;
