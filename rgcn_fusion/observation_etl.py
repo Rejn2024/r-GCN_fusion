@@ -487,6 +487,14 @@ class ObservationNeo4jETL:
                 "best_candidate_aircraft_id": best.aircraft_id,
                 "best_candidate_score": best.total_score,
             }
+            location = observation.get("estimated_emitter_location") or {}
+            obs_row["estimated_latitude_deg"] = location.get("estimated_latitude_deg")
+            obs_row["estimated_longitude_deg"] = location.get("estimated_longitude_deg")
+            obs_row["estimated_area"] = location.get("area")
+            # Retain measured SOSA result values for ontology projection/export.
+            # These are sensor inputs, not optional ground-truth labels.
+            for measured_property in INPUT_SPECS:
+                obs_row[measured_property] = observation.get(measured_property)
             obs_rows.append(obs_row)
             by_best_mode.setdefault(best.mode_id, []).append(obs_node_id)
 

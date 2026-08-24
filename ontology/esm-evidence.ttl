@@ -1,0 +1,214 @@
+@prefix esm:  <https://w3id.org/rgcn-fusion/esm#> .
+@prefix geo:  <http://www.opengis.net/ont/geosparql#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sosa: <http://www.w3.org/ns/sosa/> .
+@prefix ssn:  <http://www.w3.org/ns/ssn/> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+<https://w3id.org/rgcn-fusion/esm> a owl:Ontology ;
+    rdfs:label "ESM observation and intelligence evidence ontology"@en ;
+    rdfs:comment "An alternative RDF model using SOSA/SSN, PROV-O and GeoSPARQL. Claims remain provenance-bearing evidence and are not asserted as domain facts."@en ;
+    owl:imports <http://www.opengis.net/ont/geosparql/1.1>,
+                <http://www.w3.org/ns/prov-o>,
+                <http://www.w3.org/ns/ssn/> .
+
+### ESM observations (SOSA/SSN)
+
+esm:CanonicalEntity a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "canonical domain entity"@en .
+
+esm:AircraftFamily a owl:Class ; rdfs:subClassOf esm:CanonicalEntity .
+esm:AircraftVariant a owl:Class ; rdfs:subClassOf esm:CanonicalEntity, geo:Feature .
+esm:Radar a owl:Class ; rdfs:subClassOf esm:CanonicalEntity, sosa:FeatureOfInterest .
+esm:RadarMode a owl:Class ; rdfs:subClassOf esm:CanonicalEntity .
+esm:Operator a owl:Class ; rdfs:subClassOf esm:CanonicalEntity, prov:Agent .
+
+esm:operates a owl:ObjectProperty ;
+    rdfs:domain esm:Operator ; rdfs:range esm:AircraftVariant .
+esm:usesRadar a owl:ObjectProperty ;
+    rdfs:domain esm:AircraftVariant ; rdfs:range esm:Radar .
+esm:hasMode a owl:ObjectProperty ;
+    rdfs:domain esm:Radar ; rdfs:range esm:RadarMode .
+esm:variantOf a owl:ObjectProperty ;
+    rdfs:domain esm:AircraftVariant ; rdfs:range esm:AircraftFamily .
+
+esm:ESMObservation a owl:Class ;
+    rdfs:subClassOf sosa:Observation, prov:Entity ;
+    rdfs:label "ESM observation"@en .
+
+esm:ESMReceiver a owl:Class ;
+    rdfs:subClassOf sosa:Sensor, prov:Agent ;
+    rdfs:label "ESM receiver"@en .
+
+esm:Emitter a owl:Class ;
+    rdfs:subClassOf sosa:FeatureOfInterest, geo:Feature ;
+    rdfs:label "emitter"@en .
+
+esm:SignalProperty a owl:Class ;
+    rdfs:subClassOf sosa:ObservableProperty ;
+    rdfs:label "observable signal property"@en .
+
+esm:SignalMeasurement a owl:Class ;
+    rdfs:subClassOf sosa:Result ;
+    rdfs:label "signal measurement result"@en .
+
+esm:ESMProcedure a owl:Class ;
+    rdfs:subClassOf sosa:Procedure ;
+    rdfs:label "ESM observation procedure"@en .
+
+esm:numericValue a owl:DatatypeProperty ;
+    rdfs:domain esm:SignalMeasurement ;
+    rdfs:range xsd:decimal .
+
+esm:unit a owl:DatatypeProperty ;
+    rdfs:domain esm:SignalMeasurement ;
+    rdfs:range xsd:anyURI ;
+    rdfs:comment "URI of a unit, preferably from QUDT or OM."@en .
+
+esm:uncertaintyWidth a owl:DatatypeProperty ;
+    rdfs:domain esm:SignalMeasurement ;
+    rdfs:range xsd:decimal .
+
+### Tracks, locations and trajectories (GeoSPARQL)
+
+esm:Track a owl:Class ;
+    rdfs:subClassOf prov:Entity, geo:Feature, sosa:FeatureOfInterest ;
+    rdfs:label "emitter track"@en .
+
+esm:Trajectory a owl:Class ;
+    rdfs:subClassOf prov:Entity, geo:Feature ;
+    rdfs:label "trajectory"@en ;
+    rdfs:comment "A path represented by an ordered geometry such as a GeoSPARQL WKT LINESTRING."@en .
+
+esm:hasObservation a owl:ObjectProperty ;
+    rdfs:domain esm:Track ;
+    rdfs:range esm:ESMObservation ;
+    owl:inverseOf esm:inTrack .
+
+esm:inTrack a owl:ObjectProperty ;
+    rdfs:domain esm:ESMObservation ;
+    rdfs:range esm:Track .
+
+esm:hasTrajectory a owl:ObjectProperty ;
+    rdfs:domain esm:Track ;
+    rdfs:range esm:Trajectory .
+
+esm:estimatedLocation a owl:ObjectProperty ;
+    rdfs:domain esm:ESMObservation ;
+    rdfs:range geo:Geometry ;
+    rdfs:comment "Estimated emitter geometry; a polygon can express an error box instead of false point precision."@en .
+
+esm:sequenceIndex a owl:DatatypeProperty ;
+    rdfs:domain esm:ESMObservation ;
+    rdfs:range xsd:nonNegativeInteger .
+
+esm:nextObservation a owl:ObjectProperty, owl:IrreflexiveProperty ;
+    rdfs:domain esm:ESMObservation ;
+    rdfs:range esm:ESMObservation ;
+    owl:inverseOf esm:previousObservation .
+
+esm:previousObservation a owl:ObjectProperty, owl:IrreflexiveProperty ;
+    rdfs:domain esm:ESMObservation ;
+    rdfs:range esm:ESMObservation .
+
+### Reports and claims (PROV-O)
+
+esm:IntelligenceReport a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "intelligence report"@en .
+
+esm:Claim a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "claim"@en ;
+    rdfs:comment "A first-class proposition. Its subject/predicate/object describe asserted content without entailing that content."@en .
+
+esm:ClaimExtraction a owl:Class ;
+    rdfs:subClassOf prov:Activity ;
+    rdfs:label "claim extraction activity"@en .
+
+esm:Source a owl:Class ;
+    rdfs:subClassOf prov:Agent ;
+    rdfs:label "intelligence source"@en .
+
+esm:containsClaim a owl:ObjectProperty ;
+    rdfs:domain esm:IntelligenceReport ;
+    rdfs:range esm:Claim ;
+    owl:inverseOf esm:claimInReport .
+
+esm:claimInReport a owl:ObjectProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range esm:IntelligenceReport ;
+    rdfs:subPropertyOf prov:wasDerivedFrom .
+
+esm:claimSubject a owl:ObjectProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range rdfs:Resource .
+
+esm:claimPredicate a owl:ObjectProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range rdf:Property .
+
+esm:claimObject a rdf:Property ;
+    rdfs:domain esm:Claim ;
+    rdfs:comment "The resource or literal object of the quoted proposition."@en .
+
+esm:stance a owl:DatatypeProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Controlled value such as supports or refutes."@en .
+
+esm:claimConfidence a owl:DatatypeProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range xsd:decimal .
+
+esm:extractionConfidence a owl:DatatypeProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range xsd:decimal .
+
+esm:credibilityScore a owl:DatatypeProperty ;
+    rdfs:domain esm:IntelligenceReport ;
+    rdfs:range xsd:decimal .
+
+esm:contradicts a owl:ObjectProperty, owl:SymmetricProperty, owl:IrreflexiveProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range esm:Claim .
+
+esm:supports a owl:ObjectProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range prov:Entity .
+
+esm:refutes a owl:ObjectProperty ;
+    rdfs:domain esm:Claim ;
+    rdfs:range prov:Entity .
+
+esm:aboutFeature a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf (esm:IntelligenceReport esm:Claim) ] ;
+    rdfs:range geo:Feature .
+
+esm:reportedLocation a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ; owl:unionOf (esm:IntelligenceReport esm:Claim) ] ;
+    rdfs:range geo:Geometry .
+
+### Hypotheses and evidence masses
+
+esm:CandidateHypothesis a owl:Class ;
+    rdfs:subClassOf prov:Entity ;
+    rdfs:label "candidate hypothesis"@en .
+
+esm:hasCandidate a owl:ObjectProperty ;
+    rdfs:domain esm:ESMObservation ;
+    rdfs:range esm:CandidateHypothesis .
+
+esm:derivedFromObservation a owl:ObjectProperty ;
+    rdfs:domain esm:CandidateHypothesis ;
+    rdfs:range esm:ESMObservation ;
+    rdfs:subPropertyOf prov:wasDerivedFrom .
+
+esm:massNonMatch a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+esm:massMatch a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+esm:massUncertain a owl:DatatypeProperty ; rdfs:range xsd:decimal .

@@ -1,5 +1,9 @@
 # Evidence Graph Ontology
 
+For an RDF/OWL alternative that aligns sensing with SOSA/SSN, report and claim
+lineage with PROV-O, and locations and trajectories with GeoSPARQL, see the
+[SSN, PROV-O, and GeoSPARQL ontology](ssn_prov_geosparql_ontology.md).
+
 For an assessment of this model and the canonical aircraft/radar graph against
 the W3C SKOS framework, including a proposed terminology-layer migration, see
 [SKOS alignment assessment](skos_alignment.md).
