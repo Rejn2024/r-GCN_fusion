@@ -48,7 +48,8 @@ synthetic passive-ESM observations whose radar parameters are sampled from the
 radar-mode bounds already present in the KG. Each observation includes:
 
 - ESM-deducible radar features such as PRF ranges, centre frequency, bandwidth,
-  waveform, scan type, pulse width, duty cycle, CPI, dwell time, coverage,
+  waveform, scan type, pulse width, duty cycle, CPI, dwell time, PRI/intrapulse
+  modulation, frequency agility, scan period, polarization, coverage,
   resolution, power/noise estimates, and track-capacity hints where present;
 - an estimated emitter latitude/longitude with an error box;
 - approximate kinematic estimates for speed, altitude, and heading with errors;
@@ -72,6 +73,11 @@ python esm_observation_generator.py --start 2025-01-01T00:00:00Z --end 2025-02-0
 A Jupyter walkthrough at `notebooks/esm_observation_generation_demo.ipynb`
 demonstrates in-memory generation, inspection of uncertainty fields, KG label
 validation, ambiguity candidates, and JSON export for downstream experiments.
+
+See [`docs/additional_esm_radar_parameters.md`](docs/additional_esm_radar_parameters.md)
+for a prioritized set of additional signal, bearing, modulation, scan, and
+sensor-provenance parameters, including guidance on uncertainty and label
+leakage.
 
 
 ## Observation-to-Neo4j ETL

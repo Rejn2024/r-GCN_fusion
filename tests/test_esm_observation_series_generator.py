@@ -29,6 +29,13 @@ def test_series_defaults_and_schema_fields():
             assert obs["estimated_emitter_location"]
             assert obs["approximate_kinematics"]
             assert obs["esm_radar_parameters"]
+            esm = obs["esm_radar_parameters"]
+            assert esm["observed_pri_modulation"]
+            assert esm["observed_intrapulse_modulation"]
+            assert esm["observed_frequency_pattern"]
+            assert esm["observed_polarization"]
+            assert esm["measured_frequency_agility_mhz"]["min"] <= esm["measured_frequency_agility_mhz"]["value"] <= esm["measured_frequency_agility_mhz"]["max"]
+            assert esm["measured_scan_period_s"]["min"] <= esm["measured_scan_period_s"]["value"] <= esm["measured_scan_period_s"]["max"]
             assert obs["ground_truth_label"]["aircraft_id"].startswith("aircraft:")
             assert "candidate_labels_from_shared_kg_features" not in obs
 

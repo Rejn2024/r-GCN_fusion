@@ -41,6 +41,10 @@ def test_esm_radar_parameters_only_contains_measured_or_observed_values():
     expected_keys = {
         "observed_waveform",
         "observed_scan_type",
+        "observed_pri_modulation",
+        "observed_intrapulse_modulation",
+        "observed_frequency_pattern",
+        "observed_polarization",
         "measured_centre_frequency_ghz",
         "measured_bandwidth_mhz",
         "measured_prf_hz",
@@ -49,6 +53,8 @@ def test_esm_radar_parameters_only_contains_measured_or_observed_values():
         "measured_duty_cycle",
         "measured_coherent_processing_interval_ms",
         "measured_dwell_time_ms",
+        "measured_frequency_agility_mhz",
+        "measured_scan_period_s",
     }
     for obs in data["observations"]:
         esm = obs["esm_radar_parameters"]
@@ -57,3 +63,27 @@ def test_esm_radar_parameters_only_contains_measured_or_observed_values():
         for key, measurement in esm.items():
             if key.startswith("measured_"):
                 assert measurement["min"] <= measurement["value"] <= measurement["max"]
+
+
+def test_canonical_radar_modes_define_enriched_esm_parameters():
+    graph = generate_graph()
+    radar_nodes = [node for node in graph["nodes"] if node["label"] == "Radar"]
+    mode_nodes = [node for node in graph["nodes"] if node["label"] == "RadarMode"]
+
+    assert radar_nodes and mode_nodes
+    for node in radar_nodes:
+        props = node["properties"]
+        assert props["polarization"]
+        assert props["supported_pri_modulations"]
+        assert props["supported_intrapulse_modulations"]
+        assert props["supported_frequency_patterns"]
+        assert 0 <= props["frequency_agility_min_mhz"] <= props["frequency_agility_max_mhz"]
+        assert 0 < props["scan_period_min_s"] <= props["scan_period_max_s"]
+    for node in mode_nodes:
+        props = node["properties"]
+        assert props["pri_modulation"]
+        assert props["intrapulse_modulation"]
+        assert props["frequency_pattern"]
+        assert props["polarization"]
+        assert 0 <= props["frequency_agility_min_mhz"] <= props["frequency_agility_max_mhz"]
+        assert 0 < props["scan_period_min_s"] <= props["scan_period_max_s"]
