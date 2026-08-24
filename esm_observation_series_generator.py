@@ -23,6 +23,7 @@ from typing import Any, Iterable
 
 from esm_observation_generator import (
     DIRECTLY_MEASURABLE_MODE_FIELDS,
+    OBSERVABLE_MODE_CATEGORIES,
     ObservationLabel,
     _kinematics,
     _location,
@@ -109,6 +110,8 @@ def _sample_esm_parameters(rng: random.Random, props: dict[str, Any]) -> dict[st
         "observed_waveform": props["waveform"],
         "observed_scan_type": props["scan_type"],
     }
+    for field_name, property_name in OBSERVABLE_MODE_CATEGORIES:
+        esm[field_name] = props[property_name]
     for field_name, prefix, units, rel_error in DIRECTLY_MEASURABLE_MODE_FIELDS:
         esm[field_name] = _measured_from_mode_range(
             rng, props, prefix, units, rel_error

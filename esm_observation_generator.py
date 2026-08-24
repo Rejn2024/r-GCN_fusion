@@ -59,6 +59,15 @@ DIRECTLY_MEASURABLE_MODE_FIELDS = (
     ("measured_duty_cycle", "duty_cycle", "", 0.08),
     ("measured_coherent_processing_interval_ms", "coherent_processing_interval", "ms", 0.08),
     ("measured_dwell_time_ms", "dwell_time", "ms", 0.08),
+    ("measured_frequency_agility_mhz", "frequency_agility", "mhz", 0.10),
+    ("measured_scan_period_s", "scan_period", "s", 0.06),
+)
+
+OBSERVABLE_MODE_CATEGORIES = (
+    ("observed_pri_modulation", "pri_modulation"),
+    ("observed_intrapulse_modulation", "intrapulse_modulation"),
+    ("observed_frequency_pattern", "frequency_pattern"),
+    ("observed_polarization", "polarization"),
 )
 
 
@@ -149,6 +158,8 @@ def generate_observation(index: int, rng: random.Random, start: datetime, end: d
         "observed_waveform": props["waveform"],
         "observed_scan_type": props["scan_type"],
     }
+    for field_name, property_name in OBSERVABLE_MODE_CATEGORIES:
+        esm[field_name] = props[property_name]
     for field_name, prefix, units, rel_error in DIRECTLY_MEASURABLE_MODE_FIELDS:
         esm[field_name] = _measured_from_mode_range(rng, props, prefix, units, rel_error)
     prf_hz = esm["measured_prf_hz"]["value"]
