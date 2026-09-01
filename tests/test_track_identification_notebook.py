@@ -165,6 +165,9 @@ def test_track_notebook_rao_loss_rewards_partially_correct_components():
     assert "RAO_OPERATOR_LOSS_WEIGHT = 1.0" in source
     assert "RAO_COMPLETE_LOSS_WEIGHT = 1.0" in source
     assert "RAO_COMPONENT_LOSS_WEIGHT = 1.0" in source
+    assert "rao_component_values = [sorted({world[index] for world in rao_vocab})" in source
+    assert "rao_component_values[index].index(world[index])" in source
+    assert "world[field] for world in rao_vocab" not in source
     assert "def component_weighted_rao_nll" in source
     assert "def component_weighted_rao_edl" in source
     assert "matching_worlds" in source
