@@ -155,9 +155,15 @@ def test_track_notebook_rao_loss_rewards_partially_correct_components():
     assert "RAO_AIRCRAFT_LOSS_WEIGHT = 1.0" in source
     assert "RAO_RADAR_LOSS_WEIGHT = 1.0" in source
     assert "RAO_OPERATOR_LOSS_WEIGHT = 1.0" in source
+    assert "RAO_COMPLETE_LOSS_WEIGHT = 1.0" in source
+    assert "RAO_COMPONENT_LOSS_WEIGHT = 1.0" in source
     assert "def component_weighted_rao_nll" in source
     assert "def component_weighted_rao_edl" in source
     assert "matching_worlds" in source
     assert "torch.logsumexp" in source
-    assert 'rao_ce = component_weighted_rao_nll(outputs["track_rao"], rao_labels).mean()' in source
-    assert 'rao_edl = component_weighted_rao_edl(rao_alpha, rao_labels).mean()' in source
+    assert "def combined_rao_nll" in source
+    assert "def combined_rao_edl" in source
+    assert "F.cross_entropy(logits, labels, reduction=\"none\")" in source
+    assert "expected_dirichlet_ce(alpha, labels)" in source
+    assert 'rao_ce = combined_rao_nll(outputs["track_rao"], rao_labels).mean()' in source
+    assert 'rao_edl = combined_rao_edl(rao_alpha, rao_labels).mean()' in source
