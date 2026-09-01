@@ -77,10 +77,10 @@ def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities()
 
 def test_candidate_recall_at_k_is_vectorised_and_visualised():
     source = _code_source()
-    assert "MAX_KG_RETRIEVAL_CANDIDATES = 100" in source
-    assert "MAX_KG_CANDIDATES = 5" in source
+    assert "MAX_KG_RETRIEVAL_CANDIDATES = 320" in source
+    assert "MAX_KG_CANDIDATES = 18" in source
     assert '"max_kg_retrieval_candidates": MAX_KG_RETRIEVAL_CANDIDATES' in source
-    assert "RECALL_K_START = 5" in source
+    assert "RECALL_K_START = 1" in source
     assert "first_correct_rank" in source
     assert "np.bincount" in source
     assert "np.cumsum" in source
@@ -125,7 +125,15 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert "build_track_graph_batches" in source
     assert "TRACKS_PER_BATCH" in source
     assert "model_forward_batch" in source
-    assert "local_x = X[batch.node_indices.to(X.device)].to(DEVICE, dtype=MODEL_DTYPE, non_blocking=True)" in source
+    assert "local_x = _pin_for_cuda(X[batch.node_indices].to(dtype=MODEL_DTYPE).contiguous())" in source
+    assert "def split_metrics(name)" in source
+    assert 'outputs = model_forward(prepared_batches_by_split[name])' in source
+    assert 'METRICS_INTERVAL = max(1, int(os.getenv("METRICS_INTERVAL", "10")))' in source
+    assert 'tensor.to(DEVICE, non_blocking=True) for tensor in device_indices' in source
+    assert "epoch_started_at = time.perf_counter()" in source
+    assert 'torch.cuda.synchronize(DEVICE)' in source
+    assert 'row["epoch_time_seconds"] = time.perf_counter() - epoch_started_at' in source
+    assert "print(f\"Epoch {epoch:03d}/{EPOCHS}: {row['epoch_time_seconds']:.2f} s\")" in source
     assert "attentive_contributions = (weights.unsqueeze(-1) * observations).to(attentive.dtype)" in source
     assert "observations.to(means.dtype)" in source
     assert "observations.to(maxima.dtype)" in source
