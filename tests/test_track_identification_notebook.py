@@ -148,3 +148,16 @@ def test_track_notebook_ports_vacuity_dissonance_plots_by_rao_outcome():
     assert '(~rao_correct, "Incorrect identifications"' in source
     assert "rao_vacuity[selected], rao_dissonance[selected]" in source
     assert "track_rao_vacuity_vs_dissonance_by_outcome" in source
+
+
+def test_track_notebook_rao_loss_rewards_partially_correct_components():
+    source = _code_source()
+    assert "RAO_AIRCRAFT_LOSS_WEIGHT = 1.0" in source
+    assert "RAO_RADAR_LOSS_WEIGHT = 1.0" in source
+    assert "RAO_OPERATOR_LOSS_WEIGHT = 1.0" in source
+    assert "def component_weighted_rao_nll" in source
+    assert "def component_weighted_rao_edl" in source
+    assert "matching_worlds" in source
+    assert "torch.logsumexp" in source
+    assert 'rao_ce = component_weighted_rao_nll(outputs["track_rao"], rao_labels).mean()' in source
+    assert 'rao_edl = component_weighted_rao_edl(rao_alpha, rao_labels).mean()' in source
