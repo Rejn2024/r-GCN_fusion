@@ -130,6 +130,10 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert 'outputs = model_forward(prepared_batches_by_split[name])' in source
     assert 'METRICS_INTERVAL = max(1, int(os.getenv("METRICS_INTERVAL", "10")))' in source
     assert 'tensor.to(DEVICE, non_blocking=True) for tensor in device_indices' in source
+    assert "epoch_started_at = time.perf_counter()" in source
+    assert 'torch.cuda.synchronize(DEVICE)' in source
+    assert 'row["epoch_time_seconds"] = time.perf_counter() - epoch_started_at' in source
+    assert "print(f\"Epoch {epoch:03d}/{EPOCHS}: {row['epoch_time_seconds']:.2f} s\")" in source
     assert "attentive_contributions = (weights.unsqueeze(-1) * observations).to(attentive.dtype)" in source
     assert "observations.to(means.dtype)" in source
     assert "observations.to(maxima.dtype)" in source
