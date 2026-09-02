@@ -105,6 +105,22 @@ def load_observation_series_json(path: str | Path) -> dict[str, object]:
     return data
 
 
+def write_observation_series_json(
+    data: dict[str, object], path: str | Path
+) -> Path:
+    """Stream an observation-series document to disk as formatted JSON.
+
+    Writing through :func:`json.dump` avoids constructing a second, potentially
+    very large string containing the entire serialized dataset in memory.
+    """
+    output_path = Path(path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as output_file:
+        json.dump(data, output_file, indent=2, sort_keys=True)
+        output_file.write("\n")
+    return output_path
+
+
 def _sample_esm_parameters(rng: random.Random, props: dict[str, Any]) -> dict[str, Any]:
     esm: dict[str, Any] = {
         "observed_waveform": props["waveform"],
@@ -574,10 +590,7 @@ def main(argv: Iterable[str] | None = None) -> None:
         args.max_mode_switches,
         args.workers,
     )
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    write_observation_series_json(data, args.output)
     print(f"Wrote {args.count} ESM observation series to {args.output}")
 
 
