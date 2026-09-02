@@ -6,6 +6,7 @@ from esm_observation_series_generator import (
     generate_observation_series,
     load_observation_series_json,
     observations_without_ground_truth,
+    write_observation_series_json,
 )
 
 
@@ -143,3 +144,14 @@ def test_load_observation_series_json_validates_schema(tmp_path):
 
     with pytest.raises(ValueError, match="observation_series"):
         load_observation_series_json(path)
+
+
+def test_write_observation_series_json_creates_parent_and_round_trips(tmp_path):
+    data = generate_observation_series(count=1, seed=37)
+    path = tmp_path / "nested" / "series.json"
+
+    result = write_observation_series_json(data, path)
+
+    assert result == path
+    assert path.read_bytes().endswith(b"\n")
+    assert load_observation_series_json(path) == data
