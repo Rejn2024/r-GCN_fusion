@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from os import PathLike
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -14,15 +16,81 @@ def densify_feature_rows(
     feature_names: Sequence[str],
     *,
     dtype: np.dtype = np.dtype(np.float32),
+    backing_file: str | PathLike[str] | None = None,
 ) -> np.ndarray:
-    """Materialise sparse feature dictionaries without a dense Python list-of-lists."""
+    """Materialise sparse feature dictionaries without a list-of-lists.
+
+    When ``backing_file`` is supplied, the result is a writable ``numpy.memmap``.
+    This lets callers work with matrices larger than available RAM while retaining
+    ordinary NumPy indexing and zero-copy ``torch.from_numpy`` compatibility.
+    """
     columns = {name: index for index, name in enumerate(feature_names)}
-    dense = np.zeros((len(rows), len(feature_names)), dtype=dtype)
+    shape = (len(rows), len(feature_names))
+    if backing_file is None:
+        dense = np.zeros(shape, dtype=dtype)
+    else:
+        path = Path(backing_file)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        dense = np.memmap(path, mode="w+", shape=shape, dtype=dtype)
     for row_index, row in enumerate(rows):
         for name, value in row.items():
             column_index = columns.get(name)
             if column_index is not None:
                 dense[row_index, column_index] = value
+    return dense
+
+
+def standardize_feature_matrix_in_place(
+    dense: np.ndarray,
+    *,
+    chunk_rows: int,
+    device: torch.device | str = "cpu",
+) -> np.ndarray:
+    """Standardise a dense feature matrix using bounded-memory chunks.
+
+    Population moments are merged with the parallel-variance formula, avoiding
+    both a full float32 copy and catastrophic cancellation from ``E[x²]-E[x]²``.
+    The normalized values are written back in the input dtype. This is especially
+    useful for a disk-backed matrix returned by :func:`densify_feature_rows`.
+    """
+    if dense.ndim != 2:
+        raise ValueError("dense must have shape [row_count, feature_count]")
+    if chunk_rows < 1:
+        raise ValueError("chunk_rows must be positive")
+    row_count, feature_count = dense.shape
+    if row_count == 0:
+        return dense
+
+    work_device = torch.device(device)
+    mean = torch.zeros(feature_count, dtype=torch.float32, device=work_device)
+    m2 = torch.zeros_like(mean)
+    count = 0
+    with torch.inference_mode():
+        for start in range(0, row_count, chunk_rows):
+            values = torch.as_tensor(dense[start : start + chunk_rows]).to(
+                device=work_device, dtype=torch.float32
+            )
+            batch_count = values.size(0)
+            batch_mean = values.mean(dim=0)
+            batch_m2 = ((values - batch_mean) ** 2).sum(dim=0)
+            delta = batch_mean - mean
+            combined_count = count + batch_count
+            mean.add_(delta * (batch_count / combined_count))
+            m2.add_(batch_m2 + delta.square() * (count * batch_count / combined_count))
+            count = combined_count
+
+        scale = torch.sqrt(m2 / count)
+        scale.masked_fill_(scale == 0, 1.0)
+        for start in range(0, row_count, chunk_rows):
+            stop = min(start + chunk_rows, row_count)
+            values = torch.as_tensor(dense[start:stop]).to(
+                device=work_device, dtype=torch.float32
+            )
+            normalized = ((values - mean) / scale).to("cpu")
+            dense[start:stop] = normalized.numpy()
+
+    if isinstance(dense, np.memmap):
+        dense.flush()
     return dense
 
 
