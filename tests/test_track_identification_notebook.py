@@ -141,10 +141,32 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert 'enabled=USE_AMP and DEVICE.type == "cuda"' in source
 
 
-def test_track_notebook_densifies_only_present_features():
+def test_track_notebook_densifies_and_standardizes_with_bounded_memory():
     source = _code_source()
-    assert "densify_feature_rows(feature_rows, feature_names, dtype=X_NP_DTYPE)" in source
+    assert "backing_file=GRAPH_FEATURE_MEMMAP" in source
+    assert "standardize_feature_matrix_in_place(" in source
+    assert "chunk_rows=GRAPH_FEATURE_CHUNK_ROWS" in source
+    assert "X = torch.from_numpy(X_np)" in source
+    assert "X_work = torch.as_tensor(X_np" not in source
     assert "row.get(name, 0.0) for name in feature_names" not in source
+
+
+def test_track_notebook_immediately_reloads_generated_memmap():
+    cells = _notebook()["cells"]
+    generation_index = next(
+        index
+        for index, cell in enumerate(cells)
+        if "standardize_feature_matrix_in_place(" in "".join(cell.get("source", []))
+    )
+    reload_cell = cells[generation_index + 1]
+    reload_source = "".join(reload_cell.get("source", []))
+
+    assert reload_cell["cell_type"] == "code"
+    assert 'GRAPH_FEATURE_MEMMAP, mode="r+"' in reload_source
+    assert "feature_matrix_shape = tuple(X.shape)" in reload_source
+    assert "del X, X_np" in reload_source
+    assert "X = torch.from_numpy(X_np)" in reload_source
+    assert "torch.isfinite(" in reload_source
 
 
 def test_track_notebook_ports_vacuity_dissonance_plots_by_rao_outcome():

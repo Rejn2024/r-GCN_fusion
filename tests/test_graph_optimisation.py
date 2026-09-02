@@ -7,6 +7,7 @@ from rgcn_fusion.graph_optimisation import (
     densify_feature_rows,
     partition_edges_by_relation,
     segment_softmax,
+    standardize_feature_matrix_in_place,
 )
 
 
@@ -15,6 +16,35 @@ def test_densify_feature_rows_writes_only_known_sparse_values():
         [{"b": 2.0}, {"a": 3.0, "ignored": 9.0}], ["a", "b"], dtype=np.float16
     )
     np.testing.assert_array_equal(result, np.array([[0, 2], [3, 0]], dtype=np.float16))
+
+
+def test_densify_feature_rows_can_use_disk_backing(tmp_path):
+    result = densify_feature_rows(
+        [{"b": 2.0}, {"a": 3.0}],
+        ["a", "b"],
+        dtype=np.float16,
+        backing_file=tmp_path / "features.memmap",
+    )
+
+    assert isinstance(result, np.memmap)
+    np.testing.assert_array_equal(result, np.array([[0, 2], [3, 0]], dtype=np.float16))
+
+
+def test_standardize_feature_matrix_in_place_uses_chunked_population_moments():
+    values = np.array([[1, 5, 2], [2, 5, 4], [3, 5, 6]], dtype=np.float32)
+    expected = (values - values.mean(axis=0)) / np.where(
+        values.std(axis=0) == 0, 1, values.std(axis=0)
+    )
+
+    result = standardize_feature_matrix_in_place(values, chunk_rows=2)
+
+    assert result is values
+    np.testing.assert_allclose(result, expected, atol=1e-6)
+
+
+def test_standardize_feature_matrix_rejects_invalid_chunk_size():
+    with pytest.raises(ValueError, match="chunk_rows"):
+        standardize_feature_matrix_in_place(np.zeros((1, 1)), chunk_rows=0)
 
 
 def test_partition_edges_by_relation_preserves_relation_order():
