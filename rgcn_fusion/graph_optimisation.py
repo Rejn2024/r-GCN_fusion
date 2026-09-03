@@ -17,6 +17,7 @@ def densify_feature_rows(
     *,
     dtype: np.dtype = np.dtype(np.float32),
     backing_file: str | PathLike[str] | None = None,
+    chunk_rows: int = 65_536,
 ) -> np.ndarray:
     """Materialise sparse feature dictionaries without a list-of-lists.
 
@@ -24,6 +25,8 @@ def densify_feature_rows(
     This lets callers work with matrices larger than available RAM while retaining
     ordinary NumPy indexing and zero-copy ``torch.from_numpy`` compatibility.
     """
+    if chunk_rows < 1:
+        raise ValueError("chunk_rows must be positive")
     columns = {name: index for index, name in enumerate(feature_names)}
     shape = (len(rows), len(feature_names))
     if backing_file is None:
@@ -32,11 +35,20 @@ def densify_feature_rows(
         path = Path(backing_file)
         path.parent.mkdir(parents=True, exist_ok=True)
         dense = np.memmap(path, mode="w+", shape=shape, dtype=dtype)
-    for row_index, row in enumerate(rows):
-        for name, value in row.items():
-            column_index = columns.get(name)
-            if column_index is not None:
-                dense[row_index, column_index] = value
+    # Scalar writes to a memmap are particularly expensive. Populate ordinary
+    # in-memory arrays in bounded chunks, then issue one contiguous disk write per
+    # chunk. The same loop also has better cache locality for an in-memory result.
+    for start in range(0, len(rows), chunk_rows):
+        stop = min(start + chunk_rows, len(rows))
+        chunk = np.zeros((stop - start, shape[1]), dtype=dtype)
+        for chunk_row_index, row in enumerate(rows[start:stop]):
+            for name, value in row.items():
+                column_index = columns.get(name)
+                if column_index is not None:
+                    chunk[chunk_row_index, column_index] = value
+        dense[start:stop] = chunk
+    if isinstance(dense, np.memmap):
+        dense.flush()
     return dense
 
 

@@ -98,7 +98,11 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
 
 def test_graph_artifact_omits_redundant_feature_row_dictionaries():
     source = _code_source()
-    assert '"version": 7' in source
+    assert '"version": 8' in source
+    assert '"X": X.cpu()' not in source
+    assert '"feature_matrix": {' in source
+    assert "feature_matrix_path = ARTIFACT_DIR" in source
+    assert "np.memmap(" in source
     assert '"feature_rows": feature_rows' not in source
     assert '"observation_segment_indices": observation_segment_indices' in source
     assert 'graph_outputs["observation_segment_indices"]' in source
@@ -116,6 +120,9 @@ def test_graph_artifact_keeps_candidate_scores_out_of_node_metadata():
     assert '"intel_score"' not in candidate_metadata
     assert '"final_score"' not in candidate_metadata
     assert '"candidate_fused_match_mass"' in source
+    assert '"candidate_id"' not in candidate_metadata
+    assert '"observation_id"' not in candidate_metadata
+    assert '"report_payload"' not in source
 
 
 def test_track_notebook_prunes_and_collapses_claim_candidate_edges():
@@ -157,6 +164,7 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
 def test_track_notebook_densifies_and_standardizes_with_bounded_memory():
     source = _code_source()
     assert "backing_file=GRAPH_FEATURE_MEMMAP" in source
+    assert "backing_file=GRAPH_FEATURE_MEMMAP,\n    chunk_rows=GRAPH_FEATURE_CHUNK_ROWS" in source
     assert "standardize_feature_matrix_in_place(" in source
     assert "chunk_rows=GRAPH_FEATURE_CHUNK_ROWS" in source
     assert "X = torch.from_numpy(X_np)" in source
