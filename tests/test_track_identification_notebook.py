@@ -172,6 +172,11 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert (
         'METRICS_INTERVAL = max(1, int(os.getenv("METRICS_INTERVAL", "10")))' in source
     )
+    assert (
+        'PIN_BATCH_MEMORY = DEVICE.type == "cuda" and os.getenv("PIN_BATCH_MEMORY", "0") == "1"'
+        in source
+    )
+    assert "if PIN_BATCH_MEMORY else tensor" in source
     assert "tensor.to(DEVICE, non_blocking=True) for tensor in device_indices" in source
     assert "epoch_started_at = time.perf_counter()" in source
     assert "torch.cuda.synchronize(DEVICE)" in source
