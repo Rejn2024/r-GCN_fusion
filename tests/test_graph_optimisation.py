@@ -24,10 +24,16 @@ def test_densify_feature_rows_can_use_disk_backing(tmp_path):
         ["a", "b"],
         dtype=np.float16,
         backing_file=tmp_path / "features.memmap",
+        chunk_rows=1,
     )
 
     assert isinstance(result, np.memmap)
     np.testing.assert_array_equal(result, np.array([[0, 2], [3, 0]], dtype=np.float16))
+
+
+def test_densify_feature_rows_rejects_invalid_chunk_size():
+    with pytest.raises(ValueError, match="chunk_rows"):
+        densify_feature_rows([], [], chunk_rows=0)
 
 
 def test_standardize_feature_matrix_in_place_uses_chunked_population_moments():
