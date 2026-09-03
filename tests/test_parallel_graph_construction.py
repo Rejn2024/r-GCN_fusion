@@ -123,7 +123,7 @@ def test_process_worker_builds_deterministic_index_local_fragment():
         actual = list(executor.map(build_series_fragment_in_worker, [_task()]))[0]
 
     assert actual == expected
-    _, fragment, _ = actual
+    _, fragment = actual
     assert [meta["node_kind"] for meta in fragment["node_meta"]] == [
         "observation",
         "intelligence_report",
@@ -133,6 +133,8 @@ def test_process_worker_builds_deterministic_index_local_fragment():
     assert fragment["observation_offsets"] == [0]
     assert fragment["claim_offsets"] == [2]
     assert fragment["candidate_links"][0][:2] == (0, 3)
+    assert fragment["report_links"] == [(1, 0)]
+    assert fragment["report_kg_edges"] == []
 
 
 def test_radar_only_candidate_does_not_invent_none_relation_id():

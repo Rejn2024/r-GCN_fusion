@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from array import array
 from datetime import UTC, datetime
+import heapq
 from typing import Any
 
 from .intelligence_reports import (
@@ -34,7 +35,7 @@ def score_series_in_worker(
 
 def build_series_fragment_in_worker(
     task: tuple[int, dict[str, Any]],
-) -> tuple[int, dict[str, Any], dict[str, Any]]:
+) -> tuple[int, dict[str, Any]]:
     """Score and materialise one series using the process worker's context."""
     if _WORKER_CONTEXT is None:
         raise RuntimeError("scoring worker has not been initialised")
@@ -78,21 +79,25 @@ def _segment_indices(observations: list[dict[str, Any]], threshold: float) -> li
 
 def build_series_fragment(
     task: tuple[int, dict[str, Any]], context: dict[str, Any]
-) -> tuple[int, dict[str, Any], dict[str, Any]]:
+) -> tuple[int, dict[str, Any]]:
     """Build an index-local graph fragment which can be merged deterministically.
 
     Global node indices are deliberately not assigned in workers.  This avoids shared
     mutable state and lets the parent concatenate fragments in source-series order.
     """
-    position, scored, report_proximities = score_series_observations(task, context)
     series = task[1]
     observations = sorted(series["observations"], key=lambda obs: obs["sequence_index"])
+    prepared_reports = _prepare_reports(series)
+    position, scored, applicable_report_ordinals, first_observation_claim_scores = (
+        _score_series_observations(task, context, prepared_reports)
+    )
     rows: list[dict[str, float]] = []
     metadata: list[dict[str, Any]] = []
     observation_offsets: list[int] = []
     candidates: list[tuple[int, int, array]] = []
     claim_offsets: list[int] = []
     report_kg_edges: list[tuple[int, str]] = []
+    report_offsets: list[int] = []
     include_reports = context.get("include_intel_report_nodes", True)
     include_candidates = context.get("include_candidate_nodes", True)
     n = max(len(observations), 1)
@@ -137,6 +142,7 @@ def build_series_fragment(
                 series.get("intelligence_reports") or [], start=1
             ):
                 report_offset = len(rows)
+                report_offsets.append(report_offset)
                 rows.append(
                     {
                         "node_kind_observation": 0.0,
@@ -165,9 +171,7 @@ def build_series_fragment(
                 )
                 for claim_rank, claim in enumerate(report.get("claims") or [], start=1):
                     claim_offset = len(rows)
-                    claim_score = report_claim_score(
-                        report, claim, observation_time=observation_time
-                    )
+                    claim_score = first_observation_claim_scores[len(claim_offsets)]
                     rows.append(
                         {
                             "node_kind_observation": 0.0,
@@ -285,28 +289,91 @@ def build_series_fragment(
                 )
                 candidates.append((observation_offset, candidate_offset, direct_edges))
 
-    return (
-        position,
-        {
-            "feature_rows": rows,
-            "node_meta": metadata,
-            "observation_offsets": observation_offsets,
-            "candidate_links": candidates,
-            "claim_offsets": claim_offsets,
-            "report_kg_edges": report_kg_edges,
-        },
-        report_proximities,
-    )
+    report_links = [
+        (report_offsets[report_ordinal], observation_offsets[observation_ordinal])
+        for observation_ordinal, report_ordinals in enumerate(
+            applicable_report_ordinals
+        )
+        for report_ordinal in report_ordinals
+    ]
+    return position, {
+        "feature_rows": rows,
+        "node_meta": metadata,
+        "observation_offsets": observation_offsets,
+        "candidate_links": candidates,
+        "claim_offsets": claim_offsets,
+        "report_kg_edges": report_kg_edges,
+        "report_links": report_links,
+    }
 
 
 def score_series_observations(
     task: tuple[int, dict[str, Any]], context: dict[str, Any]
 ) -> tuple[int, dict[str, Any], dict[str, dict[str, dict[str, float | str]]]]:
     """Score every observation in one series without assigning global node indices."""
+    position, results, applicable_reports, _claim_scores = _score_series_observations(
+        task, context, _prepare_reports(task[1])
+    )
+    series = task[1]
+    reports = series.get("intelligence_reports") or []
+    observations = sorted(series["observations"], key=lambda obs: obs["sequence_index"])
+    # Preserve the public diagnostic payload while fragment construction uses compact
+    # integer offsets and never sends these dictionaries through the process pool.
+    report_proximities = {
+        observation["observation_id"]: {
+            reports[report_ordinal]["report_id"]: report_observation_proximity(
+                reports[report_ordinal], observation
+            )
+            for report_ordinal in applicable_reports[observation_ordinal]
+        }
+        for observation_ordinal, observation in enumerate(observations)
+    }
+    return position, results, report_proximities
+
+
+def _prepare_reports(
+    series: dict[str, Any],
+) -> list[tuple[dict[str, Any], list[dict[str, Any]]]]:
+    """Attach invariant claim provenance once per track rather than per observation."""
+    return [
+        (
+            report,
+            [
+                {
+                    **claim,
+                    "id": f"evidence:claim:{claim['claim_id']}",
+                    "report_id": report.get("report_id"),
+                    "source_id": report.get("source_id"),
+                    "series_id": series["series_id"],
+                }
+                for claim in report.get("claims") or []
+            ],
+        )
+        for report in series.get("intelligence_reports") or []
+    ]
+
+
+def _score_series_observations(
+    task: tuple[int, dict[str, Any]],
+    context: dict[str, Any],
+    prepared_reports: list[tuple[dict[str, Any], list[dict[str, Any]]]],
+) -> tuple[int, dict[str, Any], list[list[int]], list[float]]:
+    """Score a track and return compact report applicability for fragment assembly."""
     series_position, series = task
     results: dict[str, Any] = {}
-    report_proximities: dict[str, dict[str, dict[str, float | str]]] = {}
+    applicable_report_ordinals: list[list[int]] = []
     observations = sorted(series["observations"], key=lambda obs: obs["sequence_index"])
+    first_timestamp = observations[0].get("timestamp_iso8601") if observations else None
+    first_observation_time = (
+        datetime.fromisoformat(first_timestamp.replace("Z", "+00:00")).astimezone(UTC)
+        if first_timestamp
+        else None
+    )
+    first_observation_claim_scores = [
+        report_claim_score(report, claim, observation_time=first_observation_time)
+        for report, prepared_claims in prepared_reports
+        for claim in prepared_claims
+    ]
     claim_ordinal_by_evidence_id = {
         f"evidence:claim:{claim['claim_id']}": claim_ordinal
         for claim_ordinal, claim in enumerate(
@@ -315,7 +382,7 @@ def score_series_observations(
             for claim in report.get("claims") or []
         )
     }
-    for obs in observations:
+    for observation_ordinal, obs in enumerate(observations):
         timestamp = obs.get("timestamp_iso8601")
         observation_time = (
             datetime.fromisoformat(timestamp.replace("Z", "+00:00")).astimezone(UTC)
@@ -323,73 +390,66 @@ def score_series_observations(
             else None
         )
         applicable_claims = []
-        observation_report_proximities = {}
-        for report in series.get("intelligence_reports") or []:
+        applicable_reports = []
+        for report_ordinal, (report, prepared_claims) in enumerate(prepared_reports):
             proximity = report_observation_proximity(report, obs)
             if proximity is None:
                 continue
-            observation_report_proximities[report["report_id"]] = proximity
-            for claim in report.get("claims") or []:
-                applicable_claims.append(
-                    {
-                        **claim,
-                        "id": f"evidence:claim:{claim['claim_id']}",
-                        "report_id": report.get("report_id"),
-                        "source_id": report.get("source_id"),
-                        "series_id": obs["series_id"],
-                        "text_score": report_claim_score(
-                            report, claim, observation_time=observation_time
-                        ),
-                    }
+            applicable_reports.append(report_ordinal)
+            for prepared_claim in prepared_claims:
+                claim_score = (
+                    first_observation_claim_scores[
+                        claim_ordinal_by_evidence_id[prepared_claim["id"]]
+                    ]
+                    if observation_ordinal == 0
+                    else report_claim_score(
+                        report, prepared_claim, observation_time=observation_time
+                    )
                 )
+                applicable_claims.append({**prepared_claim, "text_score": claim_score})
+        applicable_report_ordinals.append(applicable_reports)
 
-        report_proximities[obs["observation_id"]] = observation_report_proximities
-
-        enriched_candidates = []
-        for sensor_rank, (sensor_score, score, operator) in enumerate(
-            _candidate_scores(obs, context), start=1
-        ):
-            candidate = {
-                "id": f"candidate:{obs['observation_id']}:{sensor_rank}",
-                "observation_id": obs["observation_id"],
-                "series_id": obs["series_id"],
-                "mode_id": score.mode_id,
-                "radar_id": score.radar_id,
-                "aircraft_id": score.aircraft_id,
-                "aircraft_family_id": context["aircraft_family_by_aircraft"].get(
-                    score.aircraft_id
-                ),
-                "operator": operator,
-                "relation_id": (
-                    f"relation:{score.aircraft_id}:USES_RADAR:{score.radar_id}"
-                    if score.aircraft_id is not None and score.radar_id is not None
-                    else None
-                ),
-                "sensor_score": sensor_score,
-                "sensor_ds_masses": ds_masses_from_score(
-                    sensor_score, 0.2 if sensor_rank == 1 else 0.35
-                ),
-            }
-            intelligence, direct_edges = aggregate_candidate_intelligence(
-                candidate, applicable_claims
-            )
-            # The notebook needs only claim identity and contribution polarity.
-            # Pack both into one signed int32 instead of returning an edge dictionary
-            # for every claim/candidate pair through the process-pool pickle channel.
-            compact_direct_edges = array("i")
-            for edge in direct_edges:
-                contribution = edge["contribution"]
-                claim_ordinal = claim_ordinal_by_evidence_id.get(edge["source"])
-                if claim_ordinal is None or abs(contribution) < context.get(
-                    "claim_candidate_min_abs_contribution", 0.0
-                ):
-                    continue
-                encoded_ordinal = claim_ordinal + 1
-                compact_direct_edges.append(
-                    encoded_ordinal if contribution > 0.0 else -encoded_ordinal
+        def enriched_candidates():
+            for sensor_rank, (sensor_score, score, operator) in enumerate(
+                _candidate_scores(obs, context), start=1
+            ):
+                candidate = {
+                    "id": f"candidate:{obs['observation_id']}:{sensor_rank}",
+                    "observation_id": obs["observation_id"],
+                    "series_id": obs["series_id"],
+                    "mode_id": score.mode_id,
+                    "radar_id": score.radar_id,
+                    "aircraft_id": score.aircraft_id,
+                    "aircraft_family_id": context["aircraft_family_by_aircraft"].get(
+                        score.aircraft_id
+                    ),
+                    "operator": operator,
+                    "relation_id": (
+                        f"relation:{score.aircraft_id}:USES_RADAR:{score.radar_id}"
+                        if score.aircraft_id is not None and score.radar_id is not None
+                        else None
+                    ),
+                    "sensor_score": sensor_score,
+                    "sensor_ds_masses": ds_masses_from_score(
+                        sensor_score, 0.2 if sensor_rank == 1 else 0.35
+                    ),
+                }
+                intelligence, direct_edges = aggregate_candidate_intelligence(
+                    candidate, applicable_claims
                 )
-            enriched_candidates.append(
-                (
+                compact_direct_edges = array("i")
+                for edge in direct_edges:
+                    contribution = edge["contribution"]
+                    claim_ordinal = claim_ordinal_by_evidence_id.get(edge["source"])
+                    if claim_ordinal is None or abs(contribution) < context.get(
+                        "claim_candidate_min_abs_contribution", 0.0
+                    ):
+                        continue
+                    encoded_ordinal = claim_ordinal + 1
+                    compact_direct_edges.append(
+                        encoded_ordinal if contribution > 0.0 else -encoded_ordinal
+                    )
+                yield (
                     intelligence["final_score"],
                     sensor_rank,
                     score,
@@ -398,12 +458,29 @@ def score_series_observations(
                     intelligence,
                     compact_direct_edges,
                 )
-            )
-        enriched_candidates.sort(key=lambda item: item[0], reverse=True)
-        results[obs["observation_id"]] = enriched_candidates[
-            : context["max_kg_candidates"]
-        ]
-    return series_position, results, report_proximities
+
+        results[obs["observation_id"]] = _stable_nlargest(
+            enriched_candidates(),
+            context["max_kg_candidates"],
+            key=lambda item: item[0],
+        )
+    return (
+        series_position,
+        results,
+        applicable_report_ordinals,
+        first_observation_claim_scores,
+    )
+
+
+def _stable_nlargest(items: Any, limit: int, *, key: Any) -> list[Any]:
+    """Return a deterministic top-k without sorting or retaining the complete input."""
+    selected = heapq.nlargest(
+        limit,
+        enumerate(items),
+        key=lambda indexed: (key(indexed[1]), -indexed[0]),
+    )
+    selected.sort(key=lambda indexed: (-key(indexed[1]), indexed[0]))
+    return [item for _index, item in selected]
 
 
 def _candidate_scores(
@@ -415,7 +492,6 @@ def _candidate_scores(
     template_scores = score_candidates(
         observation, templates, max_candidates=len(templates)
     )
-    expanded = []
     external = observation.get("external_context") or {}
     priors = external.get("priors") if isinstance(external.get("priors"), dict) else {}
     operator_priors = (
@@ -426,27 +502,32 @@ def _candidate_scores(
     contextual_operator = (
         external.get("operator") if isinstance(external, dict) else None
     )
-    for score in template_scores:
-        for row in variants[(score.mode_id, score.radar_id, score.aircraft_id)]:
-            operator = row["operator"]
-            if isinstance(operator_priors, dict) and operator in operator_priors:
-                operator_score = max(0.0, min(1.0, float(operator_priors[operator])))
-            elif isinstance(contextual_operator, (list, tuple, set)):
-                operator_score = 1.0 if operator in contextual_operator else 0.0
-            elif contextual_operator is None:
-                operator_score = 0.5
-            else:
-                operator_score = 1.0 if operator == contextual_operator else 0.0
-            final_score = round(
-                0.75 * score.mode_score
-                + 0.15 * score.aircraft_score
-                + 0.10 * operator_score,
-                6,
-            )
-            expanded.append((final_score, score, operator))
+
+    def expanded():
+        for score in template_scores:
+            for row in variants[(score.mode_id, score.radar_id, score.aircraft_id)]:
+                operator = row["operator"]
+                if isinstance(operator_priors, dict) and operator in operator_priors:
+                    operator_score = max(
+                        0.0, min(1.0, float(operator_priors[operator]))
+                    )
+                elif isinstance(contextual_operator, (list, tuple, set)):
+                    operator_score = 1.0 if operator in contextual_operator else 0.0
+                elif contextual_operator is None:
+                    operator_score = 0.5
+                else:
+                    operator_score = 1.0 if operator == contextual_operator else 0.0
+                final_score = round(
+                    0.75 * score.mode_score
+                    + 0.15 * score.aircraft_score
+                    + 0.10 * operator_score,
+                    6,
+                )
+                yield final_score, score, operator
+
     # Keep retrieval broad enough for intelligence to rescue a candidate that is
     # plausible but not in the final sensor-only shortlist.  Graph size is bounded
     # separately after intelligence-aware reranking in score_series_observations.
-    return sorted(expanded, key=lambda item: item[0], reverse=True)[
-        : context["max_kg_retrieval_candidates"]
-    ]
+    return _stable_nlargest(
+        expanded(), context["max_kg_retrieval_candidates"], key=lambda item: item[0]
+    )
