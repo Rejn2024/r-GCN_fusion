@@ -93,12 +93,11 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
     assert "axis.plot(recall_k_values, recall_at_k" in source
     assert "radars_without_aircraft" in source
     assert "aircraft_by_radar.get(radar_id) or [None]" in source
-    assert "def kg_property(entity_id, property_name)" in source
-    assert 'kg_property(score.aircraft_id, "variant")' in source
-    assert 'kg_property(score.mode_id, "name")' in source
-    assert 'kg_property(score.radar_id, "name")' in source
-    assert "if entity_id is None" in source
-    assert "node = kg_nodes[entity_id]" in source
+    assert "scored_observations" not in source
+    assert 'candidate_recall_rank_counts.extend(fragment["candidate_recall_rank_counts"])' in source
+    assert "rank if rank else max_recall_k + 1" in source
+    assert '"recall_target_by_observation_id": recall_target_by_observation_id' in source
+    assert '"recall_label_by_candidate": recall_label_by_candidate' in source
 
 
 def test_graph_artifact_omits_redundant_feature_row_dictionaries():

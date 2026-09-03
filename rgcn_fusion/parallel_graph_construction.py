@@ -98,6 +98,7 @@ def build_series_fragment(
     claim_offsets: list[int] = []
     report_kg_edges: list[tuple[int, str]] = []
     report_offsets: list[int] = []
+    candidate_recall_rank_counts: list[tuple[int, int]] = []
     include_reports = context.get("include_intel_report_nodes", True)
     include_candidates = context.get("include_candidate_nodes", True)
     n = max(len(observations), 1)
@@ -136,6 +137,26 @@ def build_series_fragment(
                 "timestamp_iso8601": timestamp,
             }
         )
+
+        enriched = scored[obs["observation_id"]]
+        recall_target = context.get("recall_target_by_observation_id", {}).get(
+            obs["observation_id"]
+        )
+        recall_labels = context.get("recall_label_by_candidate", {})
+        correct_rank = 0
+        if recall_target is not None:
+            for rank, candidate_row in enumerate(enriched, start=1):
+                score, operator = candidate_row[2], candidate_row[3]
+                candidate_key = (
+                    score.mode_id,
+                    score.radar_id,
+                    score.aircraft_id,
+                    operator,
+                )
+                if recall_labels.get(candidate_key) == recall_target:
+                    correct_rank = rank
+                    break
+        candidate_recall_rank_counts.append((correct_rank, len(enriched)))
 
         if include_reports and obs is observations[0]:
             for report_rank, report in enumerate(
@@ -224,7 +245,6 @@ def build_series_fragment(
                         report_kg_edges.append((claim_offset, claim["kg_entity_id"]))
 
         if include_candidates:
-            enriched = scored[obs["observation_id"]]
             for rank, (
                 _final_score,
                 sensor_rank,
@@ -304,6 +324,9 @@ def build_series_fragment(
         "claim_offsets": claim_offsets,
         "report_kg_edges": report_kg_edges,
         "report_links": report_links,
+        # Keep only the two integers needed by Recall@K. Returning complete scored
+        # candidate dictionaries would undo the streaming graph-construction savings.
+        "candidate_recall_rank_counts": candidate_recall_rank_counts,
     }
 
 

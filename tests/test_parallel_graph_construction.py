@@ -137,6 +137,31 @@ def test_process_worker_builds_deterministic_index_local_fragment():
     assert fragment["report_kg_edges"] == []
 
 
+def test_fragment_retains_compact_candidate_recall_statistics():
+    context = {
+        **_context(),
+        "include_candidate_nodes": True,
+        "include_intel_report_nodes": True,
+        "segment_frequency_shift_ghz": 0.75,
+        "recall_target_by_observation_id": {
+            "obs-1": ("Test Variant", "Test Mode", "Test Radar", "Testland")
+        },
+        "recall_label_by_candidate": {
+            (
+                "radar_mode:test",
+                "radar:test",
+                "aircraft:test",
+                "Testland",
+            ): ("Test Variant", "Test Mode", "Test Radar", "Testland")
+        },
+    }
+
+    _, fragment = build_series_fragment(_task(), context)
+
+    assert fragment["candidate_recall_rank_counts"] == [(1, 1)]
+    assert all(isinstance(value, int) for value in fragment["candidate_recall_rank_counts"][0])
+
+
 def test_radar_only_candidate_does_not_invent_none_relation_id():
     context = _context()
     row = context["candidate_templates"][0]
