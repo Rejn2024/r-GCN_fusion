@@ -192,6 +192,21 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert 'enabled=USE_AMP and DEVICE.type == "cuda"' in source
 
 
+def test_track_target_preparation_avoids_redundant_containers_and_gpu_scans():
+    source = _code_source()
+
+    assert "observation_rows_by_series" not in source
+    assert "mismatches_by_series" in source
+    assert "np.fromiter(" in source
+    assert "observation_nodes_cpu" in source
+    assert "observation_track_index_cpu" in source
+    assert "rao_mode_compatibility_array" in source
+    assert "split_index_by_track[observation_track_array]" in source
+    assert "torch.isin(" not in source
+    assert "all_track_batches" not in source
+    assert "for split_batches in batches_by_split.values()" in source
+
+
 def test_track_notebook_densifies_and_standardizes_with_bounded_memory():
     source = _code_source()
     assert "backing_file=GRAPH_FEATURE_MEMMAP" in source
