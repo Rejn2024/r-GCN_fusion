@@ -1,6 +1,8 @@
 from concurrent.futures import ProcessPoolExecutor
 
 from rgcn_fusion.parallel_graph_construction import (
+    build_series_fragment,
+    build_series_fragment_in_worker,
     initialise_scoring_worker,
     score_series_in_worker,
     score_series_observations,
@@ -104,6 +106,35 @@ def test_process_worker_matches_serial_scoring():
     }
 
 
+def test_process_worker_builds_deterministic_index_local_fragment():
+    context = {
+        **_context(),
+        "include_candidate_nodes": True,
+        "include_intel_report_nodes": True,
+        "segment_frequency_shift_ghz": 0.75,
+    }
+    expected = build_series_fragment(_task(), context)
+
+    with ProcessPoolExecutor(
+        max_workers=1,
+        initializer=initialise_scoring_worker,
+        initargs=(context,),
+    ) as executor:
+        actual = list(executor.map(build_series_fragment_in_worker, [_task()]))[0]
+
+    assert actual == expected
+    _, fragment, _ = actual
+    assert [meta["node_kind"] for meta in fragment["node_meta"]] == [
+        "observation",
+        "intelligence_report",
+        "report_claim",
+        "candidate",
+    ]
+    assert fragment["observation_offsets"] == [0]
+    assert fragment["claim_offsets"] == [2]
+    assert fragment["candidate_links"][0][:2] == (0, 3)
+
+
 def test_radar_only_candidate_does_not_invent_none_relation_id():
     context = _context()
     row = context["candidate_templates"][0]
@@ -113,9 +144,7 @@ def test_radar_only_candidate_does_not_invent_none_relation_id():
         aircraft_uses_radar=False,
         operator=None,
     )
-    context["candidate_variants"] = {
-        (row["mode_id"], row["radar_id"], None): [row]
-    }
+    context["candidate_variants"] = {(row["mode_id"], row["radar_id"], None): [row]}
 
     candidate = score_series_observations(_task(), context)[1]["obs-1"][0][4]
 
@@ -138,7 +167,11 @@ def test_intelligence_reranks_broad_retrieval_pool_before_final_limit():
     }
     context["candidate_templates"].append({**intel_favourite, "operator": None})
     context["candidate_variants"][
-        (intel_favourite["mode_id"], intel_favourite["radar_id"], intel_favourite["aircraft_id"])
+        (
+            intel_favourite["mode_id"],
+            intel_favourite["radar_id"],
+            intel_favourite["aircraft_id"],
+        )
     ] = [intel_favourite]
     context["max_kg_retrieval_candidates"] = 2
     context["max_kg_candidates"] = 1
