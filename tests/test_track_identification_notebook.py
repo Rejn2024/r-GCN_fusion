@@ -189,6 +189,13 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert "observations.to(means.dtype)" in source
     assert "observations.to(maxima.dtype)" in source
     assert "values.to(totals.dtype)" in source
+    assert 'edge_src, edge_dst, edge_type = array("q"), array("q"), array("q")' in source
+    assert 'add_edges(node_range, node_range, "self")' in source
+    assert "torch.from_numpy(np.frombuffer(edge_src, dtype=np.int64))" in source
+    assert "edge_types = torch.frombuffer(edge_type, dtype=torch.int64)" in source
+    assert "relation_edge_counts = torch.bincount(" in source
+    assert "relation_edges = partition_edges_by_relation(edge_index, edge_types" not in source
+    assert "edge_src, edge_dst, edge_type = [], [], []" not in source
     assert 'enabled=USE_AMP and DEVICE.type == "cuda"' in source
 
 
