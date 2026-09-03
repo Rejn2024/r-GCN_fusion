@@ -98,11 +98,24 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
 
 def test_graph_artifact_omits_redundant_feature_row_dictionaries():
     source = _code_source()
-    assert '"version": 6' in source
+    assert '"version": 7' in source
     assert '"feature_rows": feature_rows' not in source
     assert '"observation_segment_indices": observation_segment_indices' in source
     assert 'graph_outputs["observation_segment_indices"]' in source
     assert 'dict(zip(observation_node_indices, observation_segment_indices.tolist()))' in source
+
+
+def test_graph_artifact_keeps_candidate_scores_out_of_node_metadata():
+    source = _code_source()
+    candidate_metadata = source.split('node_meta.append({"node_kind": "candidate"', 1)[1].split("})", 1)[0]
+
+    # These values already live in compact feature-matrix columns. Repeating them
+    # as Python objects for every candidate makes torch.save's pickle memo exhaust RAM.
+    assert '"fused_ds_masses"' not in candidate_metadata
+    assert '"sensor_score"' not in candidate_metadata
+    assert '"intel_score"' not in candidate_metadata
+    assert '"final_score"' not in candidate_metadata
+    assert '"candidate_fused_match_mass"' in source
 
 
 def test_track_notebook_prunes_and_collapses_claim_candidate_edges():
