@@ -111,7 +111,8 @@ def test_graph_artifact_omits_redundant_feature_row_dictionaries():
 
 def test_graph_artifact_keeps_candidate_scores_out_of_node_metadata():
     source = _code_source()
-    candidate_metadata = source.split('node_meta.append({"node_kind": "candidate"', 1)[1].split("})", 1)[0]
+    construction_source = Path("rgcn_fusion/parallel_graph_construction.py").read_text(encoding="utf-8")
+    candidate_metadata = construction_source.split('"node_kind": "candidate"', 1)[1].split("}", 1)[0]
 
     # These values already live in compact feature-matrix columns. Repeating them
     # as Python objects for every candidate makes torch.save's pickle memo exhaust RAM.
@@ -119,7 +120,7 @@ def test_graph_artifact_keeps_candidate_scores_out_of_node_metadata():
     assert '"sensor_score"' not in candidate_metadata
     assert '"intel_score"' not in candidate_metadata
     assert '"final_score"' not in candidate_metadata
-    assert '"candidate_fused_match_mass"' in source
+    assert '"candidate_fused_match_mass"' in construction_source
     assert '"candidate_id"' not in candidate_metadata
     assert '"observation_id"' not in candidate_metadata
     assert '"report_payload"' not in source
