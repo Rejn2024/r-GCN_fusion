@@ -77,6 +77,7 @@ def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities()
 
 def test_candidate_recall_at_k_is_vectorised_and_visualised():
     source = _code_source()
+    construction_source = Path("rgcn_fusion/parallel_graph_construction.py").read_text(encoding="utf-8")
     assert "MAX_KG_RETRIEVAL_CANDIDATES = 320" in source
     assert "MAX_KG_CANDIDATES = 18" in source
     assert '"max_kg_retrieval_candidates": MAX_KG_RETRIEVAL_CANDIDATES' in source
@@ -89,11 +90,14 @@ def test_candidate_recall_at_k_is_vectorised_and_visualised():
     assert "radars_without_aircraft" in source
     assert 'aircraft_by_radar.get(radar_id) or [None]' in source
     assert "def kg_property(entity_id, property_name)" in source
-    assert 'kg_property(score.aircraft_id, "variant")' in source
-    assert 'kg_property(score.mode_id, "name")' in source
-    assert 'kg_property(score.radar_id, "name")' in source
+    assert 'kg_property(aircraft_id, "variant")' in source
+    assert 'kg_property(mode_id, "name")' in source
+    assert 'kg_property(radar_id, "name")' in source
     assert "if entity_id is None" in source
     assert 'node = kg_nodes[entity_id]' in source
+    assert "scored_observations" not in source
+    assert 'fragment["candidate_identities"]' in source
+    assert '"candidate_identities": candidate_identities' in construction_source
 
 
 def test_graph_artifact_omits_redundant_feature_row_dictionaries():

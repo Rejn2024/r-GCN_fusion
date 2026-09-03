@@ -91,6 +91,7 @@ def build_series_fragment(
     metadata: list[dict[str, Any]] = []
     observation_offsets: list[int] = []
     candidates: list[tuple[int, int, array]] = []
+    candidate_identities: list[tuple[str, list[tuple[str | None, str, str, str | None]]]] = []
     claim_offsets: list[int] = []
     report_kg_edges: list[tuple[int, str]] = []
     include_reports = context.get("include_intel_report_nodes", True)
@@ -219,8 +220,21 @@ def build_series_fragment(
                     if claim.get("kg_entity_id") is not None:
                         report_kg_edges.append((claim_offset, claim["kg_entity_id"]))
 
+        enriched = scored[obs["observation_id"]]
+        # Preserve only the identifiers required by the downstream Recall@K
+        # evaluation.  Returning the complete scored objects would undo the memory
+        # savings from materialising graph fragments inside each worker.
+        candidate_identities.append(
+            (
+                obs["observation_id"],
+                [
+                    (score.aircraft_id, score.mode_id, score.radar_id, operator)
+                    for _final_score, _sensor_rank, score, operator, *_rest in enriched
+                ],
+            )
+        )
+
         if include_candidates:
-            enriched = scored[obs["observation_id"]]
             for rank, (
                 _final_score,
                 sensor_rank,
@@ -292,6 +306,7 @@ def build_series_fragment(
             "node_meta": metadata,
             "observation_offsets": observation_offsets,
             "candidate_links": candidates,
+            "candidate_identities": candidate_identities,
             "claim_offsets": claim_offsets,
             "report_kg_edges": report_kg_edges,
         },

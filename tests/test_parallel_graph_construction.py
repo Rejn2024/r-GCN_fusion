@@ -133,6 +133,12 @@ def test_process_worker_builds_deterministic_index_local_fragment():
     assert fragment["observation_offsets"] == [0]
     assert fragment["claim_offsets"] == [2]
     assert fragment["candidate_links"][0][:2] == (0, 3)
+    assert fragment["candidate_identities"] == [
+        (
+            "obs-1",
+            [("aircraft:test", "radar_mode:test", "radar:test", "Testland")],
+        )
+    ]
 
 
 def test_radar_only_candidate_does_not_invent_none_relation_id():
