@@ -7,8 +7,8 @@ The generated graph includes:
 
 - aircraft family and variant nodes for Russian, Chinese, Indian, US, and
   Western European combat aircraft, including MiG-29, Su-27/Su-30/Su-35,
-  MiG-31, J-7/J-8/J-10/J-11/J-15/J-16/J-20, JF-17, Tejas, Rafale,
-  Mirage, Gripen, Tornado, Harrier, Typhoon, F-16, F-15, F/A-18, F-22,
+  MiG-31, J-10/J-11/J-15/J-16/J-20, JF-17, Tejas, Rafale,
+  Mirage, Gripen, Tornado, Typhoon, F-16, F-15, F/A-18, F-22,
   F-35, and bomber/attack-helicopter examples;
 - radar nodes known to be associated with those aircraft variants;
 - radar-mode nodes with representative numeric lower/upper bounds for pulse repetition frequency,
@@ -22,6 +22,13 @@ The generated graph includes:
 > Note: numeric radar and kinematic values are representative experiment inputs
 > assembled from commonly published open-source descriptions. They are not a
 > substitute for authoritative technical data.
+
+The selectable aircraft/radar/operator combinations are a **2026 in-service
+snapshot**. Retired variants, variants that have not entered service, incorrect
+export-variant substitutions, and radars left unused by that snapshot are not
+emitted into the graph. The snapshot describes the exact named variant rather
+than treating related national derivatives (for example, every F-15E-family
+export) as interchangeable.
 
 ## Usage
 
