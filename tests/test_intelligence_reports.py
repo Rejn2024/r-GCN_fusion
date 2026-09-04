@@ -5,6 +5,7 @@ from esm_observation_series_generator import (
 )
 from rgcn_fusion.intelligence_reports import (
     CLAIM_TYPES,
+    add_intelligence_reports_to_series,
     aggregate_candidate_intelligence,
     build_candidate_intelligence_rows,
     build_report_evidence_rows,
@@ -14,6 +15,31 @@ from rgcn_fusion.intelligence_reports import (
     report_claim_score,
     report_observation_proximity,
 )
+
+
+def test_report_enrichment_can_avoid_copying_freshly_generated_series():
+    data = {
+        "metadata": {"seed": 17},
+        "observation_series": [],
+    }
+
+    enriched = add_intelligence_reports_to_series(data, copy_data=False)
+
+    assert enriched is data
+    assert enriched["metadata"]["intelligence_reports_per_series"] == [10, 12]
+
+
+def test_report_enrichment_preserves_non_mutating_default():
+    data = {
+        "metadata": {"seed": 17},
+        "observation_series": [],
+    }
+
+    enriched = add_intelligence_reports_to_series(data)
+
+    assert enriched is not data
+    assert "intelligence_reports_per_series" not in data["metadata"]
+    assert enriched["metadata"]["intelligence_reports_per_series"] == [10, 12]
 
 
 def test_series_generator_keeps_measurements_per_observation_and_reports_per_series():
