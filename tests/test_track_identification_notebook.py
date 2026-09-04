@@ -311,6 +311,9 @@ def test_track_notebook_rao_loss_rewards_partially_correct_components():
 def test_track_notebook_logs_neural_net_results_to_mlflow():
     source = _code_source()
     assert "import mlflow" in source
+    assert 'MLFLOW_DATABASE_PATH = (ARTIFACT_DIR / "mlflow.db").resolve()' in source
+    assert 'f"sqlite:///{MLFLOW_DATABASE_PATH.as_posix()}"' in source
+    assert 'ARTIFACT_DIR / "mlruns"' not in source
     assert 'mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)' in source
     assert 'mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)' in source
     assert 'MLFLOW_RUN = mlflow.start_run(run_name=MLFLOW_RUN_NAME)' in source
