@@ -1,5 +1,7 @@
 import ast
 import json
+import urllib.parse
+import warnings
 from pathlib import Path
 
 NOTEBOOK = Path("notebooks/Track_identification.ipynb")
@@ -314,11 +316,16 @@ def test_track_notebook_rao_loss_rewards_partially_correct_components():
 def test_track_notebook_logs_neural_net_results_to_mlflow():
     source = _code_source()
     assert "import mlflow" in source
+    assert "from mlflow.exceptions import MlflowException" in source
     assert 'MLFLOW_RUNS_PATH = (ARTIFACT_DIR / "mlruns").resolve()' in source
     assert "MLFLOW_RUNS_PATH.as_uri()" in source
     assert 'ARTIFACT_DIR / "mlflow.db"' not in source
-    assert 'mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)' in source
+    assert "mlflow.set_tracking_uri(configured_uri)" in source
     assert 'mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)' in source
+    assert "def configure_mlflow_tracking(configured_uri, fallback_uri)" in source
+    assert 'database_scheme = urllib.parse.urlparse(configured_uri).scheme' in source
+    assert "Falling back to the local file-backed MLflow store" in source
+    assert "MLFLOW_TRACKING_URI = configure_mlflow_tracking(" in source
     assert 'MLFLOW_RUN = mlflow.start_run(run_name=MLFLOW_RUN_NAME)' in source
     for weight in (
         "rao_classification_weight", "mode_classification_weight",
@@ -334,3 +341,50 @@ def test_track_notebook_logs_neural_net_results_to_mlflow():
     assert 'mlflow.log_dict(summary, "results/training_summary.json")' in source
     assert 'mlflow.log_artifact(dashboard_path, artifact_path="dashboards")' in source
     assert 'mlflow.end_run(status="FINISHED")' in source
+
+
+def test_track_notebook_falls_back_when_sqlite_store_is_unavailable():
+    function_node = next(
+        node
+        for node in ast.parse(_code_source()).body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "configure_mlflow_tracking"
+    )
+
+    class UnsupportedStoreError(Exception):
+        pass
+
+    class FakeMlflow:
+        def __init__(self):
+            self.tracking_uris = []
+            self.experiment_attempts = 0
+
+        def set_tracking_uri(self, uri):
+            self.tracking_uris.append(uri)
+
+        def set_experiment(self, _name):
+            self.experiment_attempts += 1
+            if self.experiment_attempts == 1:
+                raise UnsupportedStoreError("got unsupported URI 'sqlite:///old.db'")
+
+    fake_mlflow = FakeMlflow()
+    namespace = {
+        "MLFLOW_EXPERIMENT_NAME": "test-experiment",
+        "MlflowException": UnsupportedStoreError,
+        "mlflow": fake_mlflow,
+        "urllib": urllib,
+        "warnings": warnings,
+    }
+    function_module = ast.Module(body=[function_node], type_ignores=[])
+    exec(compile(function_module, "notebook", "exec"), namespace)
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        effective_uri = namespace["configure_mlflow_tracking"](
+            "sqlite:///old.db", "file:///local/mlruns"
+        )
+
+    assert effective_uri == "file:///local/mlruns"
+    assert fake_mlflow.tracking_uris == ["sqlite:///old.db", "file:///local/mlruns"]
+    assert fake_mlflow.experiment_attempts == 2
+    assert "Falling back to the local file-backed MLflow store" in str(caught[0].message)
