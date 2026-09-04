@@ -507,10 +507,18 @@ def generate_observation_series(
 
         metadata.update(
             {
-                "intelligence_reports_per_series": [min_reports, max_reports],
+                "intelligence_reports_per_series": [
+                    min_reports + 1,
+                    max_reports + 1,
+                ],
+                "additional_track_reports_per_series": [
+                    min_reports,
+                    max_reports,
+                ],
                 "intelligence_report_types": [
                     "sighting_report",
                     "pattern_of_life_report",
+                    "theatre_aircraft_report",
                 ],
                 "intelligence_claim_types": list(CLAIM_TYPES),
             }

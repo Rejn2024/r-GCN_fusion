@@ -33,6 +33,7 @@ CLAIM_TYPES = (
     "relation",
     "last_observed_time",
     "expected_behavior",
+    "theatre_aircraft_presence",
 )
 MIN_REPORTS_PER_OBSERVATION = 10
 MAX_REPORTS_PER_OBSERVATION = 12
@@ -146,6 +147,12 @@ def final_signed_compatibility(
     """
     claim_type = str(claim.get("claim_type") or "")
     object_id = claim.get("object_id") or claim.get("object_value")
+    if claim_type == "theatre_aircraft_presence":
+        aircraft_ids = claim.get("object_ids") or []
+        candidate_aircraft = candidate.get("aircraft_id")
+        if candidate_aircraft is None:
+            return 0.0
+        return 1.0 if candidate_aircraft in aircraft_ids else -1.0
     field_by_type = {
         "operator": "operator",
         "aircraft_variant": "aircraft_id",
@@ -599,6 +606,76 @@ def generate_intelligence_reports_for_series(
     return reports
 
 
+def generate_theatre_aircraft_report(
+    series: dict[str, Any], *, rng: random.Random
+) -> dict[str, Any]:
+    """Return an order-of-battle report covering expected aircraft in theatre.
+
+    A squared random variate biases the list size towards its lower bound while
+    retaining the full 10--100 configured range (subject to catalog size).  One
+    membership claim lets graph construction support candidates on the list and
+    refute candidates absent from it without treating listed aircraft as
+    mutually contradictory assertions.
+    """
+    observations = series.get("observations") or []
+    truth = series.get("ground_truth_track_label") or (
+        observations[0].get("ground_truth_label") if observations else {}
+    )
+    if not truth:
+        raise ValueError("synthetic intelligence reports require ground_truth_label")
+
+    catalog = list(
+        {f"aircraft:{slug(item.variant)}": item for item in AIRCRAFT}.items()
+    )
+    maximum = min(100, len(catalog))
+    minimum = min(10, maximum)
+    list_size = minimum + int((rng.random() ** 2) * (maximum - minimum + 1))
+    list_size = min(maximum, list_size)
+    truth_id = truth["aircraft_id"]
+    alternatives = [entry for entry in catalog if entry[0] != truth_id]
+    selected = [(truth_id, _aircraft_for_truth(truth))]
+    selected.extend(rng.sample(alternatives, list_size - 1))
+    rng.shuffle(selected)
+
+    observed_at = _parse_utc(observations[0].get("timestamp_iso8601")) or datetime.now(
+        UTC
+    )
+    collected_at = observed_at - timedelta(hours=rng.uniform(1.0, 24.0))
+    published_at = collected_at + timedelta(minutes=rng.uniform(5.0, 60.0))
+    aircraft_ids = [aircraft_id for aircraft_id, _item in selected]
+    area = (observations[0].get("estimated_emitter_location") or {}).get("area")
+    return {
+        "report_id": f"intel_report:{series['series_id']}:theatre-aircraft",
+        "series_id": series["series_id"],
+        "source_id": "source:theatre_order_of_battle",
+        "source_type": "order_of_battle_analysis",
+        "report_type": "theatre_aircraft_report",
+        "published_at": _iso(published_at),
+        "collected_at": _iso(collected_at),
+        "ingested_at": _iso(published_at + timedelta(seconds=rng.uniform(5, 120))),
+        "credibility_score": round(rng.uniform(0.75, 0.95), 6),
+        "external_context": {},
+        "theatre_aircraft": {
+            "theatre_of_operations": area,
+            "aircraft_types": [item.variant for _aircraft_id, item in selected],
+            "aircraft_ids": aircraft_ids,
+        },
+        "claims": [
+            {
+                **_claim(
+                    claim_type="theatre_aircraft_presence",
+                    subject_id=series["series_id"],
+                    object_id="aircraft-set:expected-in-theatre",
+                    object_value="Aircraft expected in the theatre of operations",
+                    correct=True,
+                    rng=rng,
+                ),
+                "object_ids": aircraft_ids,
+            }
+        ],
+    }
+
+
 def generate_intelligence_reports_for_observation(
     observation: dict[str, Any], **kwargs: Any
 ) -> list[dict[str, Any]]:
@@ -643,8 +720,13 @@ def add_intelligence_reports_to_series(
             max_reports=max_reports,
         )
     meta = enriched.setdefault("metadata", {})
-    meta["intelligence_reports_per_series"] = [min_reports, max_reports]
-    meta["intelligence_report_types"] = ["sighting_report", "pattern_of_life_report"]
+    meta["intelligence_reports_per_series"] = [min_reports + 1, max_reports + 1]
+    meta["additional_track_reports_per_series"] = [min_reports, max_reports]
+    meta["intelligence_report_types"] = [
+        "sighting_report",
+        "pattern_of_life_report",
+        "theatre_aircraft_report",
+    ]
     meta["intelligence_claim_types"] = list(CLAIM_TYPES)
     return enriched
 
@@ -671,6 +753,9 @@ def add_intelligence_reports_to_series_entry(
 
     reports = generate_intelligence_reports_for_series(
         series, seed=seed, min_reports=min_reports, max_reports=max_reports
+    )
+    reports.append(
+        generate_theatre_aircraft_report(series, rng=random.Random(seed ^ 0xA17C4F7))
     )
     observation_ids = [observation["observation_id"] for observation in observations]
     series_id = series["series_id"]
@@ -724,6 +809,16 @@ def report_observation_proximity(
     prevents a series-level container from making every report applicable to
     every observation merely because their ``series_id`` values match.
     """
+    if report.get("report_type") == "theatre_aircraft_report":
+        valid_ids = report.get("valid_for_observation_ids") or []
+        if observation.get("observation_id") not in valid_ids:
+            return None
+        return {
+            "match_basis": "theatre_of_operations",
+            "time_delta_s": 0.0,
+            "distance_km": 0.0,
+        }
+
     observation_time = _parse_utc(observation.get("timestamp_iso8601"))
     observation_location = observation.get("estimated_emitter_location") or {}
     if report.get("report_type") == "sighting_report":
@@ -852,6 +947,7 @@ def build_report_evidence_rows(
                     "claim_type": claim.get("claim_type"),
                     "stance": claim.get("stance", "supports"),
                     "object_id": claim.get("object_id"),
+                    "object_ids": claim.get("object_ids"),
                     "object_value": claim.get("object_value"),
                     "kg_entity_id": claim.get("kg_entity_id"),
                     "source_id": report.get("source_id"),

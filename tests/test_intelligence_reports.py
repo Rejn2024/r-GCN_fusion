@@ -26,7 +26,7 @@ def test_report_enrichment_can_avoid_copying_freshly_generated_series():
     enriched = add_intelligence_reports_to_series(data, copy_data=False)
 
     assert enriched is data
-    assert enriched["metadata"]["intelligence_reports_per_series"] == [10, 12]
+    assert enriched["metadata"]["intelligence_reports_per_series"] == [11, 13]
 
 
 def test_report_enrichment_preserves_non_mutating_default():
@@ -39,7 +39,7 @@ def test_report_enrichment_preserves_non_mutating_default():
 
     assert enriched is not data
     assert "intelligence_reports_per_series" not in data["metadata"]
-    assert enriched["metadata"]["intelligence_reports_per_series"] == [10, 12]
+    assert enriched["metadata"]["intelligence_reports_per_series"] == [11, 13]
 
 
 def test_series_generator_keeps_measurements_per_observation_and_reports_per_series():
@@ -51,15 +51,16 @@ def test_series_generator_keeps_measurements_per_observation_and_reports_per_ser
         end=datetime(2025, 1, 2, tzinfo=UTC),
         workers=1,
     )
-    assert data["metadata"]["intelligence_reports_per_series"] == [10, 12]
+    assert data["metadata"]["intelligence_reports_per_series"] == [11, 13]
     assert data["metadata"]["intelligence_report_types"] == [
         "sighting_report",
         "pattern_of_life_report",
+        "theatre_aircraft_report",
     ]
     for series in data["observation_series"]:
         reports = series["intelligence_reports"]
         observation_ids = [obs["observation_id"] for obs in series["observations"]]
-        assert 10 <= len(reports) <= 12
+        assert 11 <= len(reports) <= 13
         assert all(
             report["valid_for_observation_ids"] == observation_ids for report in reports
         )
@@ -107,7 +108,11 @@ def test_generated_reports_are_track_aware_sightings_and_patterns_of_life():
     reports = series["intelligence_reports"]
     report_types = {report["report_type"] for report in reports}
 
-    assert report_types == {"sighting_report", "pattern_of_life_report"}
+    assert report_types == {
+        "sighting_report",
+        "pattern_of_life_report",
+        "theatre_aircraft_report",
+    }
     assert not report_types & {"order_of_battle", "automated_synthetic_intelligence"}
     sightings = [
         report for report in reports if report["report_type"] == "sighting_report"
@@ -157,6 +162,16 @@ def test_generated_reports_are_track_aware_sightings_and_patterns_of_life():
     assert entity_claims
     assert all(claim["kg_entity_id"] for claim in entity_claims)
 
+    theatre_report = next(
+        report
+        for report in reports
+        if report["report_type"] == "theatre_aircraft_report"
+    )
+    expected = theatre_report["theatre_aircraft"]
+    assert 10 <= len(expected["aircraft_types"]) <= 100
+    assert len(expected["aircraft_types"]) == len(set(expected["aircraft_types"]))
+    assert series["ground_truth_track_label"]["aircraft_id"] in expected["aircraft_ids"]
+
 
 def test_flatten_reports_does_not_duplicate_shared_series_reports():
     data = generate_observation_series_with_intelligence_reports(
@@ -191,11 +206,44 @@ def test_report_evidence_links_each_shared_claim_to_every_observation():
     assert rows["report_track_edges"]
     assert rows["kg_entity_edges"]
     assert all(
-        edge["match_basis"] in {"time_and_geography", "time_and_operating_area"}
+        edge["match_basis"]
+        in {"time_and_geography", "time_and_operating_area", "theatre_of_operations"}
         for edge in rows["report_proximity_edges"]
     )
     assert rows["contradiction_edges"]
     assert all(abs(sum(row["ds_masses"]) - 1.0) < 1e-6 for row in rows["claims"])
+
+    theatre_claim = next(
+        claim
+        for claim in rows["claims"]
+        if claim["claim_type"] == "theatre_aircraft_presence"
+    )
+    included_id = theatre_claim["object_ids"][0]
+    excluded_id = "aircraft:not-listed-in-theatre-report"
+    candidates = [
+        _candidate(
+            id="included", series_id=series["series_id"], aircraft_id=included_id
+        ),
+        _candidate(
+            id="excluded", series_id=series["series_id"], aircraft_id=excluded_id
+        ),
+    ]
+    _updates, candidate_edges = build_candidate_intelligence_rows(rows, candidates)
+    theatre_edges = [
+        edge for edge in candidate_edges if edge["source"] == theatre_claim["id"]
+    ]
+    assert (
+        next(edge for edge in theatre_edges if edge["target"] == "included")[
+            "contribution"
+        ]
+        > 0
+    )
+    assert (
+        next(edge for edge in theatre_edges if edge["target"] == "excluded")[
+            "contribution"
+        ]
+        < 0
+    )
 
 
 def test_report_claim_score_uses_optional_external_priors():
