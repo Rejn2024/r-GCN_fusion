@@ -318,12 +318,14 @@ def test_track_notebook_logs_neural_net_results_to_mlflow():
     assert "import mlflow" in source
     assert "from mlflow.exceptions import MlflowException" in source
     assert 'MLFLOW_RUNS_PATH = (ARTIFACT_DIR / "mlruns").resolve()' in source
+    assert 'MLFLOW_DB_PATH = (ARTIFACT_DIR / "mlflow.db").resolve()' in source
+    assert '"sqlite:///" + MLFLOW_DB_PATH.as_posix()' in source
     assert "MLFLOW_RUNS_PATH.as_uri()" in source
-    assert 'ARTIFACT_DIR / "mlflow.db"' not in source
     assert "mlflow.set_tracking_uri(configured_uri)" in source
     assert 'mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)' in source
     assert "def configure_mlflow_tracking(configured_uri, fallback_uri)" in source
     assert 'database_scheme = urllib.parse.urlparse(configured_uri).scheme' in source
+    assert 'os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")' in source
     assert "Falling back to the local file-backed MLflow store" in source
     assert "MLFLOW_TRACKING_URI = configure_mlflow_tracking(" in source
     assert 'MLFLOW_RUN = mlflow.start_run(run_name=MLFLOW_RUN_NAME)' in source
@@ -372,6 +374,7 @@ def test_track_notebook_falls_back_when_sqlite_store_is_unavailable():
         "MLFLOW_EXPERIMENT_NAME": "test-experiment",
         "MlflowException": UnsupportedStoreError,
         "mlflow": fake_mlflow,
+        "os": __import__("os"),
         "urllib": urllib,
         "warnings": warnings,
     }
@@ -388,3 +391,39 @@ def test_track_notebook_falls_back_when_sqlite_store_is_unavailable():
     assert fake_mlflow.tracking_uris == ["sqlite:///old.db", "file:///local/mlruns"]
     assert fake_mlflow.experiment_attempts == 2
     assert "Falling back to the local file-backed MLflow store" in str(caught[0].message)
+
+
+def test_track_notebook_opts_in_when_file_store_is_explicitly_configured(monkeypatch):
+    function_node = next(
+        node
+        for node in ast.parse(_code_source()).body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "configure_mlflow_tracking"
+    )
+
+    class FakeMlflow:
+        def set_tracking_uri(self, _uri):
+            pass
+
+        def set_experiment(self, _name):
+            assert __import__("os").environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
+
+    monkeypatch.delenv("MLFLOW_ALLOW_FILE_STORE", raising=False)
+    namespace = {
+        "MLFLOW_EXPERIMENT_NAME": "test-experiment",
+        "MlflowException": Exception,
+        "mlflow": FakeMlflow(),
+        "os": __import__("os"),
+        "urllib": urllib,
+        "warnings": warnings,
+    }
+    exec(
+        compile(ast.Module(body=[function_node], type_ignores=[]), "notebook", "exec"),
+        namespace,
+    )
+
+    effective_uri = namespace["configure_mlflow_tracking"](
+        "file:///local/mlruns", "file:///fallback/mlruns"
+    )
+
+    assert effective_uri == "file:///local/mlruns"
