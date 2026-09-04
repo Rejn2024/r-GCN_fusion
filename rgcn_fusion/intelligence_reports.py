@@ -633,41 +633,59 @@ def add_intelligence_reports_to_series(
     if min_reports < 1 or max_reports < min_reports:
         raise ValueError("report count bounds must be positive and ordered")
 
-    rng = random.Random(seed)
     enriched = copy.deepcopy(data) if copy_data else data
+    rng = random.Random(seed)
     for series in enriched.get("observation_series", []):
-        observations = series.get("observations", [])
-        for obs in observations:
-            obs.pop("intelligence_reports", None)
-        if not observations:
-            series["intelligence_reports"] = []
-            continue
-        reports = generate_intelligence_reports_for_series(
+        add_intelligence_reports_to_series_entry(
             series,
             seed=rng.getrandbits(64),
             min_reports=min_reports,
             max_reports=max_reports,
         )
-        observation_ids = [obs["observation_id"] for obs in observations]
-        for report_index, report in enumerate(reports, start=1):
-            report["report_id"] = (
-                f"intel_report:{series['series_id']}:{report_index:02d}"
-            )
-            report.pop("observation_id", None)
-            report["series_id"] = series["series_id"]
-            report["valid_for_observation_ids"] = observation_ids
-            for claim_index, claim in enumerate(report.get("claims") or [], start=1):
-                claim["claim_id"] = (
-                    f"intel_claim:{series['series_id']}:{report_index:02d}:"
-                    f"{claim_index:02d}"
-                )
-                claim["subject_id"] = series["series_id"]
-        series["intelligence_reports"] = reports
     meta = enriched.setdefault("metadata", {})
     meta["intelligence_reports_per_series"] = [min_reports, max_reports]
     meta["intelligence_report_types"] = ["sighting_report", "pattern_of_life_report"]
     meta["intelligence_claim_types"] = list(CLAIM_TYPES)
     return enriched
+
+
+def add_intelligence_reports_to_series_entry(
+    series: dict[str, Any],
+    *,
+    seed: int,
+    min_reports: int = MIN_REPORTS_PER_OBSERVATION,
+    max_reports: int = MAX_REPORTS_PER_OBSERVATION,
+) -> dict[str, Any]:
+    """Enrich one owned series in place and return it.
+
+    This small unit of work can run in the same worker that creates the series,
+    avoiding a second parent-process pass and another large inter-process
+    transfer in the combined generator.
+    """
+    observations = series.get("observations", [])
+    for observation in observations:
+        observation.pop("intelligence_reports", None)
+    if not observations:
+        series["intelligence_reports"] = []
+        return series
+
+    reports = generate_intelligence_reports_for_series(
+        series, seed=seed, min_reports=min_reports, max_reports=max_reports
+    )
+    observation_ids = [observation["observation_id"] for observation in observations]
+    series_id = series["series_id"]
+    for report_index, report in enumerate(reports, start=1):
+        report["report_id"] = f"intel_report:{series_id}:{report_index:02d}"
+        report.pop("observation_id", None)
+        report["series_id"] = series_id
+        report["valid_for_observation_ids"] = observation_ids
+        for claim_index, claim in enumerate(report.get("claims") or [], start=1):
+            claim["claim_id"] = (
+                f"intel_claim:{series_id}:{report_index:02d}:{claim_index:02d}"
+            )
+            claim["subject_id"] = series_id
+    series["intelligence_reports"] = reports
+    return series
 
 
 def flatten_reports_from_series(data: dict[str, Any]) -> list[dict[str, Any]]:
