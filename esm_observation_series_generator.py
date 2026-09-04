@@ -65,18 +65,17 @@ def _json_error_hint(document: str, error: JSONDecodeError) -> str:
     candidate_lines = [lines[line_index]]
     if line_index > 0:
         candidate_lines.append(lines[line_index - 1])
-    if (
-        error.msg == "Expecting ':' delimiter"
-        and any(
-            (stripped := line.strip()).startswith('"') and stripped.endswith('"')
-            for line in candidate_lines
-        )
+    if error.msg == "Expecting ':' delimiter" and any(
+        (stripped := line.strip()).startswith('"') and stripped.endswith('"')
+        for line in candidate_lines
     ):
         return (
             "Hint: this line looks like a JSON object key without a trailing "
             "colon. Add ':' after the closing quote, then re-run the loader."
         )
-    return "Hint: regenerate this file or fix the JSON syntax near the highlighted line."
+    return (
+        "Hint: regenerate this file or fix the JSON syntax near the highlighted line."
+    )
 
 
 def load_observation_series_json(path: str | Path) -> dict[str, object]:
@@ -105,9 +104,7 @@ def load_observation_series_json(path: str | Path) -> dict[str, object]:
     return data
 
 
-def write_observation_series_json(
-    data: dict[str, object], path: str | Path
-) -> Path:
+def write_observation_series_json(data: dict[str, object], path: str | Path) -> Path:
     """Stream an observation-series document to disk as formatted JSON.
 
     Writing through :func:`json.dump` avoids constructing a second, potentially
@@ -392,6 +389,24 @@ def _generate_single_observation_series(
     }
 
 
+def _generate_single_observation_series_with_reports(
+    args: tuple[tuple[Any, ...], int, int, int],
+) -> dict[str, Any]:
+    """Generate and enrich one series entirely inside a worker process."""
+    series_args, intelligence_seed, min_reports, max_reports = args
+    series = _generate_single_observation_series(series_args)
+    from rgcn_fusion.intelligence_reports import (
+        add_intelligence_reports_to_series_entry,
+    )
+
+    return add_intelligence_reports_to_series_entry(
+        series,
+        seed=intelligence_seed,
+        min_reports=min_reports,
+        max_reports=max_reports,
+    )
+
+
 def generate_observation_series(
     count: int = DEFAULT_SERIES_COUNT,
     seed: int = 7,
@@ -403,6 +418,7 @@ def generate_observation_series(
     mode_switch_probability: float = 0.03,
     max_mode_switches: int | None = None,
     workers: int | None = None,
+    _intelligence_config: tuple[int, int, int] | None = None,
 ) -> dict[str, Any]:
     """Generate single-emitter ESM observation series.
 
@@ -449,8 +465,18 @@ def generate_observation_series(
         for series_index in range(1, count + 1)
     ]
     worker_count = min(count, workers or (os.cpu_count() or 1))
+    worker_function = _generate_single_observation_series
+    worker_tasks: list[Any] = tasks
+    if _intelligence_config is not None:
+        intelligence_seed, min_reports, max_reports = _intelligence_config
+        report_rng = random.Random(intelligence_seed)
+        worker_function = _generate_single_observation_series_with_reports
+        worker_tasks = [
+            (task, report_rng.getrandbits(64), min_reports, max_reports)
+            for task in tasks
+        ]
     if worker_count == 1:
-        series_entries = [_generate_single_observation_series(task) for task in tasks]
+        series_entries = [worker_function(task) for task in worker_tasks]
     else:
         chunksize = max(1, count // (worker_count * 4))
         mp_context = (
@@ -460,24 +486,37 @@ def generate_observation_series(
             max_workers=worker_count, mp_context=mp_context
         ) as executor:
             series_entries = list(
-                executor.map(
-                    _generate_single_observation_series, tasks, chunksize=chunksize
-                )
+                executor.map(worker_function, worker_tasks, chunksize=chunksize)
             )
+    metadata: dict[str, Any] = {
+        "schema_version": "1.0",
+        "series_count": count,
+        "default_count": DEFAULT_SERIES_COUNT,
+        "seed": seed,
+        "min_duration_s": min_duration_s,
+        "max_duration_s": max_duration_s,
+        "sample_interval_s": sample_interval_s,
+        "mode_switch_probability": mode_switch_probability,
+        "max_mode_switches": max_mode_switches,
+        "workers": worker_count,
+        "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
+    }
+    if _intelligence_config is not None:
+        _intelligence_seed, min_reports, max_reports = _intelligence_config
+        from rgcn_fusion.intelligence_reports import CLAIM_TYPES
+
+        metadata.update(
+            {
+                "intelligence_reports_per_series": [min_reports, max_reports],
+                "intelligence_report_types": [
+                    "sighting_report",
+                    "pattern_of_life_report",
+                ],
+                "intelligence_claim_types": list(CLAIM_TYPES),
+            }
+        )
     return {
-        "metadata": {
-            "schema_version": "1.0",
-            "series_count": count,
-            "default_count": DEFAULT_SERIES_COUNT,
-            "seed": seed,
-            "min_duration_s": min_duration_s,
-            "max_duration_s": max_duration_s,
-            "sample_interval_s": sample_interval_s,
-            "mode_switch_probability": mode_switch_probability,
-            "max_mode_switches": max_mode_switches,
-            "workers": worker_count,
-            "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
-        },
+        "metadata": metadata,
         "observation_series": series_entries,
     }
 
@@ -496,21 +535,23 @@ def generate_observation_series_with_intelligence_reports(
     reports is attached to the series wrapper and applies to every observation
     in that series.  Reports are deliberately not copied into observations.
 
-    The newly generated document is enriched in place.  This avoids the former
-    JSON serialization round trip and full-document copy, reducing both runtime
-    and peak memory while retaining the non-mutating default of the standalone
-    :func:`add_intelligence_reports_to_series` helper.
+    Series generation and report enrichment run together in each worker.  This
+    parallelizes report creation, avoids a second parent-process pass, and sends
+    each (potentially large) series across the process boundary only once.
     """
-    from rgcn_fusion.intelligence_reports import add_intelligence_reports_to_series
+    if min_reports_per_series < 1 or max_reports_per_series < min_reports_per_series:
+        raise ValueError("report count bounds must be positive and ordered")
 
-    data = generate_observation_series(*args, **kwargs)
-    seed = int(data["metadata"].get("seed", 7) if intelligence_seed is None else intelligence_seed)
-    return add_intelligence_reports_to_series(
-        data,
-        seed=seed,
-        min_reports=min_reports_per_series,
-        max_reports=max_reports_per_series,
-        copy_data=False,
+    base_seed = kwargs.get("seed", args[1] if len(args) > 1 else 7)
+    report_seed = int(base_seed if intelligence_seed is None else intelligence_seed)
+    return generate_observation_series(
+        *args,
+        **kwargs,
+        _intelligence_config=(
+            report_seed,
+            min_reports_per_series,
+            max_reports_per_series,
+        ),
     )
 
 

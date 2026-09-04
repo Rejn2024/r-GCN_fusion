@@ -71,6 +71,27 @@ def test_series_generator_keeps_measurements_per_observation_and_reports_per_ser
     assert data["metadata"]["intelligence_claim_types"] == list(CLAIM_TYPES)
 
 
+def test_combined_generation_is_deterministic_across_worker_counts():
+    options = {
+        "count": 4,
+        "seed": 123,
+        "intelligence_seed": 456,
+        "min_duration_s": 1.0,
+        "max_duration_s": 2.0,
+        "min_reports_per_series": 2,
+        "max_reports_per_series": 3,
+    }
+
+    serial = generate_observation_series_with_intelligence_reports(**options, workers=1)
+    parallel = generate_observation_series_with_intelligence_reports(
+        **options, workers=2
+    )
+
+    assert serial["observation_series"] == parallel["observation_series"]
+    assert serial["metadata"]["workers"] == 1
+    assert parallel["metadata"]["workers"] == 2
+
+
 def test_generated_reports_are_track_aware_sightings_and_patterns_of_life():
     data = generate_observation_series_with_intelligence_reports(
         count=1,
