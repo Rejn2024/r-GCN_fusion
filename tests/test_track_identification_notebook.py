@@ -297,3 +297,25 @@ def test_track_notebook_rao_loss_rewards_partially_correct_components():
         'rao_ce = combined_rao_nll(outputs["track_rao"], rao_labels).mean()' in source
     )
     assert "rao_edl = combined_rao_edl(rao_alpha, rao_labels).mean()" in source
+
+
+def test_track_notebook_logs_neural_net_results_to_mlflow():
+    source = _code_source()
+    assert "import mlflow" in source
+    assert 'mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)' in source
+    assert 'mlflow.set_experiment(MLFLOW_EXPERIMENT_NAME)' in source
+    assert 'MLFLOW_RUN = mlflow.start_run(run_name=MLFLOW_RUN_NAME)' in source
+    for weight in (
+        "rao_classification_weight", "mode_classification_weight",
+        "rao_complete_loss_weight", "rao_component_loss_weight",
+        "rao_aircraft_loss_weight", "rao_radar_loss_weight",
+        "rao_operator_loss_weight", "rao_evidential_weight",
+        "mode_evidential_weight", "evidential_kl_weight",
+    ):
+        assert f'"{weight}"' in source
+    assert 'log_numeric_results(row, "epoch", step=epoch)' in source
+    assert 'log_numeric_results(summary, "summary")' in source
+    assert 'log_numeric_results(dashboard_metrics, "dashboard")' in source
+    assert 'mlflow.log_dict(summary, "results/training_summary.json")' in source
+    assert 'mlflow.log_artifact(dashboard_path, artifact_path="dashboards")' in source
+    assert 'mlflow.end_run(status="FINISHED")' in source
