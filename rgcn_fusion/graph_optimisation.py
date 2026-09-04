@@ -160,6 +160,105 @@ class TrackGraphBatch:
     observation_positions: torch.Tensor
 
 
+def build_track_graph_batches_by_split(
+    *,
+    edge_index: torch.Tensor,
+    edge_types: torch.Tensor,
+    node_track_index: torch.Tensor,
+    observation_nodes: torch.Tensor,
+    observation_track_index: torch.Tensor,
+    selected_tracks_by_split: Mapping[str, Iterable[int]],
+    tracks_per_batch: int,
+) -> dict[str, list[TrackGraphBatch]]:
+    """Build induced mini-batches for several splits with one graph-indexing pass.
+
+    Edges are owned by the track of either endpoint. Shared nodes (for example KG
+    entities) are included only when connected to a selected track; unrelated
+    shared-node self loops are intentionally omitted from mini-batches. Edge and
+    observation positions are grouped by owner once and then gathered directly;
+    this avoids scanning the complete graph for every batch (and every split).
+    """
+    if tracks_per_batch < 1:
+        raise ValueError("tracks_per_batch must be positive")
+    edge_index = edge_index.cpu()
+    edge_types = edge_types.cpu()
+    node_track_index = node_track_index.cpu()
+    observation_nodes = observation_nodes.cpu()
+    observation_track_index = observation_track_index.cpu()
+    src_tracks = node_track_index[edge_index[0]]
+    dst_tracks = node_track_index[edge_index[1]]
+    edge_owners = torch.where(src_tracks >= 0, src_tracks, dst_tracks)
+    maximum_track = max(
+        node_track_index.max().item() if node_track_index.numel() else -1,
+        observation_track_index.max().item() if observation_track_index.numel() else -1,
+    )
+
+    def positions_grouped_by_track(track_ids: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+        valid_positions = torch.nonzero(track_ids >= 0, as_tuple=False).flatten()
+        if not valid_positions.numel():
+            return valid_positions, torch.zeros(maximum_track + 2, dtype=torch.long)
+        order = torch.argsort(track_ids[valid_positions], stable=True)
+        grouped_positions = valid_positions[order]
+        counts = torch.bincount(track_ids[grouped_positions], minlength=maximum_track + 1)
+        offsets = torch.cat((torch.zeros(1, dtype=torch.long), counts.cumsum(0)))
+        return grouped_positions, offsets
+
+    edge_positions, edge_offsets = positions_grouped_by_track(edge_owners)
+    observation_positions, observation_offsets = positions_grouped_by_track(
+        observation_track_index
+    )
+
+    def gather_groups(
+        grouped_positions: torch.Tensor, offsets: torch.Tensor, tracks: torch.Tensor
+    ) -> torch.Tensor:
+        return torch.cat(
+            tuple(
+                grouped_positions[offsets[track] : offsets[track + 1]]
+                for track in tracks.tolist()
+            )
+        )
+
+    result: dict[str, list[TrackGraphBatch]] = {}
+    for split_name, selected_tracks in selected_tracks_by_split.items():
+        tracks = sorted({int(track) for track in selected_tracks})
+        batches: list[TrackGraphBatch] = []
+        for start in range(0, len(tracks), tracks_per_batch):
+            batch_tracks = torch.tensor(
+                tracks[start : start + tracks_per_batch], dtype=torch.long
+            )
+            batch_edge_positions = gather_groups(edge_positions, edge_offsets, batch_tracks)
+            batch_edge_global = edge_index[:, batch_edge_positions]
+            batch_edge_types = edge_types[batch_edge_positions]
+            batch_observation_positions = gather_groups(
+                observation_positions, observation_offsets, batch_tracks
+            )
+            batch_observation_global = observation_nodes[batch_observation_positions]
+            batch_nodes, inverse = torch.unique(
+                torch.cat((batch_edge_global.flatten(), batch_observation_global)),
+                sorted=True,
+                return_inverse=True,
+            )
+            edge_value_count = batch_edge_global.numel()
+            local_edges = inverse[:edge_value_count].view_as(batch_edge_global)
+            local_observations = inverse[edge_value_count:]
+            local_observation_tracks = torch.searchsorted(
+                batch_tracks, observation_track_index[batch_observation_positions]
+            )
+            batches.append(
+                TrackGraphBatch(
+                    track_indices=batch_tracks,
+                    node_indices=batch_nodes,
+                    edge_index=local_edges,
+                    edge_types=batch_edge_types,
+                    observation_nodes=local_observations,
+                    observation_to_track=local_observation_tracks,
+                    observation_positions=batch_observation_positions,
+                )
+            )
+        result[split_name] = batches
+    return result
+
+
 def build_track_graph_batches(
     *,
     edge_index: torch.Tensor,
@@ -170,57 +269,13 @@ def build_track_graph_batches(
     selected_tracks: Iterable[int],
     tracks_per_batch: int,
 ) -> list[TrackGraphBatch]:
-    """Build deterministic induced mini-batches while keeping every track intact.
-
-    Edges are owned by the track of either endpoint. Shared nodes (for example KG
-    entities) are included only when connected to a selected track; unrelated
-    shared-node self loops are intentionally omitted from mini-batches.
-    """
-    if tracks_per_batch < 1:
-        raise ValueError("tracks_per_batch must be positive")
-    edge_index = edge_index.cpu()
-    edge_types = edge_types.cpu()
-    node_track_index = node_track_index.cpu()
-    observation_nodes = observation_nodes.cpu()
-    observation_track_index = observation_track_index.cpu()
-    tracks = sorted({int(track) for track in selected_tracks})
-    batches: list[TrackGraphBatch] = []
-    src_tracks = node_track_index[edge_index[0]]
-    dst_tracks = node_track_index[edge_index[1]]
-    edge_owners = torch.where(src_tracks >= 0, src_tracks, dst_tracks)
-
-    for start in range(0, len(tracks), tracks_per_batch):
-        batch_tracks = torch.tensor(tracks[start : start + tracks_per_batch], dtype=torch.long)
-        owned_edges = torch.isin(edge_owners, batch_tracks)
-        batch_edge_global = edge_index[:, owned_edges]
-        batch_edge_types = edge_types[owned_edges]
-        batch_observation_positions = torch.nonzero(
-            torch.isin(observation_track_index, batch_tracks), as_tuple=False
-        ).flatten()
-        batch_observation_global = observation_nodes[batch_observation_positions]
-        batch_nodes = torch.unique(
-            torch.cat((batch_edge_global.flatten(), batch_observation_global)), sorted=True
-        )
-        global_to_local = torch.full((node_track_index.numel(),), -1, dtype=torch.long)
-        global_to_local[batch_nodes] = torch.arange(batch_nodes.numel())
-        local_edges = global_to_local[batch_edge_global]
-        local_observations = global_to_local[batch_observation_global]
-        local_track_lookup = torch.full(
-            (int(batch_tracks.max()) + 1,), -1, dtype=torch.long
-        )
-        local_track_lookup[batch_tracks] = torch.arange(batch_tracks.numel())
-        local_observation_tracks = local_track_lookup[
-            observation_track_index[batch_observation_positions]
-        ]
-        batches.append(
-            TrackGraphBatch(
-                track_indices=batch_tracks,
-                node_indices=batch_nodes,
-                edge_index=local_edges,
-                edge_types=batch_edge_types,
-                observation_nodes=local_observations,
-                observation_to_track=local_observation_tracks,
-                observation_positions=batch_observation_positions,
-            )
-        )
-    return batches
+    """Build deterministic induced mini-batches while keeping every track intact."""
+    return build_track_graph_batches_by_split(
+        edge_index=edge_index,
+        edge_types=edge_types,
+        node_track_index=node_track_index,
+        observation_nodes=observation_nodes,
+        observation_track_index=observation_track_index,
+        selected_tracks_by_split={"selected": selected_tracks},
+        tracks_per_batch=tracks_per_batch,
+    )["selected"]

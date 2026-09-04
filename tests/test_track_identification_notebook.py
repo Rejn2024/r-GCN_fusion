@@ -213,6 +213,9 @@ def test_track_target_preparation_avoids_redundant_containers_and_gpu_scans():
     assert "observation_nodes_cpu" in source
     assert "observation_track_index_cpu" in source
     assert "rao_mode_compatibility_array" in source
+    assert "track_splits_cpu" in source
+    assert "build_track_graph_batches_by_split(" in source
+    assert "selected_tracks_by_split=track_splits_cpu" in source
     assert "split_index_by_track[observation_track_array]" in source
     assert "torch.isin(" not in source
     assert "all_track_batches" not in source

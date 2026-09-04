@@ -4,6 +4,7 @@ import torch
 
 from rgcn_fusion.graph_optimisation import (
     build_track_graph_batches,
+    build_track_graph_batches_by_split,
     densify_feature_rows,
     partition_edges_by_relation,
     segment_softmax,
@@ -114,3 +115,23 @@ def test_track_batches_reject_invalid_batch_size():
             selected_tracks=[],
             tracks_per_batch=0,
         )
+
+
+def test_track_batches_build_multiple_splits_from_shared_owner_index():
+    edges = torch.tensor([[0, 1, 3, 2], [1, 0, 2, 3]])
+
+    batches = build_track_graph_batches_by_split(
+        edge_index=edges,
+        edge_types=torch.tensor([0, 1, 0, 1]),
+        node_track_index=torch.tensor([-1, 0, 1, -1]),
+        observation_nodes=torch.tensor([1, 2]),
+        observation_track_index=torch.tensor([0, 1]),
+        selected_tracks_by_split={"train": [1], "val": [0]},
+        tracks_per_batch=1,
+    )
+
+    assert batches.keys() == {"train", "val"}
+    assert batches["train"][0].track_indices.tolist() == [1]
+    assert batches["train"][0].observation_positions.tolist() == [1]
+    assert batches["val"][0].track_indices.tolist() == [0]
+    assert batches["val"][0].observation_positions.tolist() == [0]
