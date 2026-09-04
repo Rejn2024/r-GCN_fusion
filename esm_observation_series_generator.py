@@ -495,6 +495,11 @@ def generate_observation_series_with_intelligence_reports(
     set of ``min_reports_per_series`` to ``max_reports_per_series`` intelligence
     reports is attached to the series wrapper and applies to every observation
     in that series.  Reports are deliberately not copied into observations.
+
+    The newly generated document is enriched in place.  This avoids the former
+    JSON serialization round trip and full-document copy, reducing both runtime
+    and peak memory while retaining the non-mutating default of the standalone
+    :func:`add_intelligence_reports_to_series` helper.
     """
     from rgcn_fusion.intelligence_reports import add_intelligence_reports_to_series
 
@@ -505,6 +510,7 @@ def generate_observation_series_with_intelligence_reports(
         seed=seed,
         min_reports=min_reports_per_series,
         max_reports=max_reports_per_series,
+        copy_data=False,
     )
 
 

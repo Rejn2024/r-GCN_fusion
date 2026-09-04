@@ -10,6 +10,7 @@ only report claims, source credibility, recency, and optional external priors.
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import math
 import random
@@ -618,13 +619,22 @@ def add_intelligence_reports_to_series(
     seed: int = 7,
     min_reports: int = MIN_REPORTS_PER_OBSERVATION,
     max_reports: int = MAX_REPORTS_PER_OBSERVATION,
+    copy_data: bool = True,
 ) -> dict[str, Any]:
-    """Attach one shared intelligence-report set to every observation series."""
+    """Attach one shared intelligence-report set to every observation series.
+
+    By default the input is copied to preserve the historical non-mutating API.
+    Set ``copy_data=False`` when the caller owns a freshly generated document:
+    enrichment then happens in place, avoiding a full duplicate of every ESM
+    observation.  A native deep copy is used for the compatibility path instead
+    of a JSON encode/decode round trip, which is faster and avoids allocating a
+    second, document-sized serialized string.
+    """
     if min_reports < 1 or max_reports < min_reports:
         raise ValueError("report count bounds must be positive and ordered")
 
     rng = random.Random(seed)
-    enriched = json.loads(json.dumps(data))
+    enriched = copy.deepcopy(data) if copy_data else data
     for series in enriched.get("observation_series", []):
         observations = series.get("observations", [])
         for obs in observations:
