@@ -229,30 +229,27 @@ RADARS = _with_distinct_mode_signatures(RADARS)
 
 
 AIRCRAFT: tuple[AircraftVariant, ...] = (
-    AircraftVariant("MiG-29", "MiG-29A", "multirole fighter", "4", "N019 Rubin", 2.25, 18000, 700, 2100, 6, ("Russia", "Ukraine", "India", "Poland", "Germany")),
-    AircraftVariant("MiG-29", "MiG-29S", "multirole fighter", "4", "N019 Rubin", 2.25, 18000, 700, 2100, 6, ("Russia", "Ukraine", "Belarus")),
+    AircraftVariant("MiG-29", "MiG-29A", "multirole fighter", "4", "N019 Rubin", 2.25, 18000, 700, 2100, 6, ("Ukraine", "Poland")),
+    AircraftVariant("MiG-29", "MiG-29S", "multirole fighter", "4", "N019 Rubin", 2.25, 18000, 700, 2100, 6, ("Russia", "Belarus")),
     AircraftVariant("MiG-29", "MiG-29SMT", "multirole fighter", "4+", "Zhuk-ME", 2.25, 18000, 1000, 2400, 6, ("Russia", "Algeria")),
     AircraftVariant("MiG-29", "MiG-29K", "carrier multirole fighter", "4+", "Zhuk-ME", 2.0, 17500, 850, 2000, 8, ("Russia", "India")),
     AircraftVariant("MiG-29", "MiG-35", "multirole fighter", "4++", "Zhuk-AE", 2.25, 17500, 1000, 3100, 9, ("Russia",)),
-    AircraftVariant("Su-27", "Su-27S", "air superiority fighter", "4", "N001 Myech", 2.35, 19000, 1340, 3530, 10, ("Russia", "Ukraine", "China", "Kazakhstan")),
+    AircraftVariant("Su-27", "Su-27S", "air superiority fighter", "4", "N001 Myech", 2.35, 19000, 1340, 3530, 10, ("Russia", "Ukraine")),
     AircraftVariant("Su-27", "Su-30MKI", "multirole fighter", "4+", "N011M Bars", 2.0, 17300, 1500, 3000, 12, ("India",)),
     AircraftVariant("Su-27", "Su-30SM", "multirole fighter", "4+", "N011M Bars", 2.0, 17300, 1500, 3000, 12, ("Russia", "Kazakhstan", "Belarus")),
-    AircraftVariant("Su-27", "Su-35S", "air superiority fighter", "4++", "Irbis-E", 2.25, 18000, 1600, 3600, 12, ("Russia", "China", "Egypt")),
-    AircraftVariant("MiG-31", "MiG-31B", "interceptor", "4", "Zaslon", 2.83, 20600, 720, 3000, 6, ("Russia", "Kazakhstan")),
-    AircraftVariant("MiG-31", "MiG-31BM", "interceptor", "4+", "Zaslon-M", 2.83, 20600, 720, 3000, 8, ("Russia", "Kazakhstan")),
+    AircraftVariant("Su-27", "Su-35S", "air superiority fighter", "4++", "Irbis-E", 2.25, 18000, 1600, 3600, 12, ("Russia", "China")),
+    AircraftVariant("MiG-31", "MiG-31BM", "interceptor", "4+", "Zaslon-M", 2.83, 20600, 720, 3000, 8, ("Russia",)),
     AircraftVariant("Typhoon", "Typhoon Tranche 1", "multirole fighter", "4+", "CAPTOR-M", 2.0, 19800, 1389, 2900, 13, ("United Kingdom", "Germany", "Italy", "Spain", "Austria")),
-    AircraftVariant("Typhoon", "Typhoon Tranche 3", "multirole fighter", "4+", "CAPTOR-E", 2.0, 19800, 1389, 2900, 13, ("United Kingdom", "Germany", "Italy", "Spain", "Kuwait", "Qatar", "Saudi Arabia")),
-    AircraftVariant("F-16", "F-16A/B", "multirole fighter", "4", "AN/APG-66", 2.05, 15240, 550, 4220, 9, ("United States", "Belgium", "Netherlands", "Norway", "Denmark", "Israel")),
+    AircraftVariant("Typhoon", "Typhoon Tranche 3", "multirole fighter", "4+", "CAPTOR-M", 2.0, 19800, 1389, 2900, 13, ("United Kingdom", "Germany", "Italy", "Spain")),
+    AircraftVariant("Typhoon", "Typhoon Tranche 3A (export)", "multirole fighter", "4+", "CAPTOR-E", 2.0, 19800, 1389, 2900, 13, ("Kuwait", "Qatar")),
     AircraftVariant("F-16", "F-16C/D Block 50", "multirole fighter", "4", "AN/APG-68", 2.05, 15240, 550, 4220, 9, ("United States", "Turkey", "Greece", "Poland", "South Korea")),
     AircraftVariant("F-16", "F-16E/F Block 60", "multirole fighter", "4+", "AN/APG-80", 2.0, 15240, 550, 4220, 11, ("United Arab Emirates",)),
-    AircraftVariant("F-16", "F-16V Block 70/72", "multirole fighter", "4+", "AN/APG-83 SABR", 2.0, 15240, 550, 4220, 9, ("Bahrain", "Slovakia", "Bulgaria", "Taiwan", "Greece")),
-    AircraftVariant("F-15", "F-15C", "air superiority fighter", "4", "AN/APG-63", 2.5, 20000, 1061, 5550, 9, ("United States", "Japan", "Saudi Arabia", "Israel")),
+    AircraftVariant("F-16", "F-16V Block 70/72", "multirole fighter", "4+", "AN/APG-83 SABR", 2.0, 15240, 550, 4220, 9, ("Bahrain", "Slovakia", "Bulgaria")),
+    AircraftVariant("F-15", "F-15C", "air superiority fighter", "4", "AN/APG-63", 2.5, 20000, 1061, 5550, 9, ("United States", "Saudi Arabia", "Israel")),
     AircraftVariant("F-15", "F-15SA", "strike fighter", "4+", "AN/APG-63(V)3", 2.5, 20000, 1270, 3900, 11, ("Saudi Arabia",)),
-    AircraftVariant("F-15", "F-15E Strike Eagle", "strike fighter", "4", "AN/APG-70", 2.5, 18200, 1270, 3900, 11, ("United States", "South Korea", "Singapore", "Qatar")),
+    AircraftVariant("F-15", "F-15E Strike Eagle", "strike fighter", "4", "AN/APG-70", 2.5, 18200, 1270, 3900, 11, ("United States",)),
     AircraftVariant("F-15", "F-15EX Eagle II", "strike fighter", "4++", "AN/APG-82(V)1", 2.5, 18200, 1270, 3900, 12, ("United States",)),
     # China and Chinese-origin combat aircraft
-    AircraftVariant("J-7", "J-7G", "light fighter", "3", "KLJ-7", 2.0, 17500, 850, 2200, 5, ("China", "Bangladesh", "Myanmar", "Nigeria")),
-    AircraftVariant("J-8", "J-8F", "interceptor", "3+", "Type 1493 AESA", 2.2, 20000, 800, 2200, 7, ("China",)),
     AircraftVariant("J-10", "J-10A", "multirole fighter", "4", "KLJ-10", 2.2, 18000, 550, 1850, 11, ("China",)),
     AircraftVariant("J-10", "J-10B", "multirole fighter", "4+", "Type 1473", 2.2, 18000, 550, 1850, 11, ("China",)),
     AircraftVariant("J-10", "J-10C", "multirole fighter", "4+", "Type 1493 AESA", 2.2, 18000, 550, 1850, 11, ("China", "Pakistan")),
@@ -265,12 +262,8 @@ AIRCRAFT: tuple[AircraftVariant, ...] = (
 
     # India-operated and Indian-origin combat aircraft
     AircraftVariant("Tejas", "Tejas Mk1", "light multirole fighter", "4", "EL/M-2032", 1.6, 15200, 500, 1850, 8, ("India",)),
-    AircraftVariant("Tejas", "Tejas Mk1A", "light multirole fighter", "4+", "EL/M-2052", 1.6, 15200, 500, 1850, 8, ("India",)),
-    AircraftVariant("Tejas", "Tejas Mk2", "multirole fighter", "4+", "Uttam AESA", 1.8, 17000, 1500, 2500, 11, ("India",)),
-    AircraftVariant("MiG-21", "MiG-21 Bison", "interceptor", "3+", "Kopyo-M", 2.05, 17500, 370, 1210, 5, ("India",)),
     AircraftVariant("MiG-29", "MiG-29UPG", "multirole fighter", "4+", "Zhuk-ME", 2.25, 18000, 1000, 2400, 6, ("India",)),
     AircraftVariant("Mirage 2000", "Mirage 2000I", "multirole fighter", "4", "RDY-2", 2.2, 17060, 740, 3335, 9, ("India",)),
-    AircraftVariant("Jaguar", "Jaguar IS DARIN III", "strike aircraft", "3+", "EL/M-2052", 1.6, 14000, 850, 3524, 5, ("India",)),
     AircraftVariant("Rafale", "Rafale EH/DH", "multirole fighter", "4+", "RBE2-AA", 1.8, 15240, 1850, 3700, 14, ("India",)),
 
     # United States combat aircraft
@@ -288,20 +281,13 @@ AIRCRAFT: tuple[AircraftVariant, ...] = (
     AircraftVariant("B-2", "B-2A Spirit", "stealth strategic bomber", "bomber", "AN/APQ-181", 0.95, 15240, 6000, 11100, 2, ("United States",)),
 
     # Western European combat aircraft and variants
-    AircraftVariant("Rafale", "Rafale C", "multirole fighter", "4+", "RBE2-AA", 1.8, 15240, 1850, 3700, 14, ("France", "Greece", "Croatia", "Egypt", "Qatar", "India", "United Arab Emirates", "Indonesia")),
-    AircraftVariant("Rafale", "Rafale B", "multirole fighter", "4+", "RBE2-AA", 1.8, 15240, 1850, 3700, 14, ("France", "Greece", "Egypt", "Qatar", "India")),
+    AircraftVariant("Rafale", "Rafale C", "multirole fighter", "4+", "RBE2-AA", 1.8, 15240, 1850, 3700, 14, ("France",)),
+    AircraftVariant("Rafale", "Rafale B", "multirole fighter", "4+", "RBE2-AA", 1.8, 15240, 1850, 3700, 14, ("France",)),
     AircraftVariant("Rafale", "Rafale M", "carrier multirole fighter", "4+", "RBE2-AA", 1.8, 15240, 1850, 3700, 13, ("France",)),
-    AircraftVariant("Mirage 2000", "Mirage 2000C", "interceptor", "4", "RDI", 2.2, 17060, 740, 3335, 9, ("France", "Greece", "Taiwan")),
-    AircraftVariant("Mirage 2000", "Mirage 2000-5", "multirole fighter", "4", "RDY-2", 2.2, 17060, 740, 3335, 9, ("France", "Greece", "Qatar", "Taiwan", "United Arab Emirates")),
-    AircraftVariant("Gripen", "JAS 39C Gripen", "multirole fighter", "4+", "PS-05/A", 2.0, 15240, 800, 3200, 8, ("Sweden", "Czech Republic", "Hungary", "South Africa", "Thailand", "Brazil")),
+    AircraftVariant("Mirage 2000", "Mirage 2000-5", "multirole fighter", "4", "RDY-2", 2.2, 17060, 740, 3335, 9, ("France", "Greece", "Qatar", "Taiwan")),
+    AircraftVariant("Gripen", "JAS 39C Gripen", "multirole fighter", "4+", "PS-05/A", 2.0, 15240, 800, 3200, 8, ("Sweden", "Czech Republic", "Hungary", "South Africa", "Thailand")),
     AircraftVariant("Gripen", "JAS 39E Gripen", "multirole fighter", "4+", "Raven ES-05", 2.0, 16000, 1300, 4000, 10, ("Sweden", "Brazil")),
-    AircraftVariant("Sea Harrier", "Sea Harrier FA2", "carrier fighter", "4", "Blue Vixen", 1.2, 16000, 750, 3600, 5, ("United Kingdom", "India")),
-    AircraftVariant("Harrier", "Harrier GR.9", "V/STOL attack aircraft", "4", "Blue Fox", 0.9, 15240, 556, 3300, 7, ("United Kingdom",)),
-    AircraftVariant("Tornado", "Tornado F3", "interceptor", "4", "Foxhunter", 2.2, 15240, 1390, 3890, 8, ("United Kingdom", "Italy", "Saudi Arabia")),
-    AircraftVariant("Tornado", "Tornado IDS", "interdictor/strike aircraft", "4", "ECR-90", 2.2, 15240, 1390, 3890, 9, ("Germany", "Italy", "United Kingdom", "Saudi Arabia")),
-    AircraftVariant("Mirage F1", "Mirage F1CR", "reconnaissance fighter", "3+", "Cyrano IV", 2.2, 20000, 425, 3300, 5, ("France", "Spain", "Morocco")),
-    AircraftVariant("Super Etendard", "Super Etendard Modernise", "carrier strike aircraft", "3+", "Anemone", 1.3, 13700, 850, 1820, 5, ("France", "Argentina")),
-    AircraftVariant("AMX", "AMX A-11B", "light attack aircraft", "3+", "EL/M-2032", 0.86, 13000, 889, 3330, 5, ("Italy", "Brazil")),
+    AircraftVariant("Tornado", "Tornado IDS", "interdictor/strike aircraft", "4", "ECR-90", 2.2, 15240, 1390, 3890, 9, ("Germany", "Italy", "Saudi Arabia")),
 
 )
 
@@ -320,7 +306,11 @@ def generate_graph() -> dict[str, Any]:
     nodes: dict[str, dict[str, Any]] = {}
     edges: list[dict[str, str]] = []
 
-    for radar in RADARS.values():
+    # Only emit radars that participate in a current aircraft/radar/operator
+    # combination.  This keeps retired and developmental systems from remaining
+    # selectable as orphan classes after the aircraft inventory is pruned.
+    active_radar_names = {aircraft.radar for aircraft in AIRCRAFT}
+    for radar in (radar for name, radar in RADARS.items() if name in active_radar_names):
         radar_id = f"radar:{slug(radar.name)}"
         agility_bounds = [
             bound
@@ -438,7 +428,7 @@ def generate_graph() -> dict[str, Any]:
             add_node(nodes, operator_id, "Operator", name=operator)
             add_edge(edges, operator_id, "OPERATES", variant_id)
 
-    return {"metadata": {"schema_version": "1.0", "node_count": len(nodes), "edge_count": len(edges)}, "nodes": list(nodes.values()), "edges": edges}
+    return {"metadata": {"schema_version": "1.0", "service_snapshot_year": 2026, "node_count": len(nodes), "edge_count": len(edges)}, "nodes": list(nodes.values()), "edges": edges}
 
 
 def write_json(graph: dict[str, Any], output: Path) -> None:

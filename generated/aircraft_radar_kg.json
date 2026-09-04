@@ -27,31 +27,6 @@
     },
     {
       "relation": "HAS_MODE",
-      "source": "radar:n010_zhuk",
-      "target": "radar_mode:n010_zhuk:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:n010_zhuk",
-      "target": "radar_mode:n010_zhuk:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:n010_zhuk",
-      "target": "radar_mode:n010_zhuk:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:n010_zhuk",
-      "target": "radar_mode:n010_zhuk:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:n010_zhuk",
-      "target": "radar_mode:n010_zhuk:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
       "source": "radar:zhuk_me",
       "target": "radar_mode:zhuk_me:range_while_search"
     },
@@ -177,31 +152,6 @@
     },
     {
       "relation": "HAS_MODE",
-      "source": "radar:zaslon",
-      "target": "radar_mode:zaslon:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:zaslon",
-      "target": "radar_mode:zaslon:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:zaslon",
-      "target": "radar_mode:zaslon:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:zaslon",
-      "target": "radar_mode:zaslon:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:zaslon",
-      "target": "radar_mode:zaslon:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
       "source": "radar:zaslon_m",
       "target": "radar_mode:zaslon_m:range_while_search"
     },
@@ -274,31 +224,6 @@
       "relation": "HAS_MODE",
       "source": "radar:captor_e",
       "target": "radar_mode:captor_e:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:an_apg_66",
-      "target": "radar_mode:an_apg_66:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:an_apg_66",
-      "target": "radar_mode:an_apg_66:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:an_apg_66",
-      "target": "radar_mode:an_apg_66:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:an_apg_66",
-      "target": "radar_mode:an_apg_66:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:an_apg_66",
-      "target": "radar_mode:an_apg_66:air_to_ground_mapping"
     },
     {
       "relation": "HAS_MODE",
@@ -677,106 +602,6 @@
     },
     {
       "relation": "HAS_MODE",
-      "source": "radar:el_m_2052",
-      "target": "radar_mode:el_m_2052:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:el_m_2052",
-      "target": "radar_mode:el_m_2052:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:el_m_2052",
-      "target": "radar_mode:el_m_2052:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:el_m_2052",
-      "target": "radar_mode:el_m_2052:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:el_m_2052",
-      "target": "radar_mode:el_m_2052:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:uttam_aesa",
-      "target": "radar_mode:uttam_aesa:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:uttam_aesa",
-      "target": "radar_mode:uttam_aesa:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:uttam_aesa",
-      "target": "radar_mode:uttam_aesa:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:uttam_aesa",
-      "target": "radar_mode:uttam_aesa:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:uttam_aesa",
-      "target": "radar_mode:uttam_aesa:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:kopyo_m",
-      "target": "radar_mode:kopyo_m:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:kopyo_m",
-      "target": "radar_mode:kopyo_m:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:kopyo_m",
-      "target": "radar_mode:kopyo_m:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:kopyo_m",
-      "target": "radar_mode:kopyo_m:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:kopyo_m",
-      "target": "radar_mode:kopyo_m:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rdi",
-      "target": "radar_mode:rdi:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rdi",
-      "target": "radar_mode:rdi:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rdi",
-      "target": "radar_mode:rdi:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rdi",
-      "target": "radar_mode:rdi:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rdi",
-      "target": "radar_mode:rdi:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
       "source": "radar:rdy_2",
       "target": "radar_mode:rdy_2:range_while_search"
     },
@@ -1002,31 +827,6 @@
     },
     {
       "relation": "HAS_MODE",
-      "source": "radar:rbe2",
-      "target": "radar_mode:rbe2:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rbe2",
-      "target": "radar_mode:rbe2:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rbe2",
-      "target": "radar_mode:rbe2:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rbe2",
-      "target": "radar_mode:rbe2:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:rbe2",
-      "target": "radar_mode:rbe2:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
       "source": "radar:rbe2_aa",
       "target": "radar_mode:rbe2_aa:range_while_search"
     },
@@ -1102,81 +902,6 @@
     },
     {
       "relation": "HAS_MODE",
-      "source": "radar:blue_vixen",
-      "target": "radar_mode:blue_vixen:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_vixen",
-      "target": "radar_mode:blue_vixen:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_vixen",
-      "target": "radar_mode:blue_vixen:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_vixen",
-      "target": "radar_mode:blue_vixen:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_vixen",
-      "target": "radar_mode:blue_vixen:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_fox",
-      "target": "radar_mode:blue_fox:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_fox",
-      "target": "radar_mode:blue_fox:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_fox",
-      "target": "radar_mode:blue_fox:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_fox",
-      "target": "radar_mode:blue_fox:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:blue_fox",
-      "target": "radar_mode:blue_fox:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:foxhunter",
-      "target": "radar_mode:foxhunter:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:foxhunter",
-      "target": "radar_mode:foxhunter:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:foxhunter",
-      "target": "radar_mode:foxhunter:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:foxhunter",
-      "target": "radar_mode:foxhunter:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:foxhunter",
-      "target": "radar_mode:foxhunter:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
       "source": "radar:ecr_90",
       "target": "radar_mode:ecr_90:range_while_search"
     },
@@ -1201,56 +926,6 @@
       "target": "radar_mode:ecr_90:air_to_ground_mapping"
     },
     {
-      "relation": "HAS_MODE",
-      "source": "radar:cyrano_iv",
-      "target": "radar_mode:cyrano_iv:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:cyrano_iv",
-      "target": "radar_mode:cyrano_iv:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:cyrano_iv",
-      "target": "radar_mode:cyrano_iv:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:cyrano_iv",
-      "target": "radar_mode:cyrano_iv:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:cyrano_iv",
-      "target": "radar_mode:cyrano_iv:air_to_ground_mapping"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:anemone",
-      "target": "radar_mode:anemone:range_while_search"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:anemone",
-      "target": "radar_mode:anemone:track_while_scan"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:anemone",
-      "target": "radar_mode:anemone:single_target_track"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:anemone",
-      "target": "radar_mode:anemone:look_down_shoot_down"
-    },
-    {
-      "relation": "HAS_MODE",
-      "source": "radar:anemone",
-      "target": "radar_mode:anemone:air_to_ground_mapping"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:mig_29a",
       "target": "aircraft_family:mig_29"
@@ -1262,17 +937,7 @@
     },
     {
       "relation": "OPERATES",
-      "source": "operator:russia",
-      "target": "aircraft:mig_29a"
-    },
-    {
-      "relation": "OPERATES",
       "source": "operator:ukraine",
-      "target": "aircraft:mig_29a"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
       "target": "aircraft:mig_29a"
     },
     {
@@ -1281,11 +946,6 @@
       "target": "aircraft:mig_29a"
     },
     {
-      "relation": "OPERATES",
-      "source": "operator:germany",
-      "target": "aircraft:mig_29a"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:mig_29s",
       "target": "aircraft_family:mig_29"
@@ -1298,11 +958,6 @@
     {
       "relation": "OPERATES",
       "source": "operator:russia",
-      "target": "aircraft:mig_29s"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:ukraine",
       "target": "aircraft:mig_29s"
     },
     {
@@ -1386,16 +1041,6 @@
       "target": "aircraft:su_27s"
     },
     {
-      "relation": "OPERATES",
-      "source": "operator:china",
-      "target": "aircraft:su_27s"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:kazakhstan",
-      "target": "aircraft:su_27s"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:su_30mki",
       "target": "aircraft_family:su_27"
@@ -1456,31 +1101,6 @@
       "target": "aircraft:su_35s"
     },
     {
-      "relation": "OPERATES",
-      "source": "operator:egypt",
-      "target": "aircraft:su_35s"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:mig_31b",
-      "target": "aircraft_family:mig_31"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:mig_31b",
-      "target": "radar:zaslon"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:russia",
-      "target": "aircraft:mig_31b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:kazakhstan",
-      "target": "aircraft:mig_31b"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:mig_31bm",
       "target": "aircraft_family:mig_31"
@@ -1493,11 +1113,6 @@
     {
       "relation": "OPERATES",
       "source": "operator:russia",
-      "target": "aircraft:mig_31bm"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:kazakhstan",
       "target": "aircraft:mig_31bm"
     },
     {
@@ -1543,7 +1158,7 @@
     {
       "relation": "USES_RADAR",
       "source": "aircraft:typhoon_tranche_3",
-      "target": "radar:captor_e"
+      "target": "radar:captor_m"
     },
     {
       "relation": "OPERATES",
@@ -1566,59 +1181,24 @@
       "target": "aircraft:typhoon_tranche_3"
     },
     {
+      "relation": "VARIANT_OF",
+      "source": "aircraft:typhoon_tranche_3a__export",
+      "target": "aircraft_family:typhoon"
+    },
+    {
+      "relation": "USES_RADAR",
+      "source": "aircraft:typhoon_tranche_3a__export",
+      "target": "radar:captor_e"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:kuwait",
-      "target": "aircraft:typhoon_tranche_3"
+      "target": "aircraft:typhoon_tranche_3a__export"
     },
     {
       "relation": "OPERATES",
       "source": "operator:qatar",
-      "target": "aircraft:typhoon_tranche_3"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:saudi_arabia",
-      "target": "aircraft:typhoon_tranche_3"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:f_16a_b",
-      "target": "aircraft_family:f_16"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:f_16a_b",
-      "target": "radar:an_apg_66"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:united_states",
-      "target": "aircraft:f_16a_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:belgium",
-      "target": "aircraft:f_16a_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:netherlands",
-      "target": "aircraft:f_16a_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:norway",
-      "target": "aircraft:f_16a_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:denmark",
-      "target": "aircraft:f_16a_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:israel",
-      "target": "aircraft:f_16a_b"
+      "target": "aircraft:typhoon_tranche_3a__export"
     },
     {
       "relation": "VARIANT_OF",
@@ -1696,16 +1276,6 @@
       "target": "aircraft:f_16v_block_70_72"
     },
     {
-      "relation": "OPERATES",
-      "source": "operator:taiwan",
-      "target": "aircraft:f_16v_block_70_72"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:greece",
-      "target": "aircraft:f_16v_block_70_72"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:f_15c",
       "target": "aircraft_family:f_15"
@@ -1718,11 +1288,6 @@
     {
       "relation": "OPERATES",
       "source": "operator:united_states",
-      "target": "aircraft:f_15c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:japan",
       "target": "aircraft:f_15c"
     },
     {
@@ -1766,21 +1331,6 @@
       "target": "aircraft:f_15e_strike_eagle"
     },
     {
-      "relation": "OPERATES",
-      "source": "operator:south_korea",
-      "target": "aircraft:f_15e_strike_eagle"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:singapore",
-      "target": "aircraft:f_15e_strike_eagle"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:qatar",
-      "target": "aircraft:f_15e_strike_eagle"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:f_15ex_eagle_ii",
       "target": "aircraft_family:f_15"
@@ -1794,51 +1344,6 @@
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:f_15ex_eagle_ii"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:j_7g",
-      "target": "aircraft_family:j_7"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:j_7g",
-      "target": "radar:klj_7"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:china",
-      "target": "aircraft:j_7g"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:bangladesh",
-      "target": "aircraft:j_7g"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:myanmar",
-      "target": "aircraft:j_7g"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:nigeria",
-      "target": "aircraft:j_7g"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:j_8f",
-      "target": "aircraft_family:j_8"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:j_8f",
-      "target": "radar:type_1493_aesa"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:china",
-      "target": "aircraft:j_8f"
     },
     {
       "relation": "VARIANT_OF",
@@ -2037,51 +1542,6 @@
     },
     {
       "relation": "VARIANT_OF",
-      "source": "aircraft:tejas_mk1a",
-      "target": "aircraft_family:tejas"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:tejas_mk1a",
-      "target": "radar:el_m_2052"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
-      "target": "aircraft:tejas_mk1a"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:tejas_mk2",
-      "target": "aircraft_family:tejas"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:tejas_mk2",
-      "target": "radar:uttam_aesa"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
-      "target": "aircraft:tejas_mk2"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:mig_21_bison",
-      "target": "aircraft_family:mig_21"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:mig_21_bison",
-      "target": "radar:kopyo_m"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
-      "target": "aircraft:mig_21_bison"
-    },
-    {
-      "relation": "VARIANT_OF",
       "source": "aircraft:mig_29upg",
       "target": "aircraft_family:mig_29"
     },
@@ -2109,21 +1569,6 @@
       "relation": "OPERATES",
       "source": "operator:india",
       "target": "aircraft:mirage_2000i"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:jaguar_is_darin_iii",
-      "target": "aircraft_family:jaguar"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:jaguar_is_darin_iii",
-      "target": "radar:el_m_2052"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
-      "target": "aircraft:jaguar_is_darin_iii"
     },
     {
       "relation": "VARIANT_OF",
@@ -2471,41 +1916,6 @@
       "target": "aircraft:rafale_c"
     },
     {
-      "relation": "OPERATES",
-      "source": "operator:greece",
-      "target": "aircraft:rafale_c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:croatia",
-      "target": "aircraft:rafale_c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:egypt",
-      "target": "aircraft:rafale_c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:qatar",
-      "target": "aircraft:rafale_c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
-      "target": "aircraft:rafale_c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:united_arab_emirates",
-      "target": "aircraft:rafale_c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:indonesia",
-      "target": "aircraft:rafale_c"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:rafale_b",
       "target": "aircraft_family:rafale"
@@ -2518,26 +1928,6 @@
     {
       "relation": "OPERATES",
       "source": "operator:france",
-      "target": "aircraft:rafale_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:greece",
-      "target": "aircraft:rafale_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:egypt",
-      "target": "aircraft:rafale_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:qatar",
-      "target": "aircraft:rafale_b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
       "target": "aircraft:rafale_b"
     },
     {
@@ -2554,31 +1944,6 @@
       "relation": "OPERATES",
       "source": "operator:france",
       "target": "aircraft:rafale_m"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:mirage_2000c",
-      "target": "aircraft_family:mirage_2000"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:mirage_2000c",
-      "target": "radar:rdi"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:france",
-      "target": "aircraft:mirage_2000c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:greece",
-      "target": "aircraft:mirage_2000c"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:taiwan",
-      "target": "aircraft:mirage_2000c"
     },
     {
       "relation": "VARIANT_OF",
@@ -2608,11 +1973,6 @@
     {
       "relation": "OPERATES",
       "source": "operator:taiwan",
-      "target": "aircraft:mirage_2000_5"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:united_arab_emirates",
       "target": "aircraft:mirage_2000_5"
     },
     {
@@ -2651,11 +2011,6 @@
       "target": "aircraft:jas_39c_gripen"
     },
     {
-      "relation": "OPERATES",
-      "source": "operator:brazil",
-      "target": "aircraft:jas_39c_gripen"
-    },
-    {
       "relation": "VARIANT_OF",
       "source": "aircraft:jas_39e_gripen",
       "target": "aircraft_family:gripen"
@@ -2674,66 +2029,6 @@
       "relation": "OPERATES",
       "source": "operator:brazil",
       "target": "aircraft:jas_39e_gripen"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:sea_harrier_fa2",
-      "target": "aircraft_family:sea_harrier"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:sea_harrier_fa2",
-      "target": "radar:blue_vixen"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:united_kingdom",
-      "target": "aircraft:sea_harrier_fa2"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:india",
-      "target": "aircraft:sea_harrier_fa2"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:harrier_gr_9",
-      "target": "aircraft_family:harrier"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:harrier_gr_9",
-      "target": "radar:blue_fox"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:united_kingdom",
-      "target": "aircraft:harrier_gr_9"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:tornado_f3",
-      "target": "aircraft_family:tornado"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:tornado_f3",
-      "target": "radar:foxhunter"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:united_kingdom",
-      "target": "aircraft:tornado_f3"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:italy",
-      "target": "aircraft:tornado_f3"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:saudi_arabia",
-      "target": "aircraft:tornado_f3"
     },
     {
       "relation": "VARIANT_OF",
@@ -2757,84 +2052,15 @@
     },
     {
       "relation": "OPERATES",
-      "source": "operator:united_kingdom",
-      "target": "aircraft:tornado_ids"
-    },
-    {
-      "relation": "OPERATES",
       "source": "operator:saudi_arabia",
       "target": "aircraft:tornado_ids"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:mirage_f1cr",
-      "target": "aircraft_family:mirage_f1"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:mirage_f1cr",
-      "target": "radar:cyrano_iv"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:france",
-      "target": "aircraft:mirage_f1cr"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:spain",
-      "target": "aircraft:mirage_f1cr"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:morocco",
-      "target": "aircraft:mirage_f1cr"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:super_etendard_modernise",
-      "target": "aircraft_family:super_etendard"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:super_etendard_modernise",
-      "target": "radar:anemone"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:france",
-      "target": "aircraft:super_etendard_modernise"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:argentina",
-      "target": "aircraft:super_etendard_modernise"
-    },
-    {
-      "relation": "VARIANT_OF",
-      "source": "aircraft:amx_a_11b",
-      "target": "aircraft_family:amx"
-    },
-    {
-      "relation": "USES_RADAR",
-      "source": "aircraft:amx_a_11b",
-      "target": "radar:el_m_2032"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:italy",
-      "target": "aircraft:amx_a_11b"
-    },
-    {
-      "relation": "OPERATES",
-      "source": "operator:brazil",
-      "target": "aircraft:amx_a_11b"
     }
   ],
   "metadata": {
-    "edge_count": 566,
-    "node_count": 458,
-    "schema_version": "1.0"
+    "edge_count": 411,
+    "node_count": 349,
+    "schema_version": "1.0",
+    "service_snapshot_year": 2026
   },
   "nodes": [
     {
@@ -3139,316 +2365,6 @@
         "range_resolution_min_m": 4.5,
         "scan_period_max_s": 5.1128,
         "scan_period_min_s": 4.1832,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:n010_zhuk",
-      "label": "Radar",
-      "properties": {
-        "antenna": "slotted planar array",
-        "band": "X",
-        "frequency_agility_max_mhz": 107.019,
-        "frequency_agility_min_mhz": 8.163,
-        "name": "N010 Zhuk",
-        "polarization": "linear",
-        "scan_period_max_s": 5.1271,
-        "scan_period_min_s": 0.7623,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:n010_zhuk:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 90.145,
-        "bandwidth_min_mhz": 73.755,
-        "centre_frequency_max_ghz": 9.697038,
-        "centre_frequency_min_ghz": 9.316762,
-        "coherent_processing_interval_max_ms": 19.635,
-        "coherent_processing_interval_min_ms": 16.065,
-        "detection_range_max_km": 125,
-        "detection_range_min_km": 75,
-        "duty_cycle_max": 0.022408,
-        "duty_cycle_min": 0.018334,
-        "dwell_time_max_ms": 92.147,
-        "dwell_time_min_ms": 75.393,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 47.135,
-        "frequency_agility_min_mhz": 38.565,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 150,
-        "instrumented_range_min_km": 90,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 8659,
-        "prf_min_hz": 3291,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 2.8501,
-        "pulse_width_min_us": 2.3319,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.2163,
-        "scan_period_min_s": 3.4497,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:n010_zhuk:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 134.288,
-        "bandwidth_min_mhz": 109.872,
-        "centre_frequency_max_ghz": 9.779352,
-        "centre_frequency_min_ghz": 9.395848,
-        "coherent_processing_interval_max_ms": 28.644,
-        "coherent_processing_interval_min_ms": 23.436,
-        "detection_range_max_km": 106,
-        "detection_range_min_km": 64,
-        "duty_cycle_max": 0.035642,
-        "duty_cycle_min": 0.029162,
-        "dwell_time_max_ms": 136.488,
-        "dwell_time_min_ms": 111.672,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 75.856,
-        "frequency_agility_min_mhz": 62.064,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 150,
-        "instrumented_range_min_km": 90,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 18696,
-        "prf_min_hz": 6308,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 2.09,
-        "pulse_width_min_us": 1.71,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 2.684,
-        "scan_period_min_s": 2.196,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:n010_zhuk:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 68.431,
-        "bandwidth_min_mhz": 55.989,
-        "centre_frequency_max_ghz": 9.820866,
-        "centre_frequency_min_ghz": 9.435734,
-        "coherent_processing_interval_max_ms": 37.653,
-        "coherent_processing_interval_min_ms": 30.807,
-        "detection_range_max_km": 119,
-        "detection_range_min_km": 71,
-        "duty_cycle_max": 0.040076,
-        "duty_cycle_min": 0.03279,
-        "dwell_time_max_ms": 180.829,
-        "dwell_time_min_ms": 147.951,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 9.977,
-        "frequency_agility_min_mhz": 8.163,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 150,
-        "instrumented_range_min_km": 90,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 30733,
-        "prf_min_hz": 12325,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 1.4399,
-        "pulse_width_min_us": 1.1781,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 0.9317,
-        "scan_period_min_s": 0.7623,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:n010_zhuk:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 112.574,
-        "bandwidth_min_mhz": 92.106,
-        "centre_frequency_max_ghz": 9.64818,
-        "centre_frequency_min_ghz": 9.26982,
-        "coherent_processing_interval_max_ms": 33.462,
-        "coherent_processing_interval_min_ms": 27.378,
-        "detection_range_max_km": 81,
-        "detection_range_min_km": 49,
-        "duty_cycle_max": 0.05001,
-        "duty_cycle_min": 0.040918,
-        "dwell_time_max_ms": 159.17,
-        "dwell_time_min_ms": 130.23,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 60.698,
-        "frequency_agility_min_mhz": 49.662,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 120,
-        "instrumented_range_min_km": 72,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 45770,
-        "prf_min_hz": 15342,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 1.2298,
-        "pulse_width_min_us": 1.0062,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.2594,
-        "scan_period_min_s": 1.8486,
-        "scan_type": "sector",
-        "track_capacity_max": 5,
-        "track_capacity_min": 5,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:n010_zhuk:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 178.717,
-        "bandwidth_min_mhz": 146.223,
-        "centre_frequency_max_ghz": 9.597894,
-        "centre_frequency_min_ghz": 9.221506,
-        "coherent_processing_interval_max_ms": 73.271,
-        "coherent_processing_interval_min_ms": 59.949,
-        "detection_range_max_km": 56,
-        "detection_range_min_km": 34,
-        "duty_cycle_max": 0.055545,
-        "duty_cycle_min": 0.045445,
-        "dwell_time_max_ms": 280.511,
-        "dwell_time_min_ms": 229.509,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 107.019,
-        "frequency_agility_min_mhz": 87.561,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 90,
-        "instrumented_range_min_km": 54,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 5807,
-        "prf_min_hz": 1359,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 11.1397,
-        "pulse_width_min_us": 9.1143,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.1271,
-        "scan_period_min_s": 4.1949,
         "scan_type": "ground",
         "track_capacity_max": null,
         "track_capacity_min": null,
@@ -5008,316 +3924,6 @@
       }
     },
     {
-      "id": "radar:zaslon",
-      "label": "Radar",
-      "properties": {
-        "antenna": "PESA",
-        "band": "X",
-        "frequency_agility_max_mhz": 109.461,
-        "frequency_agility_min_mhz": 10.161,
-        "name": "Zaslon",
-        "polarization": "dual_linear",
-        "scan_period_max_s": 5.2129,
-        "scan_period_min_s": 0.8325,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:zaslon:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 96.151,
-        "bandwidth_min_mhz": 78.669,
-        "centre_frequency_max_ghz": 9.41001,
-        "centre_frequency_min_ghz": 9.04099,
-        "coherent_processing_interval_max_ms": 25.113,
-        "coherent_processing_interval_min_ms": 20.547,
-        "detection_range_max_km": 250,
-        "detection_range_min_km": 150,
-        "duty_cycle_max": 0.02353,
-        "duty_cycle_min": 0.019252,
-        "dwell_time_max_ms": 103.565,
-        "dwell_time_min_ms": 84.735,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 49.577,
-        "frequency_agility_min_mhz": 40.563,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 300,
-        "instrumented_range_min_km": 180,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "dual_linear",
-        "prf_max_hz": 10525,
-        "prf_min_hz": 4113,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 3.1207,
-        "pulse_width_min_us": 2.5533,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.3021,
-        "scan_period_min_s": 3.5199,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:zaslon:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 140.294,
-        "bandwidth_min_mhz": 114.786,
-        "centre_frequency_max_ghz": 9.492324,
-        "centre_frequency_min_ghz": 9.120076,
-        "coherent_processing_interval_max_ms": 34.122,
-        "coherent_processing_interval_min_ms": 27.918,
-        "detection_range_max_km": 212,
-        "detection_range_min_km": 128,
-        "duty_cycle_max": 0.036764,
-        "duty_cycle_min": 0.03008,
-        "dwell_time_max_ms": 147.906,
-        "dwell_time_min_ms": 121.014,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 78.298,
-        "frequency_agility_min_mhz": 64.062,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 300,
-        "instrumented_range_min_km": 180,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "dual_linear",
-        "prf_max_hz": 20562,
-        "prf_min_hz": 7130,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 2.3606,
-        "pulse_width_min_us": 1.9314,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 2.7698,
-        "scan_period_min_s": 2.2662,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:zaslon:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 74.437,
-        "bandwidth_min_mhz": 60.903,
-        "centre_frequency_max_ghz": 9.533838,
-        "centre_frequency_min_ghz": 9.159962,
-        "coherent_processing_interval_max_ms": 43.131,
-        "coherent_processing_interval_min_ms": 35.289,
-        "detection_range_max_km": 238,
-        "detection_range_min_km": 142,
-        "duty_cycle_max": 0.041198,
-        "duty_cycle_min": 0.033708,
-        "dwell_time_max_ms": 192.247,
-        "dwell_time_min_ms": 157.293,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 12.419,
-        "frequency_agility_min_mhz": 10.161,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 300,
-        "instrumented_range_min_km": 180,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "dual_linear",
-        "prf_max_hz": 32599,
-        "prf_min_hz": 13147,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 1.7105,
-        "pulse_width_min_us": 1.3995,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.0175,
-        "scan_period_min_s": 0.8325,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:zaslon:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 118.58,
-        "bandwidth_min_mhz": 97.02,
-        "centre_frequency_max_ghz": 9.361152,
-        "centre_frequency_min_ghz": 8.994048,
-        "coherent_processing_interval_max_ms": 38.94,
-        "coherent_processing_interval_min_ms": 31.86,
-        "detection_range_max_km": 162,
-        "detection_range_min_km": 98,
-        "duty_cycle_max": 0.051132,
-        "duty_cycle_min": 0.041836,
-        "dwell_time_max_ms": 170.588,
-        "dwell_time_min_ms": 139.572,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 63.14,
-        "frequency_agility_min_mhz": 51.66,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 240,
-        "instrumented_range_min_km": 144,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "dual_linear",
-        "prf_max_hz": 47636,
-        "prf_min_hz": 16164,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 1.5004,
-        "pulse_width_min_us": 1.2276,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.3452,
-        "scan_period_min_s": 1.9188,
-        "scan_type": "sector",
-        "track_capacity_max": 5,
-        "track_capacity_min": 5,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:zaslon:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 184.723,
-        "bandwidth_min_mhz": 151.137,
-        "centre_frequency_max_ghz": 9.310866,
-        "centre_frequency_min_ghz": 8.945734,
-        "coherent_processing_interval_max_ms": 78.749,
-        "coherent_processing_interval_min_ms": 64.431,
-        "detection_range_max_km": 112,
-        "detection_range_min_km": 68,
-        "duty_cycle_max": 0.056667,
-        "duty_cycle_min": 0.046364,
-        "dwell_time_max_ms": 291.929,
-        "dwell_time_min_ms": 238.851,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 109.461,
-        "frequency_agility_min_mhz": 89.559,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 180,
-        "instrumented_range_min_km": 108,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "dual_linear",
-        "prf_max_hz": 7673,
-        "prf_min_hz": 2181,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 11.4103,
-        "pulse_width_min_us": 9.3357,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.2129,
-        "scan_period_min_s": 4.2651,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
       "id": "radar:zaslon_m",
       "label": "Radar",
       "properties": {
@@ -6239,316 +4845,6 @@
         "range_resolution_min_m": 4.5,
         "scan_period_max_s": 5.2558,
         "scan_period_min_s": 4.3002,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:an_apg_66",
-      "label": "Radar",
-      "properties": {
-        "antenna": "planar array",
-        "band": "X",
-        "frequency_agility_max_mhz": 111.089,
-        "frequency_agility_min_mhz": 11.493,
-        "name": "AN/APG-66",
-        "polarization": "linear",
-        "scan_period_max_s": 5.2701,
-        "scan_period_min_s": 0.8793,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:an_apg_66:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 100.155,
-        "bandwidth_min_mhz": 81.945,
-        "centre_frequency_max_ghz": 9.728658,
-        "centre_frequency_min_ghz": 9.347142,
-        "coherent_processing_interval_max_ms": 28.765,
-        "coherent_processing_interval_min_ms": 23.535,
-        "detection_range_max_km": 94,
-        "detection_range_min_km": 56,
-        "duty_cycle_max": 0.024278,
-        "duty_cycle_min": 0.019864,
-        "dwell_time_max_ms": 111.177,
-        "dwell_time_min_ms": 90.963,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 51.205,
-        "frequency_agility_min_mhz": 41.895,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 112,
-        "instrumented_range_min_km": 68,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 11769,
-        "prf_min_hz": 4661,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 3.3011,
-        "pulse_width_min_us": 2.7009,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.3593,
-        "scan_period_min_s": 3.5667,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:an_apg_66:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 144.298,
-        "bandwidth_min_mhz": 118.062,
-        "centre_frequency_max_ghz": 9.810972,
-        "centre_frequency_min_ghz": 9.426228,
-        "coherent_processing_interval_max_ms": 37.774,
-        "coherent_processing_interval_min_ms": 30.906,
-        "detection_range_max_km": 79,
-        "detection_range_min_km": 47,
-        "duty_cycle_max": 0.037512,
-        "duty_cycle_min": 0.030692,
-        "dwell_time_max_ms": 155.518,
-        "dwell_time_min_ms": 127.242,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 79.926,
-        "frequency_agility_min_mhz": 65.394,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 112,
-        "instrumented_range_min_km": 68,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 21806,
-        "prf_min_hz": 7678,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 2.541,
-        "pulse_width_min_us": 2.079,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 2.827,
-        "scan_period_min_s": 2.313,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:an_apg_66:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 78.441,
-        "bandwidth_min_mhz": 64.179,
-        "centre_frequency_max_ghz": 9.852486,
-        "centre_frequency_min_ghz": 9.466114,
-        "coherent_processing_interval_max_ms": 46.783,
-        "coherent_processing_interval_min_ms": 38.277,
-        "detection_range_max_km": 89,
-        "detection_range_min_km": 53,
-        "duty_cycle_max": 0.041946,
-        "duty_cycle_min": 0.03432,
-        "dwell_time_max_ms": 199.859,
-        "dwell_time_min_ms": 163.521,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 14.047,
-        "frequency_agility_min_mhz": 11.493,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 112,
-        "instrumented_range_min_km": 68,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 33843,
-        "prf_min_hz": 13695,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 1.8909,
-        "pulse_width_min_us": 1.5471,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.0747,
-        "scan_period_min_s": 0.8793,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:an_apg_66:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 122.584,
-        "bandwidth_min_mhz": 100.296,
-        "centre_frequency_max_ghz": 9.6798,
-        "centre_frequency_min_ghz": 9.3002,
-        "coherent_processing_interval_max_ms": 42.592,
-        "coherent_processing_interval_min_ms": 34.848,
-        "detection_range_max_km": 60,
-        "detection_range_min_km": 36,
-        "duty_cycle_max": 0.05188,
-        "duty_cycle_min": 0.042448,
-        "dwell_time_max_ms": 178.2,
-        "dwell_time_min_ms": 145.8,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 64.768,
-        "frequency_agility_min_mhz": 52.992,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 90,
-        "instrumented_range_min_km": 54,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 48880,
-        "prf_min_hz": 16712,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 1.6808,
-        "pulse_width_min_us": 1.3752,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.4024,
-        "scan_period_min_s": 1.9656,
-        "scan_type": "sector",
-        "track_capacity_max": 5,
-        "track_capacity_min": 5,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:an_apg_66:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 188.727,
-        "bandwidth_min_mhz": 154.413,
-        "centre_frequency_max_ghz": 9.629514,
-        "centre_frequency_min_ghz": 9.251886,
-        "coherent_processing_interval_max_ms": 82.401,
-        "coherent_processing_interval_min_ms": 67.419,
-        "detection_range_max_km": 41,
-        "detection_range_min_km": 25,
-        "duty_cycle_max": 0.057415,
-        "duty_cycle_min": 0.046975,
-        "dwell_time_max_ms": 299.541,
-        "dwell_time_min_ms": 245.079,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 111.089,
-        "frequency_agility_min_mhz": 90.891,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 68,
-        "instrumented_range_min_km": 40,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 8917,
-        "prf_min_hz": 2729,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 11.5907,
-        "pulse_width_min_us": 9.4833,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.2701,
-        "scan_period_min_s": 4.3119,
         "scan_type": "ground",
         "track_capacity_max": null,
         "track_capacity_min": null,
@@ -11208,1246 +9504,6 @@
       }
     },
     {
-      "id": "radar:el_m_2052",
-      "label": "Radar",
-      "properties": {
-        "antenna": "AESA",
-        "band": "X",
-        "frequency_agility_max_mhz": 117.601,
-        "frequency_agility_min_mhz": 16.821,
-        "name": "EL/M-2052",
-        "polarization": "dual_linear",
-        "scan_period_max_s": 5.4989,
-        "scan_period_min_s": 1.0665,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:el_m_2052:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 116.171,
-        "bandwidth_min_mhz": 95.049,
-        "centre_frequency_max_ghz": 10.08525,
-        "centre_frequency_min_ghz": 9.68975,
-        "coherent_processing_interval_max_ms": 43.373,
-        "coherent_processing_interval_min_ms": 35.487,
-        "detection_range_max_km": 250,
-        "detection_range_min_km": 150,
-        "duty_cycle_max": 0.02727,
-        "duty_cycle_min": 0.022312,
-        "dwell_time_max_ms": 141.625,
-        "dwell_time_min_ms": 115.875,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 57.717,
-        "frequency_agility_min_mhz": 47.223,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 300,
-        "instrumented_range_min_km": 180,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "dual_linear",
-        "prf_max_hz": 16745,
-        "prf_min_hz": 6853,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.0227,
-        "pulse_width_min_us": 3.2913,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.5881,
-        "scan_period_min_s": 3.7539,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:el_m_2052:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 160.314,
-        "bandwidth_min_mhz": 131.166,
-        "centre_frequency_max_ghz": 10.167564,
-        "centre_frequency_min_ghz": 9.768836,
-        "coherent_processing_interval_max_ms": 52.382,
-        "coherent_processing_interval_min_ms": 42.858,
-        "detection_range_max_km": 212,
-        "detection_range_min_km": 128,
-        "duty_cycle_max": 0.040504,
-        "duty_cycle_min": 0.03314,
-        "dwell_time_max_ms": 185.966,
-        "dwell_time_min_ms": 152.154,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 86.438,
-        "frequency_agility_min_mhz": 70.722,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 300,
-        "instrumented_range_min_km": 180,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "dual_linear",
-        "prf_max_hz": 26782,
-        "prf_min_hz": 9870,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 3.2626,
-        "pulse_width_min_us": 2.6694,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.0558,
-        "scan_period_min_s": 2.5002,
-        "scan_type": "sector",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:el_m_2052:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 94.457,
-        "bandwidth_min_mhz": 77.283,
-        "centre_frequency_max_ghz": 10.209078,
-        "centre_frequency_min_ghz": 9.808722,
-        "coherent_processing_interval_max_ms": 61.391,
-        "coherent_processing_interval_min_ms": 50.229,
-        "detection_range_max_km": 238,
-        "detection_range_min_km": 142,
-        "duty_cycle_max": 0.044938,
-        "duty_cycle_min": 0.036768,
-        "dwell_time_max_ms": 230.307,
-        "dwell_time_min_ms": 188.433,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 20.559,
-        "frequency_agility_min_mhz": 16.821,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 300,
-        "instrumented_range_min_km": 180,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "dual_linear",
-        "prf_max_hz": 38819,
-        "prf_min_hz": 15887,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 2.6125,
-        "pulse_width_min_us": 2.1375,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.3035,
-        "scan_period_min_s": 1.0665,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:el_m_2052:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 138.6,
-        "bandwidth_min_mhz": 113.4,
-        "centre_frequency_max_ghz": 10.036392,
-        "centre_frequency_min_ghz": 9.642808,
-        "coherent_processing_interval_max_ms": 57.2,
-        "coherent_processing_interval_min_ms": 46.8,
-        "detection_range_max_km": 162,
-        "detection_range_min_km": 98,
-        "duty_cycle_max": 0.054872,
-        "duty_cycle_min": 0.044896,
-        "dwell_time_max_ms": 208.648,
-        "dwell_time_min_ms": 170.712,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 71.28,
-        "frequency_agility_min_mhz": 58.32,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 240,
-        "instrumented_range_min_km": 144,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "dual_linear",
-        "prf_max_hz": 53856,
-        "prf_min_hz": 18904,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 2.4024,
-        "pulse_width_min_us": 1.9656,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.6312,
-        "scan_period_min_s": 2.1528,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:el_m_2052:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 204.743,
-        "bandwidth_min_mhz": 167.517,
-        "centre_frequency_max_ghz": 9.986106,
-        "centre_frequency_min_ghz": 9.594494,
-        "coherent_processing_interval_max_ms": 97.009,
-        "coherent_processing_interval_min_ms": 79.371,
-        "detection_range_max_km": 112,
-        "detection_range_min_km": 68,
-        "duty_cycle_max": 0.060407,
-        "duty_cycle_min": 0.049424,
-        "dwell_time_max_ms": 329.989,
-        "dwell_time_min_ms": 269.991,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 117.601,
-        "frequency_agility_min_mhz": 96.219,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 180,
-        "instrumented_range_min_km": 108,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "dual_linear",
-        "prf_max_hz": 13893,
-        "prf_min_hz": 4921,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 12.3123,
-        "pulse_width_min_us": 10.0737,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.4989,
-        "scan_period_min_s": 4.4991,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:uttam_aesa",
-      "label": "Radar",
-      "properties": {
-        "antenna": "AESA",
-        "band": "X",
-        "frequency_agility_max_mhz": 118.008,
-        "frequency_agility_min_mhz": 17.154,
-        "name": "Uttam AESA",
-        "polarization": "dual_linear",
-        "scan_period_max_s": 5.5132,
-        "scan_period_min_s": 1.0782,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:uttam_aesa:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 117.172,
-        "bandwidth_min_mhz": 95.868,
-        "centre_frequency_max_ghz": 10.190412,
-        "centre_frequency_min_ghz": 9.790788,
-        "coherent_processing_interval_max_ms": 44.286,
-        "coherent_processing_interval_min_ms": 36.234,
-        "detection_range_max_km": 225,
-        "detection_range_min_km": 135,
-        "duty_cycle_max": 0.027457,
-        "duty_cycle_min": 0.022465,
-        "dwell_time_max_ms": 143.528,
-        "dwell_time_min_ms": 117.432,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 58.124,
-        "frequency_agility_min_mhz": 47.556,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 270,
-        "instrumented_range_min_km": 162,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "dual_linear",
-        "prf_max_hz": 17056,
-        "prf_min_hz": 6990,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.0678,
-        "pulse_width_min_us": 3.3282,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.6024,
-        "scan_period_min_s": 3.7656,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:uttam_aesa:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 161.315,
-        "bandwidth_min_mhz": 131.985,
-        "centre_frequency_max_ghz": 10.272726,
-        "centre_frequency_min_ghz": 9.869874,
-        "coherent_processing_interval_max_ms": 53.295,
-        "coherent_processing_interval_min_ms": 43.605,
-        "detection_range_max_km": 191,
-        "detection_range_min_km": 115,
-        "duty_cycle_max": 0.040691,
-        "duty_cycle_min": 0.033293,
-        "dwell_time_max_ms": 187.869,
-        "dwell_time_min_ms": 153.711,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 86.845,
-        "frequency_agility_min_mhz": 71.055,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 270,
-        "instrumented_range_min_km": 162,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "dual_linear",
-        "prf_max_hz": 27093,
-        "prf_min_hz": 10007,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 3.3077,
-        "pulse_width_min_us": 2.7063,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.0701,
-        "scan_period_min_s": 2.5119,
-        "scan_type": "sector",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:uttam_aesa:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 95.458,
-        "bandwidth_min_mhz": 78.102,
-        "centre_frequency_max_ghz": 10.31424,
-        "centre_frequency_min_ghz": 9.90976,
-        "coherent_processing_interval_max_ms": 62.304,
-        "coherent_processing_interval_min_ms": 50.976,
-        "detection_range_max_km": 214,
-        "detection_range_min_km": 128,
-        "duty_cycle_max": 0.045125,
-        "duty_cycle_min": 0.036921,
-        "dwell_time_max_ms": 232.21,
-        "dwell_time_min_ms": 189.99,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 20.966,
-        "frequency_agility_min_mhz": 17.154,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 270,
-        "instrumented_range_min_km": 162,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "dual_linear",
-        "prf_max_hz": 39130,
-        "prf_min_hz": 16024,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 2.6576,
-        "pulse_width_min_us": 2.1744,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.3178,
-        "scan_period_min_s": 1.0782,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:uttam_aesa:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 139.601,
-        "bandwidth_min_mhz": 114.219,
-        "centre_frequency_max_ghz": 10.141554,
-        "centre_frequency_min_ghz": 9.743846,
-        "coherent_processing_interval_max_ms": 58.113,
-        "coherent_processing_interval_min_ms": 47.547,
-        "detection_range_max_km": 146,
-        "detection_range_min_km": 88,
-        "duty_cycle_max": 0.055059,
-        "duty_cycle_min": 0.045049,
-        "dwell_time_max_ms": 210.551,
-        "dwell_time_min_ms": 172.269,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 71.687,
-        "frequency_agility_min_mhz": 58.653,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 215,
-        "instrumented_range_min_km": 129,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "dual_linear",
-        "prf_max_hz": 54167,
-        "prf_min_hz": 19041,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 2.4475,
-        "pulse_width_min_us": 2.0025,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.6455,
-        "scan_period_min_s": 2.1645,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:uttam_aesa:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 205.744,
-        "bandwidth_min_mhz": 168.336,
-        "centre_frequency_max_ghz": 10.091268,
-        "centre_frequency_min_ghz": 9.695532,
-        "coherent_processing_interval_max_ms": 97.922,
-        "coherent_processing_interval_min_ms": 80.118,
-        "detection_range_max_km": 101,
-        "detection_range_min_km": 61,
-        "duty_cycle_max": 0.060594,
-        "duty_cycle_min": 0.049577,
-        "dwell_time_max_ms": 331.892,
-        "dwell_time_min_ms": 271.548,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 118.008,
-        "frequency_agility_min_mhz": 96.552,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 161,
-        "instrumented_range_min_km": 97,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "dual_linear",
-        "prf_max_hz": 14204,
-        "prf_min_hz": 5058,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 12.3574,
-        "pulse_width_min_us": 10.1106,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.5132,
-        "scan_period_min_s": 4.5108,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:kopyo_m",
-      "label": "Radar",
-      "properties": {
-        "antenna": "pulse-doppler array",
-        "band": "X",
-        "frequency_agility_max_mhz": 118.415,
-        "frequency_agility_min_mhz": 17.487,
-        "name": "Kopyo-M",
-        "polarization": "linear",
-        "scan_period_max_s": 5.5275,
-        "scan_period_min_s": 1.0899,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:kopyo_m:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 118.173,
-        "bandwidth_min_mhz": 96.687,
-        "centre_frequency_max_ghz": 9.581574,
-        "centre_frequency_min_ghz": 9.205826,
-        "coherent_processing_interval_max_ms": 45.199,
-        "coherent_processing_interval_min_ms": 36.981,
-        "detection_range_max_km": 94,
-        "detection_range_min_km": 56,
-        "duty_cycle_max": 0.027644,
-        "duty_cycle_min": 0.022618,
-        "dwell_time_max_ms": 145.431,
-        "dwell_time_min_ms": 118.989,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 58.531,
-        "frequency_agility_min_mhz": 47.889,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 112,
-        "instrumented_range_min_km": 68,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 17367,
-        "prf_min_hz": 7127,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.1129,
-        "pulse_width_min_us": 3.3651,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.6167,
-        "scan_period_min_s": 3.7773,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 8,
-        "track_capacity_min": 8,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:kopyo_m:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 162.316,
-        "bandwidth_min_mhz": 132.804,
-        "centre_frequency_max_ghz": 9.663888,
-        "centre_frequency_min_ghz": 9.284912,
-        "coherent_processing_interval_max_ms": 54.208,
-        "coherent_processing_interval_min_ms": 44.352,
-        "detection_range_max_km": 79,
-        "detection_range_min_km": 47,
-        "duty_cycle_max": 0.040878,
-        "duty_cycle_min": 0.033446,
-        "dwell_time_max_ms": 189.772,
-        "dwell_time_min_ms": 155.268,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 87.252,
-        "frequency_agility_min_mhz": 71.388,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 112,
-        "instrumented_range_min_km": 68,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 27404,
-        "prf_min_hz": 10144,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 3.3528,
-        "pulse_width_min_us": 2.7432,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.0844,
-        "scan_period_min_s": 2.5236,
-        "scan_type": "sector",
-        "track_capacity_max": 8,
-        "track_capacity_min": 8,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:kopyo_m:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 96.459,
-        "bandwidth_min_mhz": 78.921,
-        "centre_frequency_max_ghz": 9.705402,
-        "centre_frequency_min_ghz": 9.324798,
-        "coherent_processing_interval_max_ms": 63.217,
-        "coherent_processing_interval_min_ms": 51.723,
-        "detection_range_max_km": 89,
-        "detection_range_min_km": 53,
-        "duty_cycle_max": 0.045312,
-        "duty_cycle_min": 0.037074,
-        "dwell_time_max_ms": 234.113,
-        "dwell_time_min_ms": 191.547,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 21.373,
-        "frequency_agility_min_mhz": 17.487,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 112,
-        "instrumented_range_min_km": 68,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 39441,
-        "prf_min_hz": 16161,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 2.7027,
-        "pulse_width_min_us": 2.2113,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.3321,
-        "scan_period_min_s": 1.0899,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:kopyo_m:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 140.602,
-        "bandwidth_min_mhz": 115.038,
-        "centre_frequency_max_ghz": 9.532716,
-        "centre_frequency_min_ghz": 9.158884,
-        "coherent_processing_interval_max_ms": 59.026,
-        "coherent_processing_interval_min_ms": 48.294,
-        "detection_range_max_km": 60,
-        "detection_range_min_km": 36,
-        "duty_cycle_max": 0.055246,
-        "duty_cycle_min": 0.045202,
-        "dwell_time_max_ms": 212.454,
-        "dwell_time_min_ms": 173.826,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 72.094,
-        "frequency_agility_min_mhz": 58.986,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 90,
-        "instrumented_range_min_km": 54,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 54478,
-        "prf_min_hz": 19178,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 2.4926,
-        "pulse_width_min_us": 2.0394,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.6598,
-        "scan_period_min_s": 2.1762,
-        "scan_type": "sector",
-        "track_capacity_max": 4,
-        "track_capacity_min": 4,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:kopyo_m:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 206.745,
-        "bandwidth_min_mhz": 169.155,
-        "centre_frequency_max_ghz": 9.48243,
-        "centre_frequency_min_ghz": 9.11057,
-        "coherent_processing_interval_max_ms": 98.835,
-        "coherent_processing_interval_min_ms": 80.865,
-        "detection_range_max_km": 41,
-        "detection_range_min_km": 25,
-        "duty_cycle_max": 0.060781,
-        "duty_cycle_min": 0.04973,
-        "dwell_time_max_ms": 333.795,
-        "dwell_time_min_ms": 273.105,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 118.415,
-        "frequency_agility_min_mhz": 96.885,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 68,
-        "instrumented_range_min_km": 40,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 14515,
-        "prf_min_hz": 5195,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 12.4025,
-        "pulse_width_min_us": 10.1475,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.5275,
-        "scan_period_min_s": 4.5225,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:rdi",
-      "label": "Radar",
-      "properties": {
-        "antenna": "pulse-doppler array",
-        "band": "X",
-        "frequency_agility_max_mhz": 118.822,
-        "frequency_agility_min_mhz": 17.82,
-        "name": "RDI",
-        "polarization": "linear",
-        "scan_period_max_s": 5.5418,
-        "scan_period_min_s": 1.1016,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:rdi:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 119.174,
-        "bandwidth_min_mhz": 97.506,
-        "centre_frequency_max_ghz": 9.686736,
-        "centre_frequency_min_ghz": 9.306864,
-        "coherent_processing_interval_max_ms": 46.112,
-        "coherent_processing_interval_min_ms": 37.728,
-        "detection_range_max_km": 150,
-        "detection_range_min_km": 90,
-        "duty_cycle_max": 0.027831,
-        "duty_cycle_min": 0.022771,
-        "dwell_time_max_ms": 147.334,
-        "dwell_time_min_ms": 120.546,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 58.938,
-        "frequency_agility_min_mhz": 48.222,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 180,
-        "instrumented_range_min_km": 108,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 17678,
-        "prf_min_hz": 7264,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.158,
-        "pulse_width_min_us": 3.402,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.631,
-        "scan_period_min_s": 3.789,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 8,
-        "track_capacity_min": 8,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:rdi:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 163.317,
-        "bandwidth_min_mhz": 133.623,
-        "centre_frequency_max_ghz": 9.76905,
-        "centre_frequency_min_ghz": 9.38595,
-        "coherent_processing_interval_max_ms": 55.121,
-        "coherent_processing_interval_min_ms": 45.099,
-        "detection_range_max_km": 128,
-        "detection_range_min_km": 76,
-        "duty_cycle_max": 0.041065,
-        "duty_cycle_min": 0.033599,
-        "dwell_time_max_ms": 191.675,
-        "dwell_time_min_ms": 156.825,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 87.659,
-        "frequency_agility_min_mhz": 71.721,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 180,
-        "instrumented_range_min_km": 108,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 27715,
-        "prf_min_hz": 10281,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 3.3979,
-        "pulse_width_min_us": 2.7801,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.0987,
-        "scan_period_min_s": 2.5353,
-        "scan_type": "sector",
-        "track_capacity_max": 8,
-        "track_capacity_min": 8,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:rdi:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 97.46,
-        "bandwidth_min_mhz": 79.74,
-        "centre_frequency_max_ghz": 9.810564,
-        "centre_frequency_min_ghz": 9.425836,
-        "coherent_processing_interval_max_ms": 64.13,
-        "coherent_processing_interval_min_ms": 52.47,
-        "detection_range_max_km": 142,
-        "detection_range_min_km": 86,
-        "duty_cycle_max": 0.045499,
-        "duty_cycle_min": 0.037227,
-        "dwell_time_max_ms": 236.016,
-        "dwell_time_min_ms": 193.104,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 21.78,
-        "frequency_agility_min_mhz": 17.82,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 180,
-        "instrumented_range_min_km": 108,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 39752,
-        "prf_min_hz": 16298,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 2.7478,
-        "pulse_width_min_us": 2.2482,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.3464,
-        "scan_period_min_s": 1.1016,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:rdi:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 141.603,
-        "bandwidth_min_mhz": 115.857,
-        "centre_frequency_max_ghz": 9.637878,
-        "centre_frequency_min_ghz": 9.259922,
-        "coherent_processing_interval_max_ms": 59.939,
-        "coherent_processing_interval_min_ms": 49.041,
-        "detection_range_max_km": 98,
-        "detection_range_min_km": 58,
-        "duty_cycle_max": 0.055433,
-        "duty_cycle_min": 0.045355,
-        "dwell_time_max_ms": 214.357,
-        "dwell_time_min_ms": 175.383,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 72.501,
-        "frequency_agility_min_mhz": 59.319,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 144,
-        "instrumented_range_min_km": 86,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 54789,
-        "prf_min_hz": 19315,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 2.5377,
-        "pulse_width_min_us": 2.0763,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.6741,
-        "scan_period_min_s": 2.1879,
-        "scan_type": "sector",
-        "track_capacity_max": 4,
-        "track_capacity_min": 4,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:rdi:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 207.746,
-        "bandwidth_min_mhz": 169.974,
-        "centre_frequency_max_ghz": 9.587592,
-        "centre_frequency_min_ghz": 9.211608,
-        "coherent_processing_interval_max_ms": 99.748,
-        "coherent_processing_interval_min_ms": 81.612,
-        "detection_range_max_km": 68,
-        "detection_range_min_km": 40,
-        "duty_cycle_max": 0.060968,
-        "duty_cycle_min": 0.049883,
-        "dwell_time_max_ms": 335.698,
-        "dwell_time_min_ms": 274.662,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 118.822,
-        "frequency_agility_min_mhz": 97.218,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 108,
-        "instrumented_range_min_km": 64,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 14826,
-        "prf_min_hz": 5332,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 12.4476,
-        "pulse_width_min_us": 10.1844,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.5418,
-        "scan_period_min_s": 4.5342,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
       "id": "radar:rdy_2",
       "label": "Radar",
       "properties": {
@@ -15238,316 +12294,6 @@
       }
     },
     {
-      "id": "radar:rbe2",
-      "label": "Radar",
-      "properties": {
-        "antenna": "PESA",
-        "band": "X",
-        "frequency_agility_max_mhz": 122.892,
-        "frequency_agility_min_mhz": 21.15,
-        "name": "RBE2",
-        "polarization": "dual_linear",
-        "scan_period_max_s": 5.6848,
-        "scan_period_min_s": 1.2186,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:rbe2:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 129.184,
-        "bandwidth_min_mhz": 105.696,
-        "centre_frequency_max_ghz": 10.024356,
-        "centre_frequency_min_ghz": 9.631244,
-        "coherent_processing_interval_max_ms": 55.242,
-        "coherent_processing_interval_min_ms": 45.198,
-        "detection_range_max_km": 200,
-        "detection_range_min_km": 120,
-        "duty_cycle_max": 0.029701,
-        "duty_cycle_min": 0.024301,
-        "dwell_time_max_ms": 166.364,
-        "dwell_time_min_ms": 136.116,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 63.008,
-        "frequency_agility_min_mhz": 51.552,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 240,
-        "instrumented_range_min_km": 144,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "dual_linear",
-        "prf_max_hz": 20788,
-        "prf_min_hz": 8634,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.609,
-        "pulse_width_min_us": 3.771,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.774,
-        "scan_period_min_s": 3.906,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:rbe2:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 173.327,
-        "bandwidth_min_mhz": 141.813,
-        "centre_frequency_max_ghz": 10.10667,
-        "centre_frequency_min_ghz": 9.71033,
-        "coherent_processing_interval_max_ms": 64.251,
-        "coherent_processing_interval_min_ms": 52.569,
-        "detection_range_max_km": 170,
-        "detection_range_min_km": 102,
-        "duty_cycle_max": 0.042935,
-        "duty_cycle_min": 0.035129,
-        "dwell_time_max_ms": 210.705,
-        "dwell_time_min_ms": 172.395,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 91.729,
-        "frequency_agility_min_mhz": 75.051,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 240,
-        "instrumented_range_min_km": 144,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "dual_linear",
-        "prf_max_hz": 30825,
-        "prf_min_hz": 11651,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 3.8489,
-        "pulse_width_min_us": 3.1491,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.2417,
-        "scan_period_min_s": 2.6523,
-        "scan_type": "sector",
-        "track_capacity_max": 20,
-        "track_capacity_min": 20,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:rbe2:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 107.47,
-        "bandwidth_min_mhz": 87.93,
-        "centre_frequency_max_ghz": 10.148184,
-        "centre_frequency_min_ghz": 9.750216,
-        "coherent_processing_interval_max_ms": 73.26,
-        "coherent_processing_interval_min_ms": 59.94,
-        "detection_range_max_km": 190,
-        "detection_range_min_km": 114,
-        "duty_cycle_max": 0.047369,
-        "duty_cycle_min": 0.038757,
-        "dwell_time_max_ms": 255.046,
-        "dwell_time_min_ms": 208.674,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 25.85,
-        "frequency_agility_min_mhz": 21.15,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 240,
-        "instrumented_range_min_km": 144,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "dual_linear",
-        "prf_max_hz": 42862,
-        "prf_min_hz": 17668,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 3.1988,
-        "pulse_width_min_us": 2.6172,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.4894,
-        "scan_period_min_s": 1.2186,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:rbe2:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 151.613,
-        "bandwidth_min_mhz": 124.047,
-        "centre_frequency_max_ghz": 9.975498,
-        "centre_frequency_min_ghz": 9.584302,
-        "coherent_processing_interval_max_ms": 69.069,
-        "coherent_processing_interval_min_ms": 56.511,
-        "detection_range_max_km": 130,
-        "detection_range_min_km": 78,
-        "duty_cycle_max": 0.057303,
-        "duty_cycle_min": 0.046885,
-        "dwell_time_max_ms": 233.387,
-        "dwell_time_min_ms": 190.953,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 76.571,
-        "frequency_agility_min_mhz": 62.649,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 191,
-        "instrumented_range_min_km": 115,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "dual_linear",
-        "prf_max_hz": 57899,
-        "prf_min_hz": 20685,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 2.9887,
-        "pulse_width_min_us": 2.4453,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.8171,
-        "scan_period_min_s": 2.3049,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:rbe2:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 217.756,
-        "bandwidth_min_mhz": 178.164,
-        "centre_frequency_max_ghz": 9.925212,
-        "centre_frequency_min_ghz": 9.535988,
-        "coherent_processing_interval_max_ms": 108.878,
-        "coherent_processing_interval_min_ms": 89.082,
-        "detection_range_max_km": 90,
-        "detection_range_min_km": 54,
-        "duty_cycle_max": 0.062838,
-        "duty_cycle_min": 0.051412,
-        "dwell_time_max_ms": 354.728,
-        "dwell_time_min_ms": 290.232,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 122.892,
-        "frequency_agility_min_mhz": 100.548,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 144,
-        "instrumented_range_min_km": 86,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "dual_linear",
-        "prf_max_hz": 17936,
-        "prf_min_hz": 6702,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 12.8986,
-        "pulse_width_min_us": 10.5534,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.6848,
-        "scan_period_min_s": 4.6512,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
       "id": "radar:rbe2_aa",
       "label": "Radar",
       "properties": {
@@ -16478,936 +13224,6 @@
       }
     },
     {
-      "id": "radar:blue_vixen",
-      "label": "Radar",
-      "properties": {
-        "antenna": "pulse-doppler array",
-        "band": "X",
-        "frequency_agility_max_mhz": 124.52,
-        "frequency_agility_min_mhz": 22.482,
-        "name": "Blue Vixen",
-        "polarization": "linear",
-        "scan_period_max_s": 5.742,
-        "scan_period_min_s": 1.2654,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:blue_vixen:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 133.188,
-        "bandwidth_min_mhz": 108.972,
-        "centre_frequency_max_ghz": 9.833004,
-        "centre_frequency_min_ghz": 9.447396,
-        "coherent_processing_interval_max_ms": 58.894,
-        "coherent_processing_interval_min_ms": 48.186,
-        "detection_range_max_km": 188,
-        "detection_range_min_km": 112,
-        "duty_cycle_max": 0.030449,
-        "duty_cycle_min": 0.024913,
-        "dwell_time_max_ms": 173.976,
-        "dwell_time_min_ms": 142.344,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 64.636,
-        "frequency_agility_min_mhz": 52.884,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 225,
-        "instrumented_range_min_km": 135,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 22032,
-        "prf_min_hz": 9182,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.7894,
-        "pulse_width_min_us": 3.9186,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.8312,
-        "scan_period_min_s": 3.9528,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:blue_vixen:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 177.331,
-        "bandwidth_min_mhz": 145.089,
-        "centre_frequency_max_ghz": 9.915318,
-        "centre_frequency_min_ghz": 9.526482,
-        "coherent_processing_interval_max_ms": 67.903,
-        "coherent_processing_interval_min_ms": 55.557,
-        "detection_range_max_km": 159,
-        "detection_range_min_km": 95,
-        "duty_cycle_max": 0.043683,
-        "duty_cycle_min": 0.035741,
-        "dwell_time_max_ms": 218.317,
-        "dwell_time_min_ms": 178.623,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 93.357,
-        "frequency_agility_min_mhz": 76.383,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 225,
-        "instrumented_range_min_km": 135,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 32069,
-        "prf_min_hz": 12199,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 4.0293,
-        "pulse_width_min_us": 3.2967,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.2989,
-        "scan_period_min_s": 2.6991,
-        "scan_type": "sector",
-        "track_capacity_max": 10,
-        "track_capacity_min": 10,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:blue_vixen:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 111.474,
-        "bandwidth_min_mhz": 91.206,
-        "centre_frequency_max_ghz": 9.956832,
-        "centre_frequency_min_ghz": 9.566368,
-        "coherent_processing_interval_max_ms": 76.912,
-        "coherent_processing_interval_min_ms": 62.928,
-        "detection_range_max_km": 178,
-        "detection_range_min_km": 106,
-        "duty_cycle_max": 0.048117,
-        "duty_cycle_min": 0.039369,
-        "dwell_time_max_ms": 262.658,
-        "dwell_time_min_ms": 214.902,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 27.478,
-        "frequency_agility_min_mhz": 22.482,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 225,
-        "instrumented_range_min_km": 135,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 44106,
-        "prf_min_hz": 18216,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 3.3792,
-        "pulse_width_min_us": 2.7648,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.5466,
-        "scan_period_min_s": 1.2654,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:blue_vixen:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 155.617,
-        "bandwidth_min_mhz": 127.323,
-        "centre_frequency_max_ghz": 9.784146,
-        "centre_frequency_min_ghz": 9.400454,
-        "coherent_processing_interval_max_ms": 72.721,
-        "coherent_processing_interval_min_ms": 59.499,
-        "detection_range_max_km": 121,
-        "detection_range_min_km": 73,
-        "duty_cycle_max": 0.058051,
-        "duty_cycle_min": 0.047497,
-        "dwell_time_max_ms": 240.999,
-        "dwell_time_min_ms": 197.181,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 78.199,
-        "frequency_agility_min_mhz": 63.981,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 180,
-        "instrumented_range_min_km": 108,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 59143,
-        "prf_min_hz": 21233,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 3.1691,
-        "pulse_width_min_us": 2.5929,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.8743,
-        "scan_period_min_s": 2.3517,
-        "scan_type": "sector",
-        "track_capacity_max": 5,
-        "track_capacity_min": 5,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:blue_vixen:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 221.76,
-        "bandwidth_min_mhz": 181.44,
-        "centre_frequency_max_ghz": 9.73386,
-        "centre_frequency_min_ghz": 9.35214,
-        "coherent_processing_interval_max_ms": 112.53,
-        "coherent_processing_interval_min_ms": 92.07,
-        "detection_range_max_km": 84,
-        "detection_range_min_km": 50,
-        "duty_cycle_max": 0.063586,
-        "duty_cycle_min": 0.052025,
-        "dwell_time_max_ms": 362.34,
-        "dwell_time_min_ms": 296.46,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 124.52,
-        "frequency_agility_min_mhz": 101.88,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 135,
-        "instrumented_range_min_km": 81,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 19180,
-        "prf_min_hz": 7250,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 13.079,
-        "pulse_width_min_us": 10.701,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.742,
-        "scan_period_min_s": 4.698,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:blue_fox",
-      "label": "Radar",
-      "properties": {
-        "antenna": "monopulse radar",
-        "band": "I",
-        "frequency_agility_max_mhz": 124.927,
-        "frequency_agility_min_mhz": 22.815,
-        "name": "Blue Fox",
-        "polarization": "linear",
-        "scan_period_max_s": 5.7563,
-        "scan_period_min_s": 1.2771,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:blue_fox:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 134.189,
-        "bandwidth_min_mhz": 109.791,
-        "centre_frequency_max_ghz": 9.530166,
-        "centre_frequency_min_ghz": 9.156434,
-        "coherent_processing_interval_max_ms": 59.807,
-        "coherent_processing_interval_min_ms": 48.933,
-        "detection_range_max_km": 75,
-        "detection_range_min_km": 45,
-        "duty_cycle_max": 0.030636,
-        "duty_cycle_min": 0.025066,
-        "dwell_time_max_ms": 175.879,
-        "dwell_time_min_ms": 143.901,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 65.043,
-        "frequency_agility_min_mhz": 53.217,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 90,
-        "instrumented_range_min_km": 54,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 22343,
-        "prf_min_hz": 9319,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.8345,
-        "pulse_width_min_us": 3.9555,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.8455,
-        "scan_period_min_s": 3.9645,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 2,
-        "track_capacity_min": 2,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:blue_fox:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 178.332,
-        "bandwidth_min_mhz": 145.908,
-        "centre_frequency_max_ghz": 9.61248,
-        "centre_frequency_min_ghz": 9.23552,
-        "coherent_processing_interval_max_ms": 68.816,
-        "coherent_processing_interval_min_ms": 56.304,
-        "detection_range_max_km": 64,
-        "detection_range_min_km": 38,
-        "duty_cycle_max": 0.04387,
-        "duty_cycle_min": 0.035894,
-        "dwell_time_max_ms": 220.22,
-        "dwell_time_min_ms": 180.18,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 93.764,
-        "frequency_agility_min_mhz": 76.716,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 90,
-        "instrumented_range_min_km": 54,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 32380,
-        "prf_min_hz": 12336,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 4.0744,
-        "pulse_width_min_us": 3.3336,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.3132,
-        "scan_period_min_s": 2.7108,
-        "scan_type": "sector",
-        "track_capacity_max": 2,
-        "track_capacity_min": 2,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:blue_fox:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 112.475,
-        "bandwidth_min_mhz": 92.025,
-        "centre_frequency_max_ghz": 9.653994,
-        "centre_frequency_min_ghz": 9.275406,
-        "coherent_processing_interval_max_ms": 77.825,
-        "coherent_processing_interval_min_ms": 63.675,
-        "detection_range_max_km": 71,
-        "detection_range_min_km": 43,
-        "duty_cycle_max": 0.048304,
-        "duty_cycle_min": 0.039522,
-        "dwell_time_max_ms": 264.561,
-        "dwell_time_min_ms": 216.459,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 27.885,
-        "frequency_agility_min_mhz": 22.815,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 90,
-        "instrumented_range_min_km": 54,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 44417,
-        "prf_min_hz": 18353,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 3.4243,
-        "pulse_width_min_us": 2.8017,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.5609,
-        "scan_period_min_s": 1.2771,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:blue_fox:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 156.618,
-        "bandwidth_min_mhz": 128.142,
-        "centre_frequency_max_ghz": 9.481308,
-        "centre_frequency_min_ghz": 9.109492,
-        "coherent_processing_interval_max_ms": 73.634,
-        "coherent_processing_interval_min_ms": 60.246,
-        "detection_range_max_km": 49,
-        "detection_range_min_km": 29,
-        "duty_cycle_max": 0.058238,
-        "duty_cycle_min": 0.04765,
-        "dwell_time_max_ms": 242.902,
-        "dwell_time_min_ms": 198.738,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 78.606,
-        "frequency_agility_min_mhz": 64.314,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 71,
-        "instrumented_range_min_km": 43,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 59454,
-        "prf_min_hz": 21370,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 3.2142,
-        "pulse_width_min_us": 2.6298,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.8886,
-        "scan_period_min_s": 2.3634,
-        "scan_type": "sector",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:blue_fox:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 222.761,
-        "bandwidth_min_mhz": 182.259,
-        "centre_frequency_max_ghz": 9.431022,
-        "centre_frequency_min_ghz": 9.061178,
-        "coherent_processing_interval_max_ms": 113.443,
-        "coherent_processing_interval_min_ms": 92.817,
-        "detection_range_max_km": 34,
-        "detection_range_min_km": 20,
-        "duty_cycle_max": 0.063773,
-        "duty_cycle_min": 0.052178,
-        "dwell_time_max_ms": 364.243,
-        "dwell_time_min_ms": 298.017,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 124.927,
-        "frequency_agility_min_mhz": 102.213,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 54,
-        "instrumented_range_min_km": 32,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 19491,
-        "prf_min_hz": 7387,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 13.1241,
-        "pulse_width_min_us": 10.7379,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.7563,
-        "scan_period_min_s": 4.7097,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:foxhunter",
-      "label": "Radar",
-      "properties": {
-        "antenna": "pulse-doppler array",
-        "band": "I/J",
-        "frequency_agility_max_mhz": 125.334,
-        "frequency_agility_min_mhz": 23.148,
-        "name": "Foxhunter",
-        "polarization": "linear",
-        "scan_period_max_s": 5.7706,
-        "scan_period_min_s": 1.2888,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:foxhunter:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 135.19,
-        "bandwidth_min_mhz": 110.61,
-        "centre_frequency_max_ghz": 9.737328,
-        "centre_frequency_min_ghz": 9.355472,
-        "coherent_processing_interval_max_ms": 60.72,
-        "coherent_processing_interval_min_ms": 49.68,
-        "detection_range_max_km": 231,
-        "detection_range_min_km": 139,
-        "duty_cycle_max": 0.030823,
-        "duty_cycle_min": 0.025219,
-        "dwell_time_max_ms": 177.782,
-        "dwell_time_min_ms": 145.458,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 65.45,
-        "frequency_agility_min_mhz": 53.55,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 278,
-        "instrumented_range_min_km": 166,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 22654,
-        "prf_min_hz": 9456,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.8796,
-        "pulse_width_min_us": 3.9924,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.8598,
-        "scan_period_min_s": 3.9762,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 12,
-        "track_capacity_min": 12,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:foxhunter:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 179.333,
-        "bandwidth_min_mhz": 146.727,
-        "centre_frequency_max_ghz": 9.819642,
-        "centre_frequency_min_ghz": 9.434558,
-        "coherent_processing_interval_max_ms": 69.729,
-        "coherent_processing_interval_min_ms": 57.051,
-        "detection_range_max_km": 196,
-        "detection_range_min_km": 118,
-        "duty_cycle_max": 0.044057,
-        "duty_cycle_min": 0.036047,
-        "dwell_time_max_ms": 222.123,
-        "dwell_time_min_ms": 181.737,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 94.171,
-        "frequency_agility_min_mhz": 77.049,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 278,
-        "instrumented_range_min_km": 166,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 32691,
-        "prf_min_hz": 12473,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 4.1195,
-        "pulse_width_min_us": 3.3705,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.3275,
-        "scan_period_min_s": 2.7225,
-        "scan_type": "sector",
-        "track_capacity_max": 12,
-        "track_capacity_min": 12,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:foxhunter:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 113.476,
-        "bandwidth_min_mhz": 92.844,
-        "centre_frequency_max_ghz": 9.861156,
-        "centre_frequency_min_ghz": 9.474444,
-        "coherent_processing_interval_max_ms": 78.738,
-        "coherent_processing_interval_min_ms": 64.422,
-        "detection_range_max_km": 219,
-        "detection_range_min_km": 131,
-        "duty_cycle_max": 0.048491,
-        "duty_cycle_min": 0.039675,
-        "dwell_time_max_ms": 266.464,
-        "dwell_time_min_ms": 218.016,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 28.292,
-        "frequency_agility_min_mhz": 23.148,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 278,
-        "instrumented_range_min_km": 166,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 44728,
-        "prf_min_hz": 18490,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 3.4694,
-        "pulse_width_min_us": 2.8386,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.5752,
-        "scan_period_min_s": 1.2888,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:foxhunter:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 157.619,
-        "bandwidth_min_mhz": 128.961,
-        "centre_frequency_max_ghz": 9.68847,
-        "centre_frequency_min_ghz": 9.30853,
-        "coherent_processing_interval_max_ms": 74.547,
-        "coherent_processing_interval_min_ms": 60.993,
-        "detection_range_max_km": 150,
-        "detection_range_min_km": 90,
-        "duty_cycle_max": 0.058425,
-        "duty_cycle_min": 0.047803,
-        "dwell_time_max_ms": 244.805,
-        "dwell_time_min_ms": 200.295,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 79.013,
-        "frequency_agility_min_mhz": 64.647,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 221,
-        "instrumented_range_min_km": 133,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 59765,
-        "prf_min_hz": 21507,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 3.2593,
-        "pulse_width_min_us": 2.6667,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.9029,
-        "scan_period_min_s": 2.3751,
-        "scan_type": "sector",
-        "track_capacity_max": 6,
-        "track_capacity_min": 6,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:foxhunter:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 223.762,
-        "bandwidth_min_mhz": 183.078,
-        "centre_frequency_max_ghz": 9.638184,
-        "centre_frequency_min_ghz": 9.260216,
-        "coherent_processing_interval_max_ms": 114.356,
-        "coherent_processing_interval_min_ms": 93.564,
-        "detection_range_max_km": 104,
-        "detection_range_min_km": 62,
-        "duty_cycle_max": 0.06396,
-        "duty_cycle_min": 0.052331,
-        "dwell_time_max_ms": 366.146,
-        "dwell_time_min_ms": 299.574,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 125.334,
-        "frequency_agility_min_mhz": 102.546,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 166,
-        "instrumented_range_min_km": 100,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 19802,
-        "prf_min_hz": 7524,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 13.1692,
-        "pulse_width_min_us": 10.7748,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.7706,
-        "scan_period_min_s": 4.7214,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
       "id": "radar:ecr_90",
       "label": "Radar",
       "properties": {
@@ -17718,626 +13534,6 @@
       }
     },
     {
-      "id": "radar:cyrano_iv",
-      "label": "Radar",
-      "properties": {
-        "antenna": "monopulse radar",
-        "band": "I/J",
-        "frequency_agility_max_mhz": 126.148,
-        "frequency_agility_min_mhz": 23.814,
-        "name": "Cyrano IV",
-        "polarization": "linear",
-        "scan_period_max_s": 5.7992,
-        "scan_period_min_s": 1.3122,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:cyrano_iv:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 137.192,
-        "bandwidth_min_mhz": 112.248,
-        "centre_frequency_max_ghz": 9.539652,
-        "centre_frequency_min_ghz": 9.165548,
-        "coherent_processing_interval_max_ms": 62.546,
-        "coherent_processing_interval_min_ms": 51.174,
-        "detection_range_max_km": 88,
-        "detection_range_min_km": 52,
-        "duty_cycle_max": 0.031197,
-        "duty_cycle_min": 0.025525,
-        "dwell_time_max_ms": 181.588,
-        "dwell_time_min_ms": 148.572,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 66.264,
-        "frequency_agility_min_mhz": 54.216,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 105,
-        "instrumented_range_min_km": 63,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 23276,
-        "prf_min_hz": 9730,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 4.9698,
-        "pulse_width_min_us": 4.0662,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.8884,
-        "scan_period_min_s": 3.9996,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 2,
-        "track_capacity_min": 2,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:cyrano_iv:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 181.335,
-        "bandwidth_min_mhz": 148.365,
-        "centre_frequency_max_ghz": 9.621966,
-        "centre_frequency_min_ghz": 9.244634,
-        "coherent_processing_interval_max_ms": 71.555,
-        "coherent_processing_interval_min_ms": 58.545,
-        "detection_range_max_km": 74,
-        "detection_range_min_km": 44,
-        "duty_cycle_max": 0.044431,
-        "duty_cycle_min": 0.036353,
-        "dwell_time_max_ms": 225.929,
-        "dwell_time_min_ms": 184.851,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 94.985,
-        "frequency_agility_min_mhz": 77.715,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 105,
-        "instrumented_range_min_km": 63,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 33313,
-        "prf_min_hz": 12747,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 4.2097,
-        "pulse_width_min_us": 3.4443,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.3561,
-        "scan_period_min_s": 2.7459,
-        "scan_type": "sector",
-        "track_capacity_max": 2,
-        "track_capacity_min": 2,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:cyrano_iv:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 115.478,
-        "bandwidth_min_mhz": 94.482,
-        "centre_frequency_max_ghz": 9.66348,
-        "centre_frequency_min_ghz": 9.28452,
-        "coherent_processing_interval_max_ms": 80.564,
-        "coherent_processing_interval_min_ms": 65.916,
-        "detection_range_max_km": 82,
-        "detection_range_min_km": 50,
-        "duty_cycle_max": 0.048865,
-        "duty_cycle_min": 0.039981,
-        "dwell_time_max_ms": 270.27,
-        "dwell_time_min_ms": 221.13,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 29.106,
-        "frequency_agility_min_mhz": 23.814,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 105,
-        "instrumented_range_min_km": 63,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 45350,
-        "prf_min_hz": 18764,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 3.5596,
-        "pulse_width_min_us": 2.9124,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.6038,
-        "scan_period_min_s": 1.3122,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:cyrano_iv:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 159.621,
-        "bandwidth_min_mhz": 130.599,
-        "centre_frequency_max_ghz": 9.490794,
-        "centre_frequency_min_ghz": 9.118606,
-        "coherent_processing_interval_max_ms": 76.373,
-        "coherent_processing_interval_min_ms": 62.487,
-        "detection_range_max_km": 56,
-        "detection_range_min_km": 34,
-        "duty_cycle_max": 0.058799,
-        "duty_cycle_min": 0.048109,
-        "dwell_time_max_ms": 248.611,
-        "dwell_time_min_ms": 203.409,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 79.827,
-        "frequency_agility_min_mhz": 65.313,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 84,
-        "instrumented_range_min_km": 50,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 60387,
-        "prf_min_hz": 21781,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 3.3495,
-        "pulse_width_min_us": 2.7405,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.9315,
-        "scan_period_min_s": 2.3985,
-        "scan_type": "sector",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:cyrano_iv:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 225.764,
-        "bandwidth_min_mhz": 184.716,
-        "centre_frequency_max_ghz": 9.440508,
-        "centre_frequency_min_ghz": 9.070292,
-        "coherent_processing_interval_max_ms": 116.182,
-        "coherent_processing_interval_min_ms": 95.058,
-        "detection_range_max_km": 39,
-        "detection_range_min_km": 23,
-        "duty_cycle_max": 0.064334,
-        "duty_cycle_min": 0.052637,
-        "dwell_time_max_ms": 369.952,
-        "dwell_time_min_ms": 302.688,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 126.148,
-        "frequency_agility_min_mhz": 103.212,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 62,
-        "instrumented_range_min_km": 38,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 20424,
-        "prf_min_hz": 7798,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 13.2594,
-        "pulse_width_min_us": 10.8486,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.7992,
-        "scan_period_min_s": 4.7448,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
-      "id": "radar:anemone",
-      "label": "Radar",
-      "properties": {
-        "antenna": "pulse-doppler array",
-        "band": "I/J",
-        "frequency_agility_max_mhz": 126.555,
-        "frequency_agility_min_mhz": 24.147,
-        "name": "Anemone",
-        "polarization": "linear",
-        "scan_period_max_s": 5.8135,
-        "scan_period_min_s": 1.3239,
-        "supported_frequency_patterns": [
-          "chirped",
-          "fixed",
-          "hopping",
-          "stepped"
-        ],
-        "supported_intrapulse_modulations": [
-          "linear_fm",
-          "phase_coded"
-        ],
-        "supported_pri_modulations": [
-          "jittered",
-          "sliding",
-          "stable",
-          "staggered"
-        ]
-      }
-    },
-    {
-      "id": "radar_mode:anemone:range_while_search",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.32,
-        "average_power_min_kw": 1.08,
-        "azimuth_coverage_max_deg": 132,
-        "azimuth_coverage_min_deg": 108,
-        "bandwidth_max_mhz": 138.193,
-        "bandwidth_min_mhz": 113.067,
-        "centre_frequency_max_ghz": 9.746814,
-        "centre_frequency_min_ghz": 9.364586,
-        "coherent_processing_interval_max_ms": 63.459,
-        "coherent_processing_interval_min_ms": 51.921,
-        "detection_range_max_km": 125,
-        "detection_range_min_km": 75,
-        "duty_cycle_max": 0.031384,
-        "duty_cycle_min": 0.025678,
-        "dwell_time_max_ms": 183.491,
-        "dwell_time_min_ms": 150.129,
-        "elevation_coverage_max_deg": 66,
-        "elevation_coverage_min_deg": 54,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 66.671,
-        "frequency_agility_min_mhz": 54.549,
-        "frequency_pattern": "stepped",
-        "instrumented_range_max_km": 150,
-        "instrumented_range_min_km": 90,
-        "intrapulse_modulation": "linear_fm",
-        "name": "range_while_search",
-        "noise_figure_max_db": 3.85,
-        "noise_figure_min_db": 3.15,
-        "notes": "",
-        "peak_power_max_kw": 6.6,
-        "peak_power_min_kw": 5.4,
-        "polarization": "linear",
-        "prf_max_hz": 23587,
-        "prf_min_hz": 9867,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.935,
-        "probability_of_detection_min": 0.765,
-        "pulse_width_max_us": 5.0149,
-        "pulse_width_min_us": 4.1031,
-        "range_resolution_max_m": 49.5,
-        "range_resolution_min_m": 40.5,
-        "scan_period_max_s": 4.9027,
-        "scan_period_min_s": 4.0113,
-        "scan_type": "mechanical_or_electronic",
-        "track_capacity_max": 8,
-        "track_capacity_min": 8,
-        "velocity_resolution_max_mps": 19.8,
-        "velocity_resolution_min_mps": 16.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:anemone:track_while_scan",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.76,
-        "average_power_min_kw": 1.44,
-        "azimuth_coverage_max_deg": 77,
-        "azimuth_coverage_min_deg": 63,
-        "bandwidth_max_mhz": 182.336,
-        "bandwidth_min_mhz": 149.184,
-        "centre_frequency_max_ghz": 9.829128,
-        "centre_frequency_min_ghz": 9.443672,
-        "coherent_processing_interval_max_ms": 72.468,
-        "coherent_processing_interval_min_ms": 59.292,
-        "detection_range_max_km": 106,
-        "detection_range_min_km": 64,
-        "duty_cycle_max": 0.044618,
-        "duty_cycle_min": 0.036506,
-        "dwell_time_max_ms": 227.832,
-        "dwell_time_min_ms": 186.408,
-        "elevation_coverage_max_deg": 50,
-        "elevation_coverage_min_deg": 40,
-        "false_alarm_rate_max": 1e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 95.392,
-        "frequency_agility_min_mhz": 78.048,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 150,
-        "instrumented_range_min_km": 90,
-        "intrapulse_modulation": "linear_fm",
-        "name": "track_while_scan",
-        "noise_figure_max_db": 3.63,
-        "noise_figure_min_db": 2.97,
-        "notes": "",
-        "peak_power_max_kw": 7.15,
-        "peak_power_min_kw": 5.85,
-        "polarization": "linear",
-        "prf_max_hz": 33624,
-        "prf_min_hz": 12884,
-        "pri_modulation": "jittered",
-        "probability_of_detection_max": 0.968,
-        "probability_of_detection_min": 0.792,
-        "pulse_width_max_us": 4.2548,
-        "pulse_width_min_us": 3.4812,
-        "range_resolution_max_m": 33.0,
-        "range_resolution_min_m": 27.0,
-        "scan_period_max_s": 3.3704,
-        "scan_period_min_s": 2.7576,
-        "scan_type": "sector",
-        "track_capacity_max": 8,
-        "track_capacity_min": 8,
-        "velocity_resolution_max_mps": 13.2,
-        "velocity_resolution_min_mps": 10.8,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:anemone:single_target_track",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.98,
-        "average_power_min_kw": 1.62,
-        "azimuth_coverage_max_deg": 22,
-        "azimuth_coverage_min_deg": 18,
-        "bandwidth_max_mhz": 116.479,
-        "bandwidth_min_mhz": 95.301,
-        "centre_frequency_max_ghz": 9.870642,
-        "centre_frequency_min_ghz": 9.483558,
-        "coherent_processing_interval_max_ms": 81.477,
-        "coherent_processing_interval_min_ms": 66.663,
-        "detection_range_max_km": 119,
-        "detection_range_min_km": 71,
-        "duty_cycle_max": 0.049052,
-        "duty_cycle_min": 0.040134,
-        "dwell_time_max_ms": 272.173,
-        "dwell_time_min_ms": 222.687,
-        "elevation_coverage_max_deg": 22,
-        "elevation_coverage_min_deg": 18,
-        "false_alarm_rate_max": 0.0,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 29.513,
-        "frequency_agility_min_mhz": 24.147,
-        "frequency_pattern": "fixed",
-        "instrumented_range_max_km": 150,
-        "instrumented_range_min_km": 90,
-        "intrapulse_modulation": "phase_coded",
-        "name": "single_target_track",
-        "noise_figure_max_db": 3.3,
-        "noise_figure_min_db": 2.7,
-        "notes": "",
-        "peak_power_max_kw": 7.7,
-        "peak_power_min_kw": 6.3,
-        "polarization": "linear",
-        "prf_max_hz": 45661,
-        "prf_min_hz": 18901,
-        "pri_modulation": "stable",
-        "probability_of_detection_max": 1.0,
-        "probability_of_detection_min": 0.828,
-        "pulse_width_max_us": 3.6047,
-        "pulse_width_min_us": 2.9493,
-        "range_resolution_max_m": 22.0,
-        "range_resolution_min_m": 18.0,
-        "scan_period_max_s": 1.6181,
-        "scan_period_min_s": 1.3239,
-        "scan_type": "focused",
-        "track_capacity_max": 1,
-        "track_capacity_min": 1,
-        "velocity_resolution_max_mps": 8.8,
-        "velocity_resolution_min_mps": 7.2,
-        "waveform": "pulse_doppler"
-      }
-    },
-    {
-      "id": "radar_mode:anemone:look_down_shoot_down",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 2.09,
-        "average_power_min_kw": 1.71,
-        "azimuth_coverage_max_deg": 88,
-        "azimuth_coverage_min_deg": 72,
-        "bandwidth_max_mhz": 160.622,
-        "bandwidth_min_mhz": 131.418,
-        "centre_frequency_max_ghz": 9.697956,
-        "centre_frequency_min_ghz": 9.317644,
-        "coherent_processing_interval_max_ms": 77.286,
-        "coherent_processing_interval_min_ms": 63.234,
-        "detection_range_max_km": 81,
-        "detection_range_min_km": 49,
-        "duty_cycle_max": 0.058986,
-        "duty_cycle_min": 0.048262,
-        "dwell_time_max_ms": 250.514,
-        "dwell_time_min_ms": 204.966,
-        "elevation_coverage_max_deg": 55,
-        "elevation_coverage_min_deg": 45,
-        "false_alarm_rate_max": 2e-06,
-        "false_alarm_rate_min": 0.0,
-        "frequency_agility_max_mhz": 80.234,
-        "frequency_agility_min_mhz": 65.646,
-        "frequency_pattern": "hopping",
-        "instrumented_range_max_km": 120,
-        "instrumented_range_min_km": 72,
-        "intrapulse_modulation": "phase_coded",
-        "name": "look_down_shoot_down",
-        "noise_figure_max_db": 4.18,
-        "noise_figure_min_db": 3.42,
-        "notes": "",
-        "peak_power_max_kw": 7.48,
-        "peak_power_min_kw": 6.12,
-        "polarization": "linear",
-        "prf_max_hz": 60698,
-        "prf_min_hz": 21918,
-        "pri_modulation": "staggered",
-        "probability_of_detection_max": 0.88,
-        "probability_of_detection_min": 0.72,
-        "pulse_width_max_us": 3.3946,
-        "pulse_width_min_us": 2.7774,
-        "range_resolution_max_m": 38.5,
-        "range_resolution_min_m": 31.5,
-        "scan_period_max_s": 2.9458,
-        "scan_period_min_s": 2.4102,
-        "scan_type": "sector",
-        "track_capacity_max": 4,
-        "track_capacity_min": 4,
-        "velocity_resolution_max_mps": 6.6,
-        "velocity_resolution_min_mps": 5.4,
-        "waveform": "doppler_filtering"
-      }
-    },
-    {
-      "id": "radar_mode:anemone:air_to_ground_mapping",
-      "label": "RadarMode",
-      "properties": {
-        "average_power_max_kw": 1.65,
-        "average_power_min_kw": 1.35,
-        "azimuth_coverage_max_deg": 66,
-        "azimuth_coverage_min_deg": 54,
-        "bandwidth_max_mhz": 226.765,
-        "bandwidth_min_mhz": 185.535,
-        "centre_frequency_max_ghz": 9.64767,
-        "centre_frequency_min_ghz": 9.26933,
-        "coherent_processing_interval_max_ms": 117.095,
-        "coherent_processing_interval_min_ms": 95.805,
-        "detection_range_max_km": 56,
-        "detection_range_min_km": 34,
-        "duty_cycle_max": 0.064521,
-        "duty_cycle_min": 0.05279,
-        "dwell_time_max_ms": 371.855,
-        "dwell_time_min_ms": 304.245,
-        "elevation_coverage_max_deg": 33,
-        "elevation_coverage_min_deg": 27,
-        "false_alarm_rate_max": 1.5e-05,
-        "false_alarm_rate_min": 5e-06,
-        "frequency_agility_max_mhz": 126.555,
-        "frequency_agility_min_mhz": 103.545,
-        "frequency_pattern": "chirped",
-        "instrumented_range_max_km": 90,
-        "instrumented_range_min_km": 54,
-        "intrapulse_modulation": "linear_fm",
-        "name": "air_to_ground_mapping",
-        "noise_figure_max_db": 4.4,
-        "noise_figure_min_db": 3.6,
-        "notes": "",
-        "peak_power_max_kw": 6.05,
-        "peak_power_min_kw": 4.95,
-        "polarization": "linear",
-        "prf_max_hz": 20735,
-        "prf_min_hz": 7935,
-        "pri_modulation": "sliding",
-        "probability_of_detection_max": 0.858,
-        "probability_of_detection_min": 0.702,
-        "pulse_width_max_us": 13.3045,
-        "pulse_width_min_us": 10.8855,
-        "range_resolution_max_m": 5.5,
-        "range_resolution_min_m": 4.5,
-        "scan_period_max_s": 5.8135,
-        "scan_period_min_s": 4.7565,
-        "scan_type": "ground",
-        "track_capacity_max": null,
-        "track_capacity_min": null,
-        "velocity_resolution_max_mps": 3.3,
-        "velocity_resolution_min_mps": 2.7,
-        "waveform": "synthetic_aperture_or_real_beam"
-      }
-    },
-    {
       "id": "aircraft_family:mig_29",
       "label": "AircraftFamily",
       "properties": {
@@ -18361,13 +13557,6 @@
       }
     },
     {
-      "id": "operator:russia",
-      "label": "Operator",
-      "properties": {
-        "name": "Russia"
-      }
-    },
-    {
       "id": "operator:ukraine",
       "label": "Operator",
       "properties": {
@@ -18375,24 +13564,10 @@
       }
     },
     {
-      "id": "operator:india",
-      "label": "Operator",
-      "properties": {
-        "name": "India"
-      }
-    },
-    {
       "id": "operator:poland",
       "label": "Operator",
       "properties": {
         "name": "Poland"
-      }
-    },
-    {
-      "id": "operator:germany",
-      "label": "Operator",
-      "properties": {
-        "name": "Germany"
       }
     },
     {
@@ -18409,6 +13584,13 @@
         "service_ceiling_m": 18000,
         "tags": [],
         "variant": "MiG-29S"
+      }
+    },
+    {
+      "id": "operator:russia",
+      "label": "Operator",
+      "properties": {
+        "name": "Russia"
       }
     },
     {
@@ -18458,6 +13640,13 @@
       }
     },
     {
+      "id": "operator:india",
+      "label": "Operator",
+      "properties": {
+        "name": "India"
+      }
+    },
+    {
       "id": "aircraft:mig_35",
       "label": "AircraftVariant",
       "properties": {
@@ -18497,20 +13686,6 @@
       }
     },
     {
-      "id": "operator:china",
-      "label": "Operator",
-      "properties": {
-        "name": "China"
-      }
-    },
-    {
-      "id": "operator:kazakhstan",
-      "label": "Operator",
-      "properties": {
-        "name": "Kazakhstan"
-      }
-    },
-    {
       "id": "aircraft:su_30mki",
       "label": "AircraftVariant",
       "properties": {
@@ -18543,6 +13718,13 @@
       }
     },
     {
+      "id": "operator:kazakhstan",
+      "label": "Operator",
+      "properties": {
+        "name": "Kazakhstan"
+      }
+    },
+    {
       "id": "aircraft:su_35s",
       "label": "AircraftVariant",
       "properties": {
@@ -18559,10 +13741,10 @@
       }
     },
     {
-      "id": "operator:egypt",
+      "id": "operator:china",
       "label": "Operator",
       "properties": {
-        "name": "Egypt"
+        "name": "China"
       }
     },
     {
@@ -18570,22 +13752,6 @@
       "label": "AircraftFamily",
       "properties": {
         "name": "MiG-31"
-      }
-    },
-    {
-      "id": "aircraft:mig_31b",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 720,
-        "family": "MiG-31",
-        "ferry_range_km": 3000,
-        "generation": "4",
-        "hardpoints": 6,
-        "max_speed_mach": 2.83,
-        "role": "interceptor",
-        "service_ceiling_m": 20600,
-        "tags": [],
-        "variant": "MiG-31B"
       }
     },
     {
@@ -18635,6 +13801,13 @@
       }
     },
     {
+      "id": "operator:germany",
+      "label": "Operator",
+      "properties": {
+        "name": "Germany"
+      }
+    },
+    {
       "id": "operator:italy",
       "label": "Operator",
       "properties": {
@@ -18672,6 +13845,22 @@
       }
     },
     {
+      "id": "aircraft:typhoon_tranche_3a__export",
+      "label": "AircraftVariant",
+      "properties": {
+        "combat_radius_km": 1389,
+        "family": "Typhoon",
+        "ferry_range_km": 2900,
+        "generation": "4+",
+        "hardpoints": 13,
+        "max_speed_mach": 2.0,
+        "role": "multirole fighter",
+        "service_ceiling_m": 19800,
+        "tags": [],
+        "variant": "Typhoon Tranche 3A (export)"
+      }
+    },
+    {
       "id": "operator:kuwait",
       "label": "Operator",
       "properties": {
@@ -18686,75 +13875,10 @@
       }
     },
     {
-      "id": "operator:saudi_arabia",
-      "label": "Operator",
-      "properties": {
-        "name": "Saudi Arabia"
-      }
-    },
-    {
       "id": "aircraft_family:f_16",
       "label": "AircraftFamily",
       "properties": {
         "name": "F-16"
-      }
-    },
-    {
-      "id": "aircraft:f_16a_b",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 550,
-        "family": "F-16",
-        "ferry_range_km": 4220,
-        "generation": "4",
-        "hardpoints": 9,
-        "max_speed_mach": 2.05,
-        "role": "multirole fighter",
-        "service_ceiling_m": 15240,
-        "tags": [],
-        "variant": "F-16A/B"
-      }
-    },
-    {
-      "id": "operator:united_states",
-      "label": "Operator",
-      "properties": {
-        "name": "United States"
-      }
-    },
-    {
-      "id": "operator:belgium",
-      "label": "Operator",
-      "properties": {
-        "name": "Belgium"
-      }
-    },
-    {
-      "id": "operator:netherlands",
-      "label": "Operator",
-      "properties": {
-        "name": "Netherlands"
-      }
-    },
-    {
-      "id": "operator:norway",
-      "label": "Operator",
-      "properties": {
-        "name": "Norway"
-      }
-    },
-    {
-      "id": "operator:denmark",
-      "label": "Operator",
-      "properties": {
-        "name": "Denmark"
-      }
-    },
-    {
-      "id": "operator:israel",
-      "label": "Operator",
-      "properties": {
-        "name": "Israel"
       }
     },
     {
@@ -18771,6 +13895,13 @@
         "service_ceiling_m": 15240,
         "tags": [],
         "variant": "F-16C/D Block 50"
+      }
+    },
+    {
+      "id": "operator:united_states",
+      "label": "Operator",
+      "properties": {
+        "name": "United States"
       }
     },
     {
@@ -18855,13 +13986,6 @@
       }
     },
     {
-      "id": "operator:taiwan",
-      "label": "Operator",
-      "properties": {
-        "name": "Taiwan"
-      }
-    },
-    {
       "id": "aircraft_family:f_15",
       "label": "AircraftFamily",
       "properties": {
@@ -18885,10 +14009,17 @@
       }
     },
     {
-      "id": "operator:japan",
+      "id": "operator:saudi_arabia",
       "label": "Operator",
       "properties": {
-        "name": "Japan"
+        "name": "Saudi Arabia"
+      }
+    },
+    {
+      "id": "operator:israel",
+      "label": "Operator",
+      "properties": {
+        "name": "Israel"
       }
     },
     {
@@ -18924,13 +14055,6 @@
       }
     },
     {
-      "id": "operator:singapore",
-      "label": "Operator",
-      "properties": {
-        "name": "Singapore"
-      }
-    },
-    {
       "id": "aircraft:f_15ex_eagle_ii",
       "label": "AircraftVariant",
       "properties": {
@@ -18944,73 +14068,6 @@
         "service_ceiling_m": 18200,
         "tags": [],
         "variant": "F-15EX Eagle II"
-      }
-    },
-    {
-      "id": "aircraft_family:j_7",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "J-7"
-      }
-    },
-    {
-      "id": "aircraft:j_7g",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 850,
-        "family": "J-7",
-        "ferry_range_km": 2200,
-        "generation": "3",
-        "hardpoints": 5,
-        "max_speed_mach": 2.0,
-        "role": "light fighter",
-        "service_ceiling_m": 17500,
-        "tags": [],
-        "variant": "J-7G"
-      }
-    },
-    {
-      "id": "operator:bangladesh",
-      "label": "Operator",
-      "properties": {
-        "name": "Bangladesh"
-      }
-    },
-    {
-      "id": "operator:myanmar",
-      "label": "Operator",
-      "properties": {
-        "name": "Myanmar"
-      }
-    },
-    {
-      "id": "operator:nigeria",
-      "label": "Operator",
-      "properties": {
-        "name": "Nigeria"
-      }
-    },
-    {
-      "id": "aircraft_family:j_8",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "J-8"
-      }
-    },
-    {
-      "id": "aircraft:j_8f",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 800,
-        "family": "J-8",
-        "ferry_range_km": 2200,
-        "generation": "3+",
-        "hardpoints": 7,
-        "max_speed_mach": 2.2,
-        "role": "interceptor",
-        "service_ceiling_m": 20000,
-        "tags": [],
-        "variant": "J-8F"
       }
     },
     {
@@ -19096,6 +14153,20 @@
         "service_ceiling_m": 16900,
         "tags": [],
         "variant": "JF-17 Block I"
+      }
+    },
+    {
+      "id": "operator:myanmar",
+      "label": "Operator",
+      "properties": {
+        "name": "Myanmar"
+      }
+    },
+    {
+      "id": "operator:nigeria",
+      "label": "Operator",
+      "properties": {
+        "name": "Nigeria"
       }
     },
     {
@@ -19279,61 +14350,6 @@
       }
     },
     {
-      "id": "aircraft:tejas_mk1a",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 500,
-        "family": "Tejas",
-        "ferry_range_km": 1850,
-        "generation": "4+",
-        "hardpoints": 8,
-        "max_speed_mach": 1.6,
-        "role": "light multirole fighter",
-        "service_ceiling_m": 15200,
-        "tags": [],
-        "variant": "Tejas Mk1A"
-      }
-    },
-    {
-      "id": "aircraft:tejas_mk2",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 1500,
-        "family": "Tejas",
-        "ferry_range_km": 2500,
-        "generation": "4+",
-        "hardpoints": 11,
-        "max_speed_mach": 1.8,
-        "role": "multirole fighter",
-        "service_ceiling_m": 17000,
-        "tags": [],
-        "variant": "Tejas Mk2"
-      }
-    },
-    {
-      "id": "aircraft_family:mig_21",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "MiG-21"
-      }
-    },
-    {
-      "id": "aircraft:mig_21_bison",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 370,
-        "family": "MiG-21",
-        "ferry_range_km": 1210,
-        "generation": "3+",
-        "hardpoints": 5,
-        "max_speed_mach": 2.05,
-        "role": "interceptor",
-        "service_ceiling_m": 17500,
-        "tags": [],
-        "variant": "MiG-21 Bison"
-      }
-    },
-    {
       "id": "aircraft:mig_29upg",
       "label": "AircraftVariant",
       "properties": {
@@ -19370,29 +14386,6 @@
         "service_ceiling_m": 17060,
         "tags": [],
         "variant": "Mirage 2000I"
-      }
-    },
-    {
-      "id": "aircraft_family:jaguar",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "Jaguar"
-      }
-    },
-    {
-      "id": "aircraft:jaguar_is_darin_iii",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 850,
-        "family": "Jaguar",
-        "ferry_range_km": 3524,
-        "generation": "3+",
-        "hardpoints": 5,
-        "max_speed_mach": 1.6,
-        "role": "strike aircraft",
-        "service_ceiling_m": 14000,
-        "tags": [],
-        "variant": "Jaguar IS DARIN III"
       }
     },
     {
@@ -19564,6 +14557,34 @@
       }
     },
     {
+      "id": "operator:netherlands",
+      "label": "Operator",
+      "properties": {
+        "name": "Netherlands"
+      }
+    },
+    {
+      "id": "operator:norway",
+      "label": "Operator",
+      "properties": {
+        "name": "Norway"
+      }
+    },
+    {
+      "id": "operator:denmark",
+      "label": "Operator",
+      "properties": {
+        "name": "Denmark"
+      }
+    },
+    {
+      "id": "operator:belgium",
+      "label": "Operator",
+      "properties": {
+        "name": "Belgium"
+      }
+    },
+    {
       "id": "aircraft:f_35b_lightning_ii",
       "label": "AircraftVariant",
       "properties": {
@@ -19711,20 +14732,6 @@
       }
     },
     {
-      "id": "operator:croatia",
-      "label": "Operator",
-      "properties": {
-        "name": "Croatia"
-      }
-    },
-    {
-      "id": "operator:indonesia",
-      "label": "Operator",
-      "properties": {
-        "name": "Indonesia"
-      }
-    },
-    {
       "id": "aircraft:rafale_b",
       "label": "AircraftVariant",
       "properties": {
@@ -19757,22 +14764,6 @@
       }
     },
     {
-      "id": "aircraft:mirage_2000c",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 740,
-        "family": "Mirage 2000",
-        "ferry_range_km": 3335,
-        "generation": "4",
-        "hardpoints": 9,
-        "max_speed_mach": 2.2,
-        "role": "interceptor",
-        "service_ceiling_m": 17060,
-        "tags": [],
-        "variant": "Mirage 2000C"
-      }
-    },
-    {
       "id": "aircraft:mirage_2000_5",
       "label": "AircraftVariant",
       "properties": {
@@ -19786,6 +14777,13 @@
         "service_ceiling_m": 17060,
         "tags": [],
         "variant": "Mirage 2000-5"
+      }
+    },
+    {
+      "id": "operator:taiwan",
+      "label": "Operator",
+      "properties": {
+        "name": "Taiwan"
       }
     },
     {
@@ -19847,13 +14845,6 @@
       }
     },
     {
-      "id": "operator:brazil",
-      "label": "Operator",
-      "properties": {
-        "name": "Brazil"
-      }
-    },
-    {
       "id": "aircraft:jas_39e_gripen",
       "label": "AircraftVariant",
       "properties": {
@@ -19870,49 +14861,10 @@
       }
     },
     {
-      "id": "aircraft_family:sea_harrier",
-      "label": "AircraftFamily",
+      "id": "operator:brazil",
+      "label": "Operator",
       "properties": {
-        "name": "Sea Harrier"
-      }
-    },
-    {
-      "id": "aircraft:sea_harrier_fa2",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 750,
-        "family": "Sea Harrier",
-        "ferry_range_km": 3600,
-        "generation": "4",
-        "hardpoints": 5,
-        "max_speed_mach": 1.2,
-        "role": "carrier fighter",
-        "service_ceiling_m": 16000,
-        "tags": [],
-        "variant": "Sea Harrier FA2"
-      }
-    },
-    {
-      "id": "aircraft_family:harrier",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "Harrier"
-      }
-    },
-    {
-      "id": "aircraft:harrier_gr_9",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 556,
-        "family": "Harrier",
-        "ferry_range_km": 3300,
-        "generation": "4",
-        "hardpoints": 7,
-        "max_speed_mach": 0.9,
-        "role": "V/STOL attack aircraft",
-        "service_ceiling_m": 15240,
-        "tags": [],
-        "variant": "Harrier GR.9"
+        "name": "Brazil"
       }
     },
     {
@@ -19920,22 +14872,6 @@
       "label": "AircraftFamily",
       "properties": {
         "name": "Tornado"
-      }
-    },
-    {
-      "id": "aircraft:tornado_f3",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 1390,
-        "family": "Tornado",
-        "ferry_range_km": 3890,
-        "generation": "4",
-        "hardpoints": 8,
-        "max_speed_mach": 2.2,
-        "role": "interceptor",
-        "service_ceiling_m": 15240,
-        "tags": [],
-        "variant": "Tornado F3"
       }
     },
     {
@@ -19952,89 +14888,6 @@
         "service_ceiling_m": 15240,
         "tags": [],
         "variant": "Tornado IDS"
-      }
-    },
-    {
-      "id": "aircraft_family:mirage_f1",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "Mirage F1"
-      }
-    },
-    {
-      "id": "aircraft:mirage_f1cr",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 425,
-        "family": "Mirage F1",
-        "ferry_range_km": 3300,
-        "generation": "3+",
-        "hardpoints": 5,
-        "max_speed_mach": 2.2,
-        "role": "reconnaissance fighter",
-        "service_ceiling_m": 20000,
-        "tags": [],
-        "variant": "Mirage F1CR"
-      }
-    },
-    {
-      "id": "operator:morocco",
-      "label": "Operator",
-      "properties": {
-        "name": "Morocco"
-      }
-    },
-    {
-      "id": "aircraft_family:super_etendard",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "Super Etendard"
-      }
-    },
-    {
-      "id": "aircraft:super_etendard_modernise",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 850,
-        "family": "Super Etendard",
-        "ferry_range_km": 1820,
-        "generation": "3+",
-        "hardpoints": 5,
-        "max_speed_mach": 1.3,
-        "role": "carrier strike aircraft",
-        "service_ceiling_m": 13700,
-        "tags": [],
-        "variant": "Super Etendard Modernise"
-      }
-    },
-    {
-      "id": "operator:argentina",
-      "label": "Operator",
-      "properties": {
-        "name": "Argentina"
-      }
-    },
-    {
-      "id": "aircraft_family:amx",
-      "label": "AircraftFamily",
-      "properties": {
-        "name": "AMX"
-      }
-    },
-    {
-      "id": "aircraft:amx_a_11b",
-      "label": "AircraftVariant",
-      "properties": {
-        "combat_radius_km": 889,
-        "family": "AMX",
-        "ferry_range_km": 3330,
-        "generation": "3+",
-        "hardpoints": 5,
-        "max_speed_mach": 0.86,
-        "role": "light attack aircraft",
-        "service_ceiling_m": 13000,
-        "tags": [],
-        "variant": "AMX A-11B"
       }
     }
   ]
