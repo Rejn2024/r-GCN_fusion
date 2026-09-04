@@ -202,6 +202,13 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert "relation_edges = partition_edges_by_relation(edge_index, edge_types" not in source
     assert "edge_src, edge_dst, edge_type = [], [], []" not in source
     assert 'enabled=USE_AMP and DEVICE.type == "cuda"' in source
+    assert "def metrics_from_outputs(outputs, name)" in source
+    assert "def all_split_metrics(return_outputs=False)" in source
+    assert "final_metrics, final_outputs = all_split_metrics(return_outputs=True)" in source
+    assert "def compact_ds_assessments(output, top_k=3)" in source
+    assert "positions_by_track = [[] for _ in series_ids]" in source
+    assert "split_by_series = {series_id: name" in source
+    assert "torch.nonzero(observation_track_index == track_index" not in source
 
 
 def test_track_target_preparation_avoids_redundant_containers_and_gpu_scans():
