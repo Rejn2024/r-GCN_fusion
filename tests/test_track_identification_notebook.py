@@ -229,6 +229,15 @@ def test_track_target_preparation_avoids_redundant_containers_and_gpu_scans():
     assert "for split_batches in batches_by_split.values()" in source
 
 
+def test_track_split_declares_hashable_series_id_types():
+    source = _code_source()
+
+    assert "labels_by_series: dict[str, tuple[str, str, str]]" in source
+    assert ") -> dict[str, set[str]]:" in source
+    assert "result: dict[str, set[str]]" in source
+    assert "strata: dict[tuple[str, str, str], list[str]]" in source
+
+
 def test_track_notebook_densifies_and_standardizes_with_bounded_memory():
     source = _code_source()
     assert "backing_file=GRAPH_FEATURE_MEMMAP" in source
