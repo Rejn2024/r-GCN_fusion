@@ -25,6 +25,27 @@ def test_track_identification_notebook_code_cells_parse():
             ast.parse("".join(cell.get("source", [])), filename=f"cell {index}")
 
 
+def test_track_notebook_releases_construction_objects_immediately_before_training():
+    cells = _notebook()["cells"]
+    training_index = next(
+        index
+        for index, cell in enumerate(cells)
+        if "from torch.utils.tensorboard import SummaryWriter"
+        in "".join(cell.get("source", []))
+    )
+    cleanup_source = "".join(cells[training_index - 1].get("source", []))
+
+    assert cells[training_index - 1]["cell_type"] == "code"
+    assert "_CONSTRUCTION_ONLY_OBJECTS" in cleanup_source
+    assert '"feature_rows"' in cleanup_source
+    assert '"graph_outputs"' in cleanup_source
+    assert '"edge_index"' in cleanup_source
+    assert '"target_rows"' in cleanup_source
+    assert "globals().pop(object_name, None)" in cleanup_source
+    assert "gc.collect()" in cleanup_source
+    assert "torch.cuda.empty_cache()" in cleanup_source
+
+
 def test_track_notebook_has_one_joint_rao_head_and_observation_mode_head():
     source = _code_source()
     assert "class TrackAttentionPool" in source
