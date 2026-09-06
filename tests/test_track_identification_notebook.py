@@ -25,25 +25,21 @@ def test_track_identification_notebook_code_cells_parse():
             ast.parse("".join(cell.get("source", [])), filename=f"cell {index}")
 
 
-def test_track_notebook_releases_construction_objects_immediately_before_training():
-    cells = _notebook()["cells"]
-    training_index = next(
-        index
-        for index, cell in enumerate(cells)
-        if "from torch.utils.tensorboard import SummaryWriter"
-        in "".join(cell.get("source", []))
-    )
-    cleanup_source = "".join(cells[training_index - 1].get("source", []))
+def test_track_notebook_logs_and_times_every_code_cell():
+    notebook = _notebook()
+    code_cells = [cell for cell in notebook["cells"] if cell.get("cell_type") == "code"]
+    source = _code_source()
 
-    assert cells[training_index - 1]["cell_type"] == "code"
-    assert "_CONSTRUCTION_ONLY_OBJECTS" in cleanup_source
-    assert '"feature_rows"' in cleanup_source
-    assert '"graph_outputs"' in cleanup_source
-    assert '"edge_index"' in cleanup_source
-    assert '"target_rows"' in cleanup_source
-    assert "globals().pop(object_name, None)" in cleanup_source
-    assert "gc.collect()" in cleanup_source
-    assert "torch.cuda.empty_cache()" in cleanup_source
+    assert code_cells
+    assert all(cell.get("metadata", {}).get("logging_step") for cell in code_cells)
+    assert all("# Major step:" in "".join(cell.get("source", [])) for cell in code_cells)
+    assert 'LOG_FILE = ARTIFACT_DIR / "track_identification.log"' in source
+    assert "RotatingFileHandler" in source
+    assert "logging.captureWarnings(True)" in source
+    assert 'ipython.events.register("pre_run_cell", _log_cell_start)' in source
+    assert 'ipython.events.register("post_run_cell", _log_cell_finish)' in source
+    assert 'NOTEBOOK_LOGGER.error("FAILED major step' in source
+    assert "total time:" in source
 
 
 def test_track_notebook_has_one_joint_rao_head_and_observation_mode_head():
