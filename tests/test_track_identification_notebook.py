@@ -174,6 +174,15 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     )
     assert "def split_metrics(name)" in source
     assert "outputs = model_forward(prepared_batches_by_split[name])" in source
+    assert 'CACHE_PREPARED_NODE_FEATURES = os.getenv("CACHE_PREPARED_NODE_FEATURES", "0") == "1"' in source
+    assert "if CACHE_PREPARED_NODE_FEATURES:" in source
+    assert "del batches_by_split" in source
+    assert "include_embeddings=return_outputs" in source
+    assert 'output.pop("observation_embeddings")' in source
+    assert "def release_training_memory" in source
+    assert "gc.collect()" in source
+    assert "torch.cuda.empty_cache()" in source
+    assert "del loss, regularization, data_loss, loss_parts, outputs" in source
     assert (
         'METRICS_INTERVAL = max(1, int(os.getenv("METRICS_INTERVAL", "10")))' in source
     )
