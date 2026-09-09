@@ -31,12 +31,15 @@ from esm_observation_generator import (
     _mode_bounds,
     _uniform_error,
 )
-from kg_generator import AIRCRAFT, RADARS, slug
+from kg_generator import AIRCRAFT, RADARS, equipment_for_aircraft, slug
 
 DEFAULT_SERIES_COUNT = 2500
 DEFAULT_SAMPLE_INTERVAL_SECONDS = 0.5
 DEFAULT_MIN_DURATION_SECONDS = 1.0
 DEFAULT_MAX_DURATION_SECONDS = 60.0
+DEFAULT_RADAR_OFF_PROBABILITY = 0.6
+DEFAULT_KINEMATIC_DROPOUT_PROBABILITY = 0.25
+DEFAULT_ALL_KINEMATIC_DROPOUT_PROBABILITY = 0.10
 
 
 def _json_error_context(
@@ -198,6 +201,63 @@ def _evolve_kinematics(
     return kin
 
 
+def _degraded_kinematics(
+    rng: random.Random,
+    kinematics: dict[str, Any],
+    partial_probability: float,
+    all_probability: float,
+) -> dict[str, Any]:
+    """Model an imperfect kinematic feed, including bearing-only observations."""
+    roll = rng.random()
+    if roll < all_probability:
+        return {}
+    if roll >= all_probability + partial_probability:
+        return kinematics
+    bearing = {
+        "bearing_deg": kinematics["heading_deg"],
+        "bearing_error_deg": kinematics["heading_error_deg"],
+    }
+    optional_groups = (
+        ("ground_speed_kph", "ground_speed_error_kph", "ground_speed_min_kph", "ground_speed_max_kph"),
+        ("altitude_m", "altitude_error_m", "altitude_min_m", "altitude_max_m"),
+        ("heading_deg", "heading_error_deg"),
+    )
+    # Half of partial observations are intentionally bearing-only; the rest retain
+    # a random subset to represent heterogeneous contributing sensors.
+    if rng.random() >= 0.5:
+        for group in optional_groups:
+            if rng.random() < 0.45:
+                bearing.update({key: kinematics[key] for key in group})
+    return bearing
+
+
+def _operational_state(rng: random.Random, radar_off_probability: float) -> str:
+    if rng.random() < radar_off_probability:
+        return "totally_passive" if rng.random() < 0.42 else "radar_silent"
+    return "low_emission" if rng.random() < 0.65 else "active"
+
+
+def _non_radar_emissions(rng: random.Random, aircraft: Any, state: str) -> dict[str, Any]:
+    """Return detectable emissions from the variant's other RF equipment."""
+    if state == "totally_passive":
+        return {}
+    data_link, radio, altimeter = equipment_for_aircraft(aircraft)
+    probabilities = {
+        "radar_silent": (0.35, 0.30, 0.45),
+        "low_emission": (0.25, 0.20, 0.35),
+        "active": (0.70, 0.65, 0.75),
+    }[state]
+    emissions = {}
+    for key, equipment, probability in zip(
+        ("data_link", "radio", "radar_altimeter"),
+        (data_link, radio, altimeter),
+        probabilities,
+    ):
+        if rng.random() < probability:
+            emissions[key] = {"equipment": equipment.name, **equipment.properties}
+    return emissions
+
+
 def _observation_count_for_duration(duration_s: float, sample_interval_s: float) -> int:
     return max(2, int(round(duration_s / sample_interval_s)) + 1)
 
@@ -284,6 +344,9 @@ def _generate_single_observation_series(
         int,
         float,
         int | None,
+        float,
+        float,
+        float,
     ],
 ) -> dict[str, Any]:
     (
@@ -296,6 +359,9 @@ def _generate_single_observation_series(
         span,
         mode_switch_probability,
         max_mode_switches,
+        radar_off_probability,
+        kinematic_dropout_probability,
+        all_kinematic_dropout_probability,
     ) = args
     rng = random.Random(series_seed)
     aircraft = rng.choice(AIRCRAFT)
@@ -318,6 +384,8 @@ def _generate_single_observation_series(
     base_kinematics = _kinematics(rng, aircraft)
 
     observations = []
+    effective_modes: list[tuple[str, str]] = []
+    emission_states: list[str] = []
     for obs_index in range(obs_count):
         elapsed_s = obs_index * sample_interval_s + rng.uniform(-0.04, 0.04)
         elapsed_s = max(0.0, elapsed_s)
@@ -326,6 +394,32 @@ def _generate_single_observation_series(
         props = _mode_bounds(mode)
         label = _mode_label(aircraft, operator, radar, mode)
         kin = _evolve_kinematics(rng, base_kinematics, elapsed_s)
+        operational_state = _operational_state(rng, radar_off_probability)
+        emission_states.append(operational_state)
+        radar_esm = None
+        if operational_state in {"active", "low_emission"}:
+            radar_esm = _sample_esm_parameters(rng, props)
+            if operational_state == "low_emission":
+                # Low-probability-of-intercept operation produces an incomplete
+                # intercept: independently omit many observable categories.
+                radar_esm = {
+                    key: value for key, value in radar_esm.items() if rng.random() < 0.45
+                }
+        approximate_kinematics = _degraded_kinematics(
+            rng, kin, kinematic_dropout_probability, all_kinematic_dropout_probability
+        )
+        if operational_state in {"radar_silent", "totally_passive"}:
+            label = ObservationLabel(
+                label.aircraft_family,
+                label.aircraft_variant,
+                label.aircraft_id,
+                label.operator,
+                label.radar,
+                label.radar_id,
+                "OFF",
+                f"radar_mode:{slug(radar.name)}:off",
+            )
+        effective_modes.append((label.mode, label.mode_id))
         observations.append(
             {
                 "observation_id": f"esm_series_{series_index:05d}_obs_{obs_index + 1:03d}",
@@ -346,11 +440,18 @@ def _generate_single_observation_series(
                     kin["ground_speed_kph"],
                     elapsed_s,
                 ),
-                "approximate_kinematics": kin,
-                "esm_radar_parameters": _sample_esm_parameters(rng, props),
+                "approximate_kinematics": approximate_kinematics,
+                "operational_emission_state": operational_state,
+                "rf_emissions": _non_radar_emissions(rng, aircraft, operational_state),
+                "esm_radar_parameters": radar_esm,
                 "ground_truth_label": asdict(label),
             }
         )
+    effective_shift_indices = [
+        index
+        for index in range(1, len(effective_modes))
+        if effective_modes[index] != effective_modes[index - 1]
+    ]
     return {
         "series_id": f"esm_series_{series_index:05d}",
         "emitter_type": "aircraft",
@@ -359,15 +460,20 @@ def _generate_single_observation_series(
             observations[-1]["elapsed_time_s"] - observations[0]["elapsed_time_s"], 3
         ),
         "observation_count": len(observations),
-        "mode_shift_sequence_indices": shift_indices,
-        "mode_shift_sequence_index": shift_indices[0] if shift_indices else None,
+        "mode_shift_sequence_indices": effective_shift_indices,
+        "mode_shift_sequence_index": effective_shift_indices[0] if effective_shift_indices else None,
+        "scheduled_active_radar_mode_shift_sequence_indices": shift_indices,
         "ground_truth_mode_sequence": [
             {
                 "sequence_index": index,
-                "mode": mode.name,
-                "mode_id": f"radar_mode:{slug(radar.name)}:{slug(mode.name)}",
+                "mode": effective_modes[index][0],
+                "mode_id": effective_modes[index][1],
             }
             for index, mode in enumerate(mode_schedule)
+        ],
+        "ground_truth_emission_state_sequence": [
+            {"sequence_index": index, "state": state}
+            for index, state in enumerate(emission_states)
         ],
         "ground_truth_track_label": asdict(
             ObservationLabel(
@@ -377,11 +483,11 @@ def _generate_single_observation_series(
                 operator,
                 radar.name,
                 f"radar:{slug(radar.name)}",
-                "multiple" if shift_indices else mode_schedule[0].name,
+                "multiple" if len(set(effective_modes)) > 1 else effective_modes[0][0],
                 (
                     "multiple"
-                    if shift_indices
-                    else f"radar_mode:{slug(radar.name)}:{slug(mode_schedule[0].name)}"
+                    if len(set(effective_modes)) > 1
+                    else effective_modes[0][1]
                 ),
             )
         ),
@@ -418,6 +524,9 @@ def generate_observation_series(
     mode_switch_probability: float = 0.03,
     max_mode_switches: int | None = None,
     workers: int | None = None,
+    radar_off_probability: float = DEFAULT_RADAR_OFF_PROBABILITY,
+    kinematic_dropout_probability: float = DEFAULT_KINEMATIC_DROPOUT_PROBABILITY,
+    all_kinematic_dropout_probability: float = DEFAULT_ALL_KINEMATIC_DROPOUT_PROBABILITY,
     _intelligence_config: tuple[int, int, int] | None = None,
 ) -> dict[str, Any]:
     """Generate single-emitter ESM observation series.
@@ -448,6 +557,15 @@ def generate_observation_series(
         raise ValueError("time range must be longer than max_duration_s")
     if workers is not None and workers < 1:
         raise ValueError("workers must be positive when provided")
+    for name, value in (
+        ("radar_off_probability", radar_off_probability),
+        ("kinematic_dropout_probability", kinematic_dropout_probability),
+        ("all_kinematic_dropout_probability", all_kinematic_dropout_probability),
+    ):
+        if not 0.0 <= value <= 1.0:
+            raise ValueError(f"{name} must be between 0.0 and 1.0")
+    if kinematic_dropout_probability + all_kinematic_dropout_probability > 1.0:
+        raise ValueError("kinematic dropout probabilities must sum to at most 1.0")
 
     seed_rng = random.Random(seed)
     tasks = [
@@ -461,6 +579,9 @@ def generate_observation_series(
             span,
             mode_switch_probability,
             max_mode_switches,
+            radar_off_probability,
+            kinematic_dropout_probability,
+            all_kinematic_dropout_probability,
         )
         for series_index in range(1, count + 1)
     ]
@@ -498,6 +619,9 @@ def generate_observation_series(
         "sample_interval_s": sample_interval_s,
         "mode_switch_probability": mode_switch_probability,
         "max_mode_switches": max_mode_switches,
+        "radar_off_probability": radar_off_probability,
+        "kinematic_dropout_probability": kinematic_dropout_probability,
+        "all_kinematic_dropout_probability": all_kinematic_dropout_probability,
         "workers": worker_count,
         "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
     }
@@ -508,8 +632,8 @@ def generate_observation_series(
         metadata.update(
             {
                 "intelligence_reports_per_series": [
-                    min_reports + 1,
-                    max_reports + 1,
+                    min_reports + 2,
+                    max_reports + 2,
                 ],
                 "additional_track_reports_per_series": [
                     min_reports,
@@ -519,6 +643,7 @@ def generate_observation_series(
                     "sighting_report",
                     "pattern_of_life_report",
                     "theatre_aircraft_report",
+                    "airborne_aircraft_report",
                 ],
                 "intelligence_claim_types": list(CLAIM_TYPES),
             }
@@ -611,6 +736,20 @@ def parse_args(argv: Iterable[str] | None = None) -> argparse.Namespace:
         help="Optional cap on radar-mode transitions per series",
     )
     parser.add_argument(
+        "--radar-off-probability", type=float, default=DEFAULT_RADAR_OFF_PROBABILITY,
+        help="Per-observation probability that the fire-control radar is OFF",
+    )
+    parser.add_argument(
+        "--kinematic-dropout-probability", type=float,
+        default=DEFAULT_KINEMATIC_DROPOUT_PROBABILITY,
+        help="Probability of retaining only a partial (possibly bearing-only) kinematic report",
+    )
+    parser.add_argument(
+        "--all-kinematic-dropout-probability", type=float,
+        default=DEFAULT_ALL_KINEMATIC_DROPOUT_PROBABILITY,
+        help="Probability of receiving no kinematic data",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=Path("generated/esm_observation_series.json"),
@@ -644,6 +783,9 @@ def main(argv: Iterable[str] | None = None) -> None:
         args.mode_switch_probability,
         args.max_mode_switches,
         args.workers,
+        radar_off_probability=args.radar_off_probability,
+        kinematic_dropout_probability=args.kinematic_dropout_probability,
+        all_kinematic_dropout_probability=args.all_kinematic_dropout_probability,
     )
     write_observation_series_json(data, args.output)
     print(f"Wrote {args.count} ESM observation series to {args.output}")

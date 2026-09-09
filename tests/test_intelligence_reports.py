@@ -26,7 +26,7 @@ def test_report_enrichment_can_avoid_copying_freshly_generated_series():
     enriched = add_intelligence_reports_to_series(data, copy_data=False)
 
     assert enriched is data
-    assert enriched["metadata"]["intelligence_reports_per_series"] == [11, 13]
+    assert enriched["metadata"]["intelligence_reports_per_series"] == [12, 14]
 
 
 def test_report_enrichment_preserves_non_mutating_default():
@@ -39,7 +39,7 @@ def test_report_enrichment_preserves_non_mutating_default():
 
     assert enriched is not data
     assert "intelligence_reports_per_series" not in data["metadata"]
-    assert enriched["metadata"]["intelligence_reports_per_series"] == [11, 13]
+    assert enriched["metadata"]["intelligence_reports_per_series"] == [12, 14]
 
 
 def test_series_generator_keeps_measurements_per_observation_and_reports_per_series():
@@ -51,16 +51,17 @@ def test_series_generator_keeps_measurements_per_observation_and_reports_per_ser
         end=datetime(2025, 1, 2, tzinfo=UTC),
         workers=1,
     )
-    assert data["metadata"]["intelligence_reports_per_series"] == [11, 13]
+    assert data["metadata"]["intelligence_reports_per_series"] == [12, 14]
     assert data["metadata"]["intelligence_report_types"] == [
         "sighting_report",
         "pattern_of_life_report",
         "theatre_aircraft_report",
+        "airborne_aircraft_report",
     ]
     for series in data["observation_series"]:
         reports = series["intelligence_reports"]
         observation_ids = [obs["observation_id"] for obs in series["observations"]]
-        assert 11 <= len(reports) <= 13
+        assert 12 <= len(reports) <= 14
         assert all(
             report["valid_for_observation_ids"] == observation_ids for report in reports
         )
@@ -112,6 +113,7 @@ def test_generated_reports_are_track_aware_sightings_and_patterns_of_life():
         "sighting_report",
         "pattern_of_life_report",
         "theatre_aircraft_report",
+        "airborne_aircraft_report",
     }
     assert not report_types & {"order_of_battle", "automated_synthetic_intelligence"}
     sightings = [
@@ -171,6 +173,9 @@ def test_generated_reports_are_track_aware_sightings_and_patterns_of_life():
     assert 10 <= len(expected["aircraft_types"]) <= 100
     assert len(expected["aircraft_types"]) == len(set(expected["aircraft_types"]))
     assert series["ground_truth_track_label"]["aircraft_id"] in expected["aircraft_ids"]
+    airborne = next(report for report in reports if report["report_type"] == "airborne_aircraft_report")
+    assert set(airborne["airborne_aircraft"]["aircraft_ids"]) <= set(expected["aircraft_ids"])
+    assert series["ground_truth_track_label"]["aircraft_id"] in airborne["airborne_aircraft"]["aircraft_ids"]
 
 
 def test_flatten_reports_does_not_duplicate_shared_series_reports():

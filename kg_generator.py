@@ -75,6 +75,39 @@ class AircraftVariant:
     tags: tuple[str, ...] = field(default_factory=tuple)
 
 
+@dataclass(frozen=True)
+class RFEquipment:
+    """Representative non-fire-control RF equipment carried by aircraft."""
+
+    name: str
+    equipment_type: str
+    properties: dict[str, Any]
+
+
+DATA_LINKS = (
+    RFEquipment("Tactical Link A", "DataLink", {"frequency_band": "L", "frequency_min_mhz": 960, "frequency_max_mhz": 1215, "data_rate_kbps": 238, "access_method": "TDMA", "encryption": True}),
+    RFEquipment("Tactical Link B", "DataLink", {"frequency_band": "UHF", "frequency_min_mhz": 225, "frequency_max_mhz": 400, "data_rate_kbps": 64, "access_method": "frequency_hopping", "encryption": True}),
+    RFEquipment("Tactical Link C", "DataLink", {"frequency_band": "S", "frequency_min_mhz": 2200, "frequency_max_mhz": 2500, "data_rate_kbps": 1000, "access_method": "directional", "encryption": True}),
+)
+
+RADIOS = (
+    RFEquipment("Airborne Radio A", "Radio", {"frequency_band": "VHF/UHF", "frequency_min_mhz": 30, "frequency_max_mhz": 400, "channel_spacing_khz": 25.0, "modulation": "AM/FM", "frequency_hopping": True, "output_power_w": 20}),
+    RFEquipment("Airborne Radio B", "Radio", {"frequency_band": "UHF", "frequency_min_mhz": 225, "frequency_max_mhz": 512, "channel_spacing_khz": 8.33, "modulation": "AM", "frequency_hopping": True, "output_power_w": 30}),
+    RFEquipment("Airborne Radio C", "Radio", {"frequency_band": "VHF", "frequency_min_mhz": 108, "frequency_max_mhz": 174, "channel_spacing_khz": 25.0, "modulation": "AM", "frequency_hopping": False, "output_power_w": 16}),
+)
+
+RADAR_ALTIMETERS = (
+    RFEquipment("Radar Altimeter A", "RadarAltimeter", {"frequency_band": "C", "frequency_min_ghz": 4.2, "frequency_max_ghz": 4.4, "waveform": "FMCW", "measurement_min_m": 0, "measurement_max_m": 1500, "accuracy_m": 0.75, "output_power_w": 1.0}),
+    RFEquipment("Radar Altimeter B", "RadarAltimeter", {"frequency_band": "C", "frequency_min_ghz": 4.25, "frequency_max_ghz": 4.35, "waveform": "FMCW", "measurement_min_m": 0, "measurement_max_m": 2500, "accuracy_m": 1.0, "output_power_w": 0.8}),
+)
+
+
+def equipment_for_aircraft(aircraft: AircraftVariant) -> tuple[RFEquipment, RFEquipment, RFEquipment]:
+    """Deterministically assign a data link, radio and altimeter to a variant."""
+    index = sum(ord(char) for char in aircraft.variant)
+    return (DATA_LINKS[index % len(DATA_LINKS)], RADIOS[index % len(RADIOS)], RADAR_ALTIMETERS[index % len(RADAR_ALTIMETERS)])
+
+
 def slug(value: str) -> str:
     return "".join(ch.lower() if ch.isalnum() else "_" for ch in value).strip("_")
 
@@ -306,6 +339,15 @@ def generate_graph() -> dict[str, Any]:
     nodes: dict[str, dict[str, Any]] = {}
     edges: list[dict[str, str]] = []
 
+    for equipment in (*DATA_LINKS, *RADIOS, *RADAR_ALTIMETERS):
+        add_node(
+            nodes,
+            f"{slug(equipment.equipment_type)}:{slug(equipment.name)}",
+            equipment.equipment_type,
+            name=equipment.name,
+            **equipment.properties,
+        )
+
     # Only emit radars that participate in a current aircraft/radar/operator
     # combination.  This keeps retired and developmental systems from remaining
     # selectable as orphan classes after the aircraft inventory is pruned.
@@ -400,6 +442,16 @@ def generate_graph() -> dict[str, Any]:
                 notes=mode.notes,
             )
             add_edge(edges, radar_id, "HAS_MODE", mode_id)
+        off_mode_id = f"radar_mode:{slug(radar.name)}:off"
+        add_node(
+            nodes,
+            off_mode_id,
+            "RadarMode",
+            name="OFF",
+            emission_state="radar_silent",
+            emits_rf=False,
+        )
+        add_edge(edges, radar_id, "HAS_MODE", off_mode_id)
 
     for aircraft in AIRCRAFT:
         family_id = f"aircraft_family:{slug(aircraft.family)}"
@@ -423,12 +475,20 @@ def generate_graph() -> dict[str, Any]:
         )
         add_edge(edges, variant_id, "VARIANT_OF", family_id)
         add_edge(edges, variant_id, "USES_RADAR", radar_id)
+        data_link, radio, radar_altimeter = equipment_for_aircraft(aircraft)
+        for relation, equipment in (
+            ("USES_DATA_LINK", data_link),
+            ("USES_RADIO", radio),
+            ("USES_RADAR_ALTIMETER", radar_altimeter),
+        ):
+            equipment_id = f"{slug(equipment.equipment_type)}:{slug(equipment.name)}"
+            add_edge(edges, variant_id, relation, equipment_id)
         for operator in aircraft.operators:
             operator_id = f"operator:{slug(operator)}"
             add_node(nodes, operator_id, "Operator", name=operator)
             add_edge(edges, operator_id, "OPERATES", variant_id)
 
-    return {"metadata": {"schema_version": "1.0", "service_snapshot_year": 2026, "node_count": len(nodes), "edge_count": len(edges)}, "nodes": list(nodes.values()), "edges": edges}
+    return {"metadata": {"schema_version": "1.1", "service_snapshot_year": 2026, "node_count": len(nodes), "edge_count": len(edges)}, "nodes": list(nodes.values()), "edges": edges}
 
 
 def write_json(graph: dict[str, Any], output: Path) -> None:

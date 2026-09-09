@@ -34,6 +34,7 @@ CLAIM_TYPES = (
     "last_observed_time",
     "expected_behavior",
     "theatre_aircraft_presence",
+    "airborne_aircraft_presence",
 )
 MIN_REPORTS_PER_OBSERVATION = 10
 MAX_REPORTS_PER_OBSERVATION = 12
@@ -147,7 +148,7 @@ def final_signed_compatibility(
     """
     claim_type = str(claim.get("claim_type") or "")
     object_id = claim.get("object_id") or claim.get("object_value")
-    if claim_type == "theatre_aircraft_presence":
+    if claim_type in {"theatre_aircraft_presence", "airborne_aircraft_presence"}:
         aircraft_ids = claim.get("object_ids") or []
         candidate_aircraft = candidate.get("aircraft_id")
         if candidate_aircraft is None:
@@ -676,6 +677,52 @@ def generate_theatre_aircraft_report(
     }
 
 
+def generate_airborne_aircraft_report(
+    series: dict[str, Any], theatre_report: dict[str, Any], *, rng: random.Random
+) -> dict[str, Any]:
+    """Report which aircraft from the known theatre inventory are airborne."""
+    known_ids = list(theatre_report["theatre_aircraft"]["aircraft_ids"])
+    truth_id = series["ground_truth_track_label"]["aircraft_id"]
+    other_ids = [aircraft_id for aircraft_id in known_ids if aircraft_id != truth_id]
+    airborne_ids = [truth_id]
+    if other_ids:
+        airborne_ids.extend(rng.sample(other_ids, rng.randint(0, min(5, len(other_ids)))))
+    rng.shuffle(airborne_ids)
+    aircraft_by_id = {f"aircraft:{slug(item.variant)}": item.variant for item in AIRCRAFT}
+    observed_at = _parse_utc(series["observations"][0].get("timestamp_iso8601")) or datetime.now(UTC)
+    collected_at = observed_at - timedelta(minutes=rng.uniform(1.0, 20.0))
+    published_at = collected_at + timedelta(minutes=rng.uniform(1.0, 10.0))
+    return {
+        "report_id": f"intel_report:{series['series_id']}:airborne-aircraft",
+        "series_id": series["series_id"],
+        "source_id": "source:recognized_air_picture",
+        "source_type": "air_operations_picture",
+        "report_type": "airborne_aircraft_report",
+        "published_at": _iso(published_at),
+        "collected_at": _iso(collected_at),
+        "ingested_at": _iso(published_at + timedelta(seconds=rng.uniform(5, 60))),
+        "credibility_score": round(rng.uniform(0.78, 0.97), 6),
+        "external_context": {},
+        "airborne_aircraft": {
+            "theatre_of_operations": theatre_report["theatre_aircraft"]["theatre_of_operations"],
+            "aircraft_types": [aircraft_by_id[aircraft_id] for aircraft_id in airborne_ids],
+            "aircraft_ids": airborne_ids,
+            "known_aircraft_source_report_id": theatre_report["report_id"],
+        },
+        "claims": [{
+            **_claim(
+                claim_type="airborne_aircraft_presence",
+                subject_id=series["series_id"],
+                object_id="aircraft-set:known-airborne",
+                object_value="Aircraft currently known to be airborne",
+                correct=True,
+                rng=rng,
+            ),
+            "object_ids": airborne_ids,
+        }],
+    }
+
+
 def generate_intelligence_reports_for_observation(
     observation: dict[str, Any], **kwargs: Any
 ) -> list[dict[str, Any]]:
@@ -720,12 +767,13 @@ def add_intelligence_reports_to_series(
             max_reports=max_reports,
         )
     meta = enriched.setdefault("metadata", {})
-    meta["intelligence_reports_per_series"] = [min_reports + 1, max_reports + 1]
+    meta["intelligence_reports_per_series"] = [min_reports + 2, max_reports + 2]
     meta["additional_track_reports_per_series"] = [min_reports, max_reports]
     meta["intelligence_report_types"] = [
         "sighting_report",
         "pattern_of_life_report",
         "theatre_aircraft_report",
+        "airborne_aircraft_report",
     ]
     meta["intelligence_claim_types"] = list(CLAIM_TYPES)
     return enriched
@@ -754,8 +802,14 @@ def add_intelligence_reports_to_series_entry(
     reports = generate_intelligence_reports_for_series(
         series, seed=seed, min_reports=min_reports, max_reports=max_reports
     )
+    theatre_report = generate_theatre_aircraft_report(
+        series, rng=random.Random(seed ^ 0xA17C4F7)
+    )
+    reports.append(theatre_report)
     reports.append(
-        generate_theatre_aircraft_report(series, rng=random.Random(seed ^ 0xA17C4F7))
+        generate_airborne_aircraft_report(
+            series, theatre_report, rng=random.Random(seed ^ 0xB08E19)
+        )
     )
     observation_ids = [observation["observation_id"] for observation in observations]
     series_id = series["series_id"]
@@ -809,7 +863,7 @@ def report_observation_proximity(
     prevents a series-level container from making every report applicable to
     every observation merely because their ``series_id`` values match.
     """
-    if report.get("report_type") == "theatre_aircraft_report":
+    if report.get("report_type") in {"theatre_aircraft_report", "airborne_aircraft_report"}:
         valid_ids = report.get("valid_for_observation_ids") or []
         if observation.get("observation_id") not in valid_ids:
             return None
