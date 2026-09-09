@@ -28,9 +28,17 @@ def test_series_defaults_and_schema_fields():
             assert obs["series_id"] == entry["series_id"]
             assert obs["timestamp_iso8601"].endswith("Z")
             assert obs["estimated_emitter_location"]
-            assert obs["approximate_kinematics"]
-            assert obs["esm_radar_parameters"]
+            assert isinstance(obs["approximate_kinematics"], dict)
+            assert obs["operational_emission_state"] in {
+                "radar_silent", "low_emission", "totally_passive", "active"
+            }
+            if obs["operational_emission_state"] in {"radar_silent", "totally_passive"}:
+                assert obs["esm_radar_parameters"] is None
+                continue
+            assert isinstance(obs["esm_radar_parameters"], dict)
             esm = obs["esm_radar_parameters"]
+            if obs["operational_emission_state"] == "low_emission":
+                continue
             assert esm["observed_pri_modulation"]
             assert esm["observed_intrapulse_modulation"]
             assert esm["observed_frequency_pattern"]
@@ -39,6 +47,31 @@ def test_series_defaults_and_schema_fields():
             assert esm["measured_scan_period_s"]["min"] <= esm["measured_scan_period_s"]["value"] <= esm["measured_scan_period_s"]["max"]
             assert obs["ground_truth_label"]["aircraft_id"].startswith("aircraft:")
             assert "candidate_labels_from_shared_kg_features" not in obs
+
+
+def test_radar_and_kinematic_dropout_probabilities_are_adjustable():
+    data = generate_observation_series(
+        count=2, seed=13, min_duration_s=4, max_duration_s=4, workers=1,
+        radar_off_probability=1.0,
+        kinematic_dropout_probability=0.0,
+        all_kinematic_dropout_probability=1.0,
+    )
+    observations = [obs for series in data["observation_series"] for obs in series["observations"]]
+    assert all(obs["esm_radar_parameters"] is None for obs in observations)
+    assert all(obs["operational_emission_state"] in {"radar_silent", "totally_passive"} for obs in observations)
+    assert all(obs["approximate_kinematics"] == {} for obs in observations)
+
+
+def test_partial_kinematics_can_be_bearing_only():
+    data = generate_observation_series(
+        count=5, seed=17, min_duration_s=4, max_duration_s=4, workers=1,
+        radar_off_probability=0.0,
+        kinematic_dropout_probability=1.0,
+        all_kinematic_dropout_probability=0.0,
+    )
+    kinematics = [obs["approximate_kinematics"] for series in data["observation_series"] for obs in series["observations"]]
+    assert all("bearing_deg" in row for row in kinematics)
+    assert any(set(row) == {"bearing_deg", "bearing_error_deg"} for row in kinematics)
 
 
 def test_series_length_options_and_nominal_spacing():

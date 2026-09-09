@@ -44,3 +44,18 @@ def test_corrected_variant_operator_combinations():
         "Slovakia",
     }
     assert "Egypt" not in operators_by_variant["Su-35S"]
+
+
+def test_every_variant_has_parameterized_non_radar_rf_equipment():
+    graph = generate_graph()
+    nodes = {node["id"]: node for node in graph["nodes"]}
+    edges = graph["edges"]
+    for aircraft in AIRCRAFT:
+        variant_id = "aircraft:" + "".join(
+            char.lower() if char.isalnum() else "_" for char in aircraft.variant
+        ).strip("_")
+        related = {edge["relation"]: nodes[edge["target"]] for edge in edges if edge["source"] == variant_id}
+        assert {"USES_DATA_LINK", "USES_RADIO", "USES_RADAR_ALTIMETER"} <= related.keys()
+        assert related["USES_DATA_LINK"]["properties"]["data_rate_kbps"] > 0
+        assert related["USES_RADIO"]["properties"]["output_power_w"] > 0
+        assert related["USES_RADAR_ALTIMETER"]["properties"]["measurement_max_m"] > 0
