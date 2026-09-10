@@ -119,6 +119,7 @@ def build_series_fragment(
             "observation_count": float(series.get("observation_count", n)),
         }
         _flatten_numeric("esm", obs.get("esm_radar_parameters", {}), features)
+        _flatten_numeric("rf", obs.get("rf_emissions", {}), features)
         _flatten_numeric("kin", obs.get("approximate_kinematics", {}), features)
         _flatten_numeric("loc", obs.get("estimated_emitter_location", {}), features)
         rows.append(features)
@@ -285,6 +286,8 @@ def build_series_fragment(
                         "candidate_count": float(len(enriched)),
                         "candidate_mode_score": float(score.mode_score),
                         "candidate_aircraft_score": float(score.aircraft_score),
+                        "candidate_non_radar_rf_score": float(score.rf_score),
+                        "candidate_non_radar_rf_observed_count": float(score.rf_observed_fields),
                         "candidate_total_score": float(intelligence["final_score"]),
                         "candidate_fused_non_match_mass": float(fused_non_match),
                         "candidate_fused_match_mass": float(fused_match),
@@ -541,9 +544,18 @@ def _candidate_scores(
                 else:
                     operator_score = 1.0 if operator == contextual_operator else 0.0
                 final_score = round(
-                    0.75 * score.mode_score
-                    + 0.15 * score.aircraft_score
-                    + 0.10 * operator_score,
+                    (
+                        0.60 * score.mode_score
+                        + 0.20 * score.rf_score
+                        + 0.12 * score.aircraft_score
+                        + 0.08 * operator_score
+                    )
+                    if score.rf_observed_fields
+                    else (
+                        0.75 * score.mode_score
+                        + 0.15 * score.aircraft_score
+                        + 0.10 * operator_score
+                    ),
                     6,
                 )
                 yield final_score, score, operator
