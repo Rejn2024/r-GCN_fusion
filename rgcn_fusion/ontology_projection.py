@@ -117,6 +117,7 @@ def materialize_ontology_view(driver, database: str | None = None) -> dict[str, 
           RETURN collect(toString(o.estimated_longitude_deg)+' '+
                          toString(o.estimated_latitude_deg)) AS coordinates
         }
+        WITH t, coordinates
         WHERE size(coordinates) > 1
         MERGE (trajectory:Trajectory {id:t.id+':trajectory'})
         SET trajectory:GeoFeature:ProvEntity,
