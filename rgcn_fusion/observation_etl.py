@@ -20,6 +20,7 @@ from typing import Any, Iterable
 from neo4j import GraphDatabase
 
 from rgcn_fusion.evidence_scoring import ds_masses_from_score
+from rgcn_fusion.non_radar_rf import score_non_radar_rf
 from rgcn_fusion.intelligence_reports import (
     DEFAULT_INTELLIGENCE_WEIGHT,
     aggregate_candidate_intelligence,
@@ -68,6 +69,8 @@ class CandidateScore:
     total_score: float
     matched_fields: int
     compared_fields: int
+    rf_score: float = 0.0
+    rf_observed_fields: int = 0
     feature_scores: dict[str, float] | None = None
     intelligence_features: dict[str, Any] | None = None
 
@@ -306,7 +309,14 @@ def score_candidates(
         mode_score, matched_fields, compared_fields, feature_scores = _mode_feature_scores(observation, row["mode_props"])
         aircraft_score = _aircraft_score(observation, row)
         operator_score = _external_prior_score(observation, "operator", row.get("operator"))
-        sensor_score = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
+        rf_score, rf_observed_fields, rf_features = score_non_radar_rf(
+            observation, row.get("rf_equipment") or ()
+        )
+        if rf_observed_fields:
+            sensor_score = 0.60 * mode_score + 0.20 * rf_score + 0.12 * aircraft_score + 0.08 * operator_score
+        else:
+            # Missing RF detections are absence of evidence, not contradiction.
+            sensor_score = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
         candidate_context = {
             "id": f"candidate-context:{row['mode_id']}:{row.get('aircraft_id')}",
             "series_id": observation.get("series_id"),
@@ -339,7 +349,9 @@ def score_candidates(
             total_score=round(total, 6),
             matched_fields=matched_fields,
             compared_fields=compared_fields,
-            feature_scores=feature_scores,
+            rf_score=round(rf_score, 6),
+            rf_observed_fields=rf_observed_fields,
+            feature_scores={**feature_scores, **rf_features},
             intelligence_features=intelligence_features,
         ))
 
@@ -392,12 +404,14 @@ class ObservationNeo4jETL:
         self.driver.close()
 
     def fetch_kg_candidate_rows(self) -> list[dict[str, Any]]:
-        """Fetch RadarMode rows with associated Radar, AircraftVariant, and Operator context."""
+        """Fetch radar candidates plus non-radar RF equipment carried by aircraft."""
         query = """
         MATCH (radar:Radar)-[:HAS_MODE]->(mode:RadarMode)
         OPTIONAL MATCH (aircraft:AircraftVariant)-[:USES_RADAR]->(radar)
         OPTIONAL MATCH (aircraft)-[:VARIANT_OF]->(family:AircraftFamily)
         OPTIONAL MATCH (operator:Operator)-[:OPERATES]->(aircraft)
+        OPTIONAL MATCH (aircraft)-[rf_relation]->(rf_equipment)
+        WHERE type(rf_relation) IN ['USES_DATA_LINK', 'USES_RADIO', 'USES_RADAR_ALTIMETER']
         RETURN mode.id AS mode_id,
                properties(mode) AS mode_props,
                radar.id AS radar_id,
@@ -406,7 +420,13 @@ class ObservationNeo4jETL:
                properties(aircraft) AS aircraft_props,
                family.id AS aircraft_family_id,
                aircraft IS NOT NULL AS aircraft_uses_radar,
-               operator.name AS operator
+               operator.name AS operator,
+               collect(DISTINCT rf_equipment{.*,
+                   emission_type: CASE type(rf_relation)
+                       WHEN 'USES_DATA_LINK' THEN 'data_link'
+                       WHEN 'USES_RADIO' THEN 'radio'
+                       WHEN 'USES_RADAR_ALTIMETER' THEN 'radar_altimeter'
+                   END}) AS rf_equipment
         """
         with self.driver.session(database=self.database) as session:
             return [dict(record) for record in session.run(query)]

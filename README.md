@@ -180,6 +180,11 @@ losses, and sequence-aware evaluation. The runnable
 [`Track_identification.ipynb`](notebooks/Track_identification.ipynb) notebook
 implements that design, including track-shaped dashboards, prediction artifacts,
 and evidence-grounded LLM explanations.
+The distinguishing
+[`Track_identification_non_radar_rf.ipynb`](notebooks/Track_identification_non_radar_rf.ipynb)
+edition additionally extracts data-link, radio, and radar-altimeter emissions,
+scores them against equipment carried by each aircraft candidate, and adds
+separate compatible, reverse, and contradictory non-radar RF graph relations.
 For an unseen radar mode attached to an otherwise known identity, the
 hierarchical decoder preserves the KG-valid radar/aircraft/operator tuple while
 returning `radar_mode: null` as a partially known result.
