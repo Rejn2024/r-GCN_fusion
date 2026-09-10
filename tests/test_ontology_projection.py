@@ -46,6 +46,17 @@ def test_projection_materialises_all_three_standard_vocabularies():
         assert parameters["geo"] == GEO
 
 
+def test_trajectory_filter_follows_a_with_clause():
+    driver = _Driver()
+
+    materialize_ontology_view(driver)
+
+    trajectory_query = next(
+        query for query, _ in driver.opened.calls if "MERGE (trajectory:Trajectory" in query
+    )
+    assert "}\n        WITH t, coordinates\n        WHERE size(coordinates) > 1" in trajectory_query
+
+
 def test_population_notebooks_apply_ontology_projection():
     from pathlib import Path
 
