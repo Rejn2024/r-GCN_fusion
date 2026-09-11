@@ -27,6 +27,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:n019_rubin",
+      "target": "radar_mode:n019_rubin:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:zhuk_me",
       "target": "radar_mode:zhuk_me:range_while_search"
     },
@@ -49,6 +54,11 @@
       "relation": "HAS_MODE",
       "source": "radar:zhuk_me",
       "target": "radar_mode:zhuk_me:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:zhuk_me",
+      "target": "radar_mode:zhuk_me:off"
     },
     {
       "relation": "HAS_MODE",
@@ -77,6 +87,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:zhuk_ae",
+      "target": "radar_mode:zhuk_ae:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:n001_myech",
       "target": "radar_mode:n001_myech:range_while_search"
     },
@@ -99,6 +114,11 @@
       "relation": "HAS_MODE",
       "source": "radar:n001_myech",
       "target": "radar_mode:n001_myech:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:n001_myech",
+      "target": "radar_mode:n001_myech:off"
     },
     {
       "relation": "HAS_MODE",
@@ -127,6 +147,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:n011m_bars",
+      "target": "radar_mode:n011m_bars:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:irbis_e",
       "target": "radar_mode:irbis_e:range_while_search"
     },
@@ -149,6 +174,11 @@
       "relation": "HAS_MODE",
       "source": "radar:irbis_e",
       "target": "radar_mode:irbis_e:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:irbis_e",
+      "target": "radar_mode:irbis_e:off"
     },
     {
       "relation": "HAS_MODE",
@@ -177,6 +207,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:zaslon_m",
+      "target": "radar_mode:zaslon_m:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:captor_m",
       "target": "radar_mode:captor_m:range_while_search"
     },
@@ -199,6 +234,11 @@
       "relation": "HAS_MODE",
       "source": "radar:captor_m",
       "target": "radar_mode:captor_m:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:captor_m",
+      "target": "radar_mode:captor_m:off"
     },
     {
       "relation": "HAS_MODE",
@@ -227,6 +267,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:captor_e",
+      "target": "radar_mode:captor_e:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apg_68",
       "target": "radar_mode:an_apg_68:range_while_search"
     },
@@ -249,6 +294,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apg_68",
       "target": "radar_mode:an_apg_68:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_68",
+      "target": "radar_mode:an_apg_68:off"
     },
     {
       "relation": "HAS_MODE",
@@ -277,6 +327,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:an_apg_80",
+      "target": "radar_mode:an_apg_80:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apg_83_sabr",
       "target": "radar_mode:an_apg_83_sabr:range_while_search"
     },
@@ -299,6 +354,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apg_83_sabr",
       "target": "radar_mode:an_apg_83_sabr:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_83_sabr",
+      "target": "radar_mode:an_apg_83_sabr:off"
     },
     {
       "relation": "HAS_MODE",
@@ -327,6 +387,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:an_apg_63",
+      "target": "radar_mode:an_apg_63:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apg_63_v_3",
       "target": "radar_mode:an_apg_63_v_3:range_while_search"
     },
@@ -349,6 +414,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apg_63_v_3",
       "target": "radar_mode:an_apg_63_v_3:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_63_v_3",
+      "target": "radar_mode:an_apg_63_v_3:off"
     },
     {
       "relation": "HAS_MODE",
@@ -377,6 +447,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:an_apg_70",
+      "target": "radar_mode:an_apg_70:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apg_82_v_1",
       "target": "radar_mode:an_apg_82_v_1:range_while_search"
     },
@@ -399,6 +474,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apg_82_v_1",
       "target": "radar_mode:an_apg_82_v_1:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_82_v_1",
+      "target": "radar_mode:an_apg_82_v_1:off"
     },
     {
       "relation": "HAS_MODE",
@@ -427,6 +507,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:klj_7a",
+      "target": "radar_mode:klj_7a:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:klj_10",
       "target": "radar_mode:klj_10:range_while_search"
     },
@@ -449,6 +534,11 @@
       "relation": "HAS_MODE",
       "source": "radar:klj_10",
       "target": "radar_mode:klj_10:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:klj_10",
+      "target": "radar_mode:klj_10:off"
     },
     {
       "relation": "HAS_MODE",
@@ -477,6 +567,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:klj_7",
+      "target": "radar_mode:klj_7:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:type_1473",
       "target": "radar_mode:type_1473:range_while_search"
     },
@@ -499,6 +594,11 @@
       "relation": "HAS_MODE",
       "source": "radar:type_1473",
       "target": "radar_mode:type_1473:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:type_1473",
+      "target": "radar_mode:type_1473:off"
     },
     {
       "relation": "HAS_MODE",
@@ -527,6 +627,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:type_1493_aesa",
+      "target": "radar_mode:type_1493_aesa:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:type_1475_aesa",
       "target": "radar_mode:type_1475_aesa:range_while_search"
     },
@@ -549,6 +654,11 @@
       "relation": "HAS_MODE",
       "source": "radar:type_1475_aesa",
       "target": "radar_mode:type_1475_aesa:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:type_1475_aesa",
+      "target": "radar_mode:type_1475_aesa:off"
     },
     {
       "relation": "HAS_MODE",
@@ -577,6 +687,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:nriet_aesa",
+      "target": "radar_mode:nriet_aesa:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:el_m_2032",
       "target": "radar_mode:el_m_2032:range_while_search"
     },
@@ -599,6 +714,11 @@
       "relation": "HAS_MODE",
       "source": "radar:el_m_2032",
       "target": "radar_mode:el_m_2032:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:el_m_2032",
+      "target": "radar_mode:el_m_2032:off"
     },
     {
       "relation": "HAS_MODE",
@@ -627,6 +747,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:rdy_2",
+      "target": "radar_mode:rdy_2:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apg_65",
       "target": "radar_mode:an_apg_65:range_while_search"
     },
@@ -649,6 +774,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apg_65",
       "target": "radar_mode:an_apg_65:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_65",
+      "target": "radar_mode:an_apg_65:off"
     },
     {
       "relation": "HAS_MODE",
@@ -677,6 +807,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:an_apg_73",
+      "target": "radar_mode:an_apg_73:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apg_79",
       "target": "radar_mode:an_apg_79:range_while_search"
     },
@@ -699,6 +834,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apg_79",
       "target": "radar_mode:an_apg_79:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_79",
+      "target": "radar_mode:an_apg_79:off"
     },
     {
       "relation": "HAS_MODE",
@@ -727,6 +867,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:an_apg_77",
+      "target": "radar_mode:an_apg_77:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apg_81",
       "target": "radar_mode:an_apg_81:range_while_search"
     },
@@ -749,6 +894,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apg_81",
       "target": "radar_mode:an_apg_81:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apg_81",
+      "target": "radar_mode:an_apg_81:off"
     },
     {
       "relation": "HAS_MODE",
@@ -777,6 +927,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:an_apg_78",
+      "target": "radar_mode:an_apg_78:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:an_apq_164",
       "target": "radar_mode:an_apq_164:range_while_search"
     },
@@ -799,6 +954,11 @@
       "relation": "HAS_MODE",
       "source": "radar:an_apq_164",
       "target": "radar_mode:an_apq_164:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:an_apq_164",
+      "target": "radar_mode:an_apq_164:off"
     },
     {
       "relation": "HAS_MODE",
@@ -827,6 +987,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:an_apq_181",
+      "target": "radar_mode:an_apq_181:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:rbe2_aa",
       "target": "radar_mode:rbe2_aa:range_while_search"
     },
@@ -849,6 +1014,11 @@
       "relation": "HAS_MODE",
       "source": "radar:rbe2_aa",
       "target": "radar_mode:rbe2_aa:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:rbe2_aa",
+      "target": "radar_mode:rbe2_aa:off"
     },
     {
       "relation": "HAS_MODE",
@@ -877,6 +1047,11 @@
     },
     {
       "relation": "HAS_MODE",
+      "source": "radar:ps_05_a",
+      "target": "radar_mode:ps_05_a:off"
+    },
+    {
+      "relation": "HAS_MODE",
       "source": "radar:raven_es_05",
       "target": "radar_mode:raven_es_05:range_while_search"
     },
@@ -899,6 +1074,11 @@
       "relation": "HAS_MODE",
       "source": "radar:raven_es_05",
       "target": "radar_mode:raven_es_05:air_to_ground_mapping"
+    },
+    {
+      "relation": "HAS_MODE",
+      "source": "radar:raven_es_05",
+      "target": "radar_mode:raven_es_05:off"
     },
     {
       "relation": "HAS_MODE",
@@ -926,6 +1106,11 @@
       "target": "radar_mode:ecr_90:air_to_ground_mapping"
     },
     {
+      "relation": "HAS_MODE",
+      "source": "radar:ecr_90",
+      "target": "radar_mode:ecr_90:off"
+    },
+    {
       "relation": "VARIANT_OF",
       "source": "aircraft:mig_29a",
       "target": "aircraft_family:mig_29"
@@ -934,6 +1119,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:mig_29a",
       "target": "radar:n019_rubin"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mig_29a",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mig_29a",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mig_29a",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -956,6 +1156,21 @@
       "target": "radar:n019_rubin"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mig_29s",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mig_29s",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mig_29s",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:russia",
       "target": "aircraft:mig_29s"
@@ -974,6 +1189,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:mig_29smt",
       "target": "radar:zhuk_me"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mig_29smt",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mig_29smt",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mig_29smt",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -996,6 +1226,21 @@
       "target": "radar:zhuk_me"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mig_29k",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mig_29k",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mig_29k",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:russia",
       "target": "aircraft:mig_29k"
@@ -1016,6 +1261,21 @@
       "target": "radar:zhuk_ae"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mig_35",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mig_35",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mig_35",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:russia",
       "target": "aircraft:mig_35"
@@ -1029,6 +1289,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:su_27s",
       "target": "radar:n001_myech"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:su_27s",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:su_27s",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:su_27s",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1051,6 +1326,21 @@
       "target": "radar:n011m_bars"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:su_30mki",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:su_30mki",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:su_30mki",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:india",
       "target": "aircraft:su_30mki"
@@ -1064,6 +1354,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:su_30sm",
       "target": "radar:n011m_bars"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:su_30sm",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:su_30sm",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:su_30sm",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -1091,6 +1396,21 @@
       "target": "radar:irbis_e"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:su_35s",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:su_35s",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:su_35s",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:russia",
       "target": "aircraft:su_35s"
@@ -1111,6 +1431,21 @@
       "target": "radar:zaslon_m"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mig_31bm",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mig_31bm",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mig_31bm",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:russia",
       "target": "aircraft:mig_31bm"
@@ -1124,6 +1459,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:typhoon_tranche_1",
       "target": "radar:captor_m"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:typhoon_tranche_1",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:typhoon_tranche_1",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:typhoon_tranche_1",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1161,6 +1511,21 @@
       "target": "radar:captor_m"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:typhoon_tranche_3",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:typhoon_tranche_3",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:typhoon_tranche_3",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_kingdom",
       "target": "aircraft:typhoon_tranche_3"
@@ -1191,6 +1556,21 @@
       "target": "radar:captor_e"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:typhoon_tranche_3a__export",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:typhoon_tranche_3a__export",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:typhoon_tranche_3a__export",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:kuwait",
       "target": "aircraft:typhoon_tranche_3a__export"
@@ -1209,6 +1589,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:f_16c_d_block_50",
       "target": "radar:an_apg_68"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_16c_d_block_50",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_16c_d_block_50",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_16c_d_block_50",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -1246,6 +1641,21 @@
       "target": "radar:an_apg_80"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_16e_f_block_60",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_16e_f_block_60",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_16e_f_block_60",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_arab_emirates",
       "target": "aircraft:f_16e_f_block_60"
@@ -1259,6 +1669,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:f_16v_block_70_72",
       "target": "radar:an_apg_83_sabr"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_16v_block_70_72",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_16v_block_70_72",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_16v_block_70_72",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -1286,6 +1711,21 @@
       "target": "radar:an_apg_63"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_15c",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_15c",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_15c",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:f_15c"
@@ -1311,6 +1751,21 @@
       "target": "radar:an_apg_63_v_3"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_15sa",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_15sa",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_15sa",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:saudi_arabia",
       "target": "aircraft:f_15sa"
@@ -1324,6 +1779,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:f_15e_strike_eagle",
       "target": "radar:an_apg_70"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_15e_strike_eagle",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_15e_strike_eagle",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_15e_strike_eagle",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -1341,6 +1811,21 @@
       "target": "radar:an_apg_82_v_1"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_15ex_eagle_ii",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_15ex_eagle_ii",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_15ex_eagle_ii",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:f_15ex_eagle_ii"
@@ -1354,6 +1839,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:j_10a",
       "target": "radar:klj_10"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:j_10a",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:j_10a",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:j_10a",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1371,6 +1871,21 @@
       "target": "radar:type_1473"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:j_10b",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:j_10b",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:j_10b",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:china",
       "target": "aircraft:j_10b"
@@ -1384,6 +1899,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:j_10c",
       "target": "radar:type_1493_aesa"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:j_10c",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:j_10c",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:j_10c",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1404,6 +1934,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:jf_17_block_i",
       "target": "radar:klj_7"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:jf_17_block_i",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:jf_17_block_i",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:jf_17_block_i",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1429,6 +1974,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:jf_17_block_iii",
       "target": "radar:klj_7a"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:jf_17_block_iii",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:jf_17_block_iii",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:jf_17_block_iii",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1476,6 +2036,21 @@
       "target": "radar:type_1473"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:j_11b",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:j_11b",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:j_11b",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:china",
       "target": "aircraft:j_11b"
@@ -1489,6 +2064,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:j_15",
       "target": "radar:type_1473"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:j_15",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:j_15",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:j_15",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1506,6 +2096,21 @@
       "target": "radar:nriet_aesa"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:j_16",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:j_16",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:j_16",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:china",
       "target": "aircraft:j_16"
@@ -1519,6 +2124,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:j_20a",
       "target": "radar:type_1475_aesa"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:j_20a",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:j_20a",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:j_20a",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -1536,6 +2156,21 @@
       "target": "radar:el_m_2032"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:tejas_mk1",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:tejas_mk1",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:tejas_mk1",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:india",
       "target": "aircraft:tejas_mk1"
@@ -1549,6 +2184,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:mig_29upg",
       "target": "radar:zhuk_me"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mig_29upg",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mig_29upg",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mig_29upg",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1566,6 +2216,21 @@
       "target": "radar:rdy_2"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mirage_2000i",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mirage_2000i",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mirage_2000i",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:india",
       "target": "aircraft:mirage_2000i"
@@ -1581,6 +2246,21 @@
       "target": "radar:rbe2_aa"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:rafale_eh_dh",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:rafale_eh_dh",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:rafale_eh_dh",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:india",
       "target": "aircraft:rafale_eh_dh"
@@ -1594,6 +2274,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:f_a_18c_hornet",
       "target": "radar:an_apg_73"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_a_18c_hornet",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_a_18c_hornet",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_a_18c_hornet",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1631,6 +2326,21 @@
       "target": "radar:an_apg_79"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_a_18e_super_hornet",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_a_18e_super_hornet",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_a_18e_super_hornet",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:f_a_18e_super_hornet"
@@ -1654,6 +2364,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:f_a_18f_super_hornet",
       "target": "radar:an_apg_79"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_a_18f_super_hornet",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_a_18f_super_hornet",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_a_18f_super_hornet",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1681,6 +2406,21 @@
       "target": "radar:an_apg_79"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:ea_18g_growler",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:ea_18g_growler",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:ea_18g_growler",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:ea_18g_growler"
@@ -1701,6 +2441,21 @@
       "target": "radar:an_apg_77"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_22a_raptor",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_22a_raptor",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_22a_raptor",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:f_22a_raptor"
@@ -1714,6 +2469,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:f_35a_lightning_ii",
       "target": "radar:an_apg_81"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_35a_lightning_ii",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_35a_lightning_ii",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_35a_lightning_ii",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -1781,6 +2551,21 @@
       "target": "radar:an_apg_81"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_35b_lightning_ii",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_35b_lightning_ii",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_35b_lightning_ii",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:f_35b_lightning_ii"
@@ -1806,6 +2591,21 @@
       "target": "radar:an_apg_81"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:f_35c_lightning_ii",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:f_35c_lightning_ii",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:f_35c_lightning_ii",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:f_35c_lightning_ii"
@@ -1819,6 +2619,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:av_8b_harrier_ii_plus",
       "target": "radar:an_apg_65"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:av_8b_harrier_ii_plus",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:av_8b_harrier_ii_plus",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:av_8b_harrier_ii_plus",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1844,6 +2659,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:ah_64e_apache_guardian",
       "target": "radar:an_apg_78"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:ah_64e_apache_guardian",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:ah_64e_apache_guardian",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:ah_64e_apache_guardian",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -1881,6 +2711,21 @@
       "target": "radar:an_apq_164"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:b_1b_lancer",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:b_1b_lancer",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:b_1b_lancer",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:united_states",
       "target": "aircraft:b_1b_lancer"
@@ -1894,6 +2739,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:b_2a_spirit",
       "target": "radar:an_apq_181"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:b_2a_spirit",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:b_2a_spirit",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:b_2a_spirit",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1911,6 +2771,21 @@
       "target": "radar:rbe2_aa"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:rafale_c",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:rafale_c",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:rafale_c",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:france",
       "target": "aircraft:rafale_c"
@@ -1924,6 +2799,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:rafale_b",
       "target": "radar:rbe2_aa"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:rafale_b",
+      "target": "datalink:tactical_link_b"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:rafale_b",
+      "target": "radio:airborne_radio_b"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:rafale_b",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1941,6 +2831,21 @@
       "target": "radar:rbe2_aa"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:rafale_m",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:rafale_m",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:rafale_m",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:france",
       "target": "aircraft:rafale_m"
@@ -1954,6 +2859,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:mirage_2000_5",
       "target": "radar:rdy_2"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:mirage_2000_5",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:mirage_2000_5",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:mirage_2000_5",
+      "target": "radaraltimeter:radar_altimeter_b"
     },
     {
       "relation": "OPERATES",
@@ -1984,6 +2904,21 @@
       "relation": "USES_RADAR",
       "source": "aircraft:jas_39c_gripen",
       "target": "radar:ps_05_a"
+    },
+    {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:jas_39c_gripen",
+      "target": "datalink:tactical_link_a"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:jas_39c_gripen",
+      "target": "radio:airborne_radio_a"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:jas_39c_gripen",
+      "target": "radaraltimeter:radar_altimeter_a"
     },
     {
       "relation": "OPERATES",
@@ -2021,6 +2956,21 @@
       "target": "radar:raven_es_05"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:jas_39e_gripen",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:jas_39e_gripen",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:jas_39e_gripen",
+      "target": "radaraltimeter:radar_altimeter_a"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:sweden",
       "target": "aircraft:jas_39e_gripen"
@@ -2041,6 +2991,21 @@
       "target": "radar:ecr_90"
     },
     {
+      "relation": "USES_DATA_LINK",
+      "source": "aircraft:tornado_ids",
+      "target": "datalink:tactical_link_c"
+    },
+    {
+      "relation": "USES_RADIO",
+      "source": "aircraft:tornado_ids",
+      "target": "radio:airborne_radio_c"
+    },
+    {
+      "relation": "USES_RADAR_ALTIMETER",
+      "source": "aircraft:tornado_ids",
+      "target": "radaraltimeter:radar_altimeter_b"
+    },
+    {
       "relation": "OPERATES",
       "source": "operator:germany",
       "target": "aircraft:tornado_ids"
@@ -2057,12 +3022,123 @@
     }
   ],
   "metadata": {
-    "edge_count": 411,
-    "node_count": 349,
-    "schema_version": "1.0",
+    "edge_count": 604,
+    "node_count": 394,
+    "schema_version": "1.1",
     "service_snapshot_year": 2026
   },
   "nodes": [
+    {
+      "id": "datalink:tactical_link_a",
+      "label": "DataLink",
+      "properties": {
+        "access_method": "TDMA",
+        "data_rate_kbps": 238,
+        "encryption": true,
+        "frequency_band": "L",
+        "frequency_max_mhz": 1215,
+        "frequency_min_mhz": 960,
+        "name": "Tactical Link A"
+      }
+    },
+    {
+      "id": "datalink:tactical_link_b",
+      "label": "DataLink",
+      "properties": {
+        "access_method": "frequency_hopping",
+        "data_rate_kbps": 64,
+        "encryption": true,
+        "frequency_band": "UHF",
+        "frequency_max_mhz": 400,
+        "frequency_min_mhz": 225,
+        "name": "Tactical Link B"
+      }
+    },
+    {
+      "id": "datalink:tactical_link_c",
+      "label": "DataLink",
+      "properties": {
+        "access_method": "directional",
+        "data_rate_kbps": 1000,
+        "encryption": true,
+        "frequency_band": "S",
+        "frequency_max_mhz": 2500,
+        "frequency_min_mhz": 2200,
+        "name": "Tactical Link C"
+      }
+    },
+    {
+      "id": "radio:airborne_radio_a",
+      "label": "Radio",
+      "properties": {
+        "channel_spacing_khz": 25.0,
+        "frequency_band": "VHF/UHF",
+        "frequency_hopping": true,
+        "frequency_max_mhz": 400,
+        "frequency_min_mhz": 30,
+        "modulation": "AM/FM",
+        "name": "Airborne Radio A",
+        "output_power_w": 20
+      }
+    },
+    {
+      "id": "radio:airborne_radio_b",
+      "label": "Radio",
+      "properties": {
+        "channel_spacing_khz": 8.33,
+        "frequency_band": "UHF",
+        "frequency_hopping": true,
+        "frequency_max_mhz": 512,
+        "frequency_min_mhz": 225,
+        "modulation": "AM",
+        "name": "Airborne Radio B",
+        "output_power_w": 30
+      }
+    },
+    {
+      "id": "radio:airborne_radio_c",
+      "label": "Radio",
+      "properties": {
+        "channel_spacing_khz": 25.0,
+        "frequency_band": "VHF",
+        "frequency_hopping": false,
+        "frequency_max_mhz": 174,
+        "frequency_min_mhz": 108,
+        "modulation": "AM",
+        "name": "Airborne Radio C",
+        "output_power_w": 16
+      }
+    },
+    {
+      "id": "radaraltimeter:radar_altimeter_a",
+      "label": "RadarAltimeter",
+      "properties": {
+        "accuracy_m": 0.75,
+        "frequency_band": "C",
+        "frequency_max_ghz": 4.4,
+        "frequency_min_ghz": 4.2,
+        "measurement_max_m": 1500,
+        "measurement_min_m": 0,
+        "name": "Radar Altimeter A",
+        "output_power_w": 1.0,
+        "waveform": "FMCW"
+      }
+    },
+    {
+      "id": "radaraltimeter:radar_altimeter_b",
+      "label": "RadarAltimeter",
+      "properties": {
+        "accuracy_m": 1.0,
+        "frequency_band": "C",
+        "frequency_max_ghz": 4.35,
+        "frequency_min_ghz": 4.25,
+        "measurement_max_m": 2500,
+        "measurement_min_m": 0,
+        "name": "Radar Altimeter B",
+        "output_power_w": 0.8,
+        "waveform": "FMCW"
+      }
+    },
     {
       "id": "radar:n019_rubin",
       "label": "Radar",
@@ -2371,6 +3447,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:n019_rubin:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -2684,6 +3769,15 @@
       }
     },
     {
+      "id": "radar_mode:zhuk_me:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:zhuk_ae",
       "label": "Radar",
       "properties": {
@@ -2991,6 +4085,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:zhuk_ae:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -3304,6 +4407,15 @@
       }
     },
     {
+      "id": "radar_mode:n001_myech:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:n011m_bars",
       "label": "Radar",
       "properties": {
@@ -3611,6 +4723,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:n011m_bars:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -3924,6 +5045,15 @@
       }
     },
     {
+      "id": "radar_mode:irbis_e:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:zaslon_m",
       "label": "Radar",
       "properties": {
@@ -4231,6 +5361,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:zaslon_m:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -4544,6 +5683,15 @@
       }
     },
     {
+      "id": "radar_mode:captor_m:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:captor_e",
       "label": "Radar",
       "properties": {
@@ -4851,6 +5999,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:captor_e:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -5164,6 +6321,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apg_68:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:an_apg_80",
       "label": "Radar",
       "properties": {
@@ -5471,6 +6637,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_80:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -5784,6 +6959,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apg_83_sabr:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:an_apg_63",
       "label": "Radar",
       "properties": {
@@ -6091,6 +7275,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_63:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -6404,6 +7597,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apg_63_v_3:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:an_apg_70",
       "label": "Radar",
       "properties": {
@@ -6711,6 +7913,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_70:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -7024,6 +8235,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apg_82_v_1:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:klj_7a",
       "label": "Radar",
       "properties": {
@@ -7331,6 +8551,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:klj_7a:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -7644,6 +8873,15 @@
       }
     },
     {
+      "id": "radar_mode:klj_10:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:klj_7",
       "label": "Radar",
       "properties": {
@@ -7951,6 +9189,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:klj_7:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -8264,6 +9511,15 @@
       }
     },
     {
+      "id": "radar_mode:type_1473:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:type_1493_aesa",
       "label": "Radar",
       "properties": {
@@ -8571,6 +9827,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:type_1493_aesa:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -8884,6 +10149,15 @@
       }
     },
     {
+      "id": "radar_mode:type_1475_aesa:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:nriet_aesa",
       "label": "Radar",
       "properties": {
@@ -9191,6 +10465,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:nriet_aesa:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -9504,6 +10787,15 @@
       }
     },
     {
+      "id": "radar_mode:el_m_2032:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:rdy_2",
       "label": "Radar",
       "properties": {
@@ -9811,6 +11103,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:rdy_2:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -10124,6 +11425,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apg_65:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:an_apg_73",
       "label": "Radar",
       "properties": {
@@ -10431,6 +11741,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_73:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -10744,6 +12063,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apg_79:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:an_apg_77",
       "label": "Radar",
       "properties": {
@@ -11051,6 +12379,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_77:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -11364,6 +12701,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apg_81:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:an_apg_78",
       "label": "Radar",
       "properties": {
@@ -11671,6 +13017,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:an_apg_78:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -11984,6 +13339,15 @@
       }
     },
     {
+      "id": "radar_mode:an_apq_164:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:an_apq_181",
       "label": "Radar",
       "properties": {
@@ -12291,6 +13655,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:an_apq_181:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -12604,6 +13977,15 @@
       }
     },
     {
+      "id": "radar_mode:rbe2_aa:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:ps_05_a",
       "label": "Radar",
       "properties": {
@@ -12911,6 +14293,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:ps_05_a:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
@@ -13224,6 +14615,15 @@
       }
     },
     {
+      "id": "radar_mode:raven_es_05:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
+      }
+    },
+    {
       "id": "radar:ecr_90",
       "label": "Radar",
       "properties": {
@@ -13531,6 +14931,15 @@
         "velocity_resolution_max_mps": 3.3,
         "velocity_resolution_min_mps": 2.7,
         "waveform": "synthetic_aperture_or_real_beam"
+      }
+    },
+    {
+      "id": "radar_mode:ecr_90:off",
+      "label": "RadarMode",
+      "properties": {
+        "emission_state": "radar_silent",
+        "emits_rf": false,
+        "name": "OFF"
       }
     },
     {
