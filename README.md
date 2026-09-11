@@ -47,6 +47,49 @@ Custom output paths can be supplied:
 python kg_generator.py --json /tmp/kg.json --triples /tmp/triples.csv
 ```
 
+## Stochastic JSBSim skill rollouts
+
+`rgcn_fusion.skill_transition.SkillManager` provides a small, seeded tactical
+skill selector. It samples every skill's parameters and dwell time from bounded
+uniform or clipped-normal distributions, follows the sequence
+`maintain_position -> pursue_target -> launch -> crank_maneuver ->
+support_missile -> turn_cold -> recommit`, and can interrupt it for launch
+geometry, an active incoming missile, bingo fuel, exhausted weapons, or a
+destroyed target. Every transition is emitted through Python logging with the
+complete selector timing, sampled parameters, and reason.
+
+Controllers are ordinary callables returning normalized `FlightControls`.
+Connect them to a thin adapter around the installed JSBSim Python bindings; the
+bindings invoke JSBSim's accelerated native C++ FDM:
+
+```python
+from rgcn_fusion.skill_transition import (
+    FlightControls, NativeJSBSimAdapter, SkillManager, default_skill_specs,
+)
+
+specs = default_skill_specs()
+
+def controller(observation, parameters):
+    return FlightControls(
+        aileron=parameters["bank_command"],
+        throttle=0.9,
+    )
+
+controllers = {name: controller for name in specs}
+manager = SkillManager(specs, controllers, seed=7)
+
+# `fdm` is an initialized jsbsim.FGFDMExec. Sensor/weapon state can be merged
+# into this observer alongside properties read from the native FDM.
+backend = NativeJSBSimAdapter(fdm, lambda fdm: tactical_sensor_observation(fdm))
+transitions = manager.rollout(backend, duration=120.0, dt=1 / 120)
+```
+
+The adapter's `observation()` mapping may provide
+`target_in_launch_envelope`, `incoming_active_missile`, `fuel_fraction`,
+`bingo_fuel_fraction`, `weapons_remaining`, and `target_destroyed`. The rollout
+method rejects adapters that do not identify themselves as native JSBSim, which
+prevents accidentally collecting policy rollouts from a slow surrogate.
+
 
 ## Synthetic ESM Observation Generator
 
