@@ -14,6 +14,15 @@ from .dempster_shafer import (
     validate_masses,
 )
 from .model import RGCNEvidenceModel, RGCNLayer
+from .skill_transition import (
+    BoundedDistribution,
+    FlightControls,
+    NativeJSBSimAdapter,
+    SelectorState,
+    SkillManager,
+    SkillSpec,
+    default_skill_specs,
+)
 
 __all__ = [
     "RGCNEvidenceModel",
@@ -27,4 +36,11 @@ __all__ = [
     "decode_kg_constrained",
     "decode_kg_hierarchical",
     "validate_masses",
+    "BoundedDistribution",
+    "FlightControls",
+    "NativeJSBSimAdapter",
+    "SelectorState",
+    "SkillManager",
+    "SkillSpec",
+    "default_skill_specs",
 ]
