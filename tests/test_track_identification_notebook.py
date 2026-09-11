@@ -193,6 +193,25 @@ def test_track_notebook_prunes_and_collapses_claim_candidate_edges():
     assert "for direct_edge in claim_candidate_edges:" not in source
 
 
+def test_track_notebooks_use_compact_edge_buffers():
+    for notebook_path in (
+        NOTEBOOK,
+        Path("notebooks/Track_identification_non_radar_rf.ipynb"),
+    ):
+        notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
+        source = "\n".join(
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if cell.get("cell_type") == "code"
+        )
+        assert 'edge_src, edge_dst = array("i"), array("i")' in source
+        assert 'edge_type = array("B")' in source
+        assert "np.frombuffer(edge_src, dtype=np.int32)" in source
+        assert "torch.frombuffer(edge_type, dtype=torch.uint8)" in source
+        assert "graph has too many nodes for compact int32 edge indices" in source
+        assert "graph has too many relation types for compact uint8 ids" in source
+
+
 def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches():
     source = _code_source()
     assert "partition_edges_by_relation" in source
@@ -237,10 +256,12 @@ def test_track_notebook_uses_partitioned_edges_vector_pooling_and_track_batches(
     assert "observations.to(means.dtype)" in source
     assert "observations.to(maxima.dtype)" in source
     assert "values.to(totals.dtype)" in source
-    assert 'edge_src, edge_dst, edge_type = array("q"), array("q"), array("q")' in source
+    assert 'edge_src, edge_dst = array("i"), array("i")' in source
+    assert 'edge_type = array("B")' in source
     assert 'add_edges(node_range, node_range, "self")' in source
-    assert "torch.from_numpy(np.frombuffer(edge_src, dtype=np.int64))" in source
-    assert "edge_types = torch.frombuffer(edge_type, dtype=torch.int64)" in source
+    assert "torch.from_numpy(np.frombuffer(edge_src, dtype=np.int32))" in source
+    assert "torch.from_numpy(np.frombuffer(edge_dst, dtype=np.int32))" in source
+    assert "edge_types = torch.frombuffer(edge_type, dtype=torch.uint8)" in source
     assert "relation_edge_counts = torch.bincount(" in source
     assert "relation_edges = partition_edges_by_relation(edge_index, edge_types" not in source
     assert "edge_src, edge_dst, edge_type = [], [], []" not in source
