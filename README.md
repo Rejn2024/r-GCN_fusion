@@ -348,3 +348,14 @@ authoritative technical database.
   https://neo4j.com/docs/graph-data-science/current/machine-learning/node-property-prediction/nodeclassification-pipelines/node-classification/
 - scikit-learn contributors. *train_test_split documentation*.
   https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html
+
+## 1-vs-1 JSBSim skill-recognition dataset
+
+[`notebooks/jsbsim_1v1_skill_dataset.ipynb`](notebooks/jsbsim_1v1_skill_dataset.ipynb)
+uses two native JSBSim FDM instances and seeded `SkillManager` controllers to generate
+100 randomized 1-vs-1 flights. It records paired aircraft state, controls, relative
+geometry, and aligned recognition/forecasting labels at 10 Hz. Outputs include CSV
+and Parquet sample tables, a replay manifest with flight-level data splits, and one
+Tacview 2.2 ACMI file per flight. The notebook documents its schema, leakage-safe
+feature set, reproducibility controls, and validation gates. Install the optional
+notebook dependencies shown in its environment cell before running it.
