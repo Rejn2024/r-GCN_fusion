@@ -52,7 +52,9 @@ def _flatten_numeric(prefix: str, value: Any, out: dict[str, float]) -> None:
 
 def _segment_indices(observations: list[dict[str, Any]], threshold: float) -> list[int]:
     def frequency(observation: dict[str, Any]) -> float | None:
-        value = observation.get("esm_radar_parameters", {}).get(
+        # Generated observations use JSON null when ESM data is unavailable.
+        # Treat it like an omitted parameter block rather than dereferencing it.
+        value = (observation.get("esm_radar_parameters") or {}).get(
             "measured_centre_frequency_ghz"
         )
         if isinstance(value, dict):

@@ -137,6 +137,24 @@ def test_process_worker_builds_deterministic_index_local_fragment():
     assert fragment["report_kg_edges"] == []
 
 
+def test_fragment_accepts_observation_with_null_esm_parameters():
+    context = {
+        **_context(),
+        "include_candidate_nodes": True,
+        "include_intel_report_nodes": True,
+        "segment_frequency_shift_ghz": 0.75,
+    }
+    task_position, series = _task()
+    series["observations"][0]["esm_radar_parameters"] = None
+
+    position, fragment = build_series_fragment((task_position, series), context)
+
+    assert position == task_position
+    assert fragment["observation_offsets"] == [0]
+    assert fragment["feature_rows"][0]["segment_index"] == 0.0
+    assert not any(key.startswith("esm.") for key in fragment["feature_rows"][0])
+
+
 def test_fragment_retains_compact_candidate_recall_statistics():
     context = {
         **_context(),
