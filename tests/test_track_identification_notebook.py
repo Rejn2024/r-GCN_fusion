@@ -99,6 +99,27 @@ def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities()
     assert "report_kg_edges" in source
 
 
+def test_parallel_graph_fragments_are_serialized_one_track_at_a_time():
+    # ProcessPoolExecutor batches both calls and their returned values when chunksize
+    # is greater than one.  Each returned fragment can contain thousands of feature
+    # dictionaries, so batching hundreds of them can exhaust RAM while pickling the
+    # worker result even though the parent consumes the iterator incrementally.
+    for notebook_path in (
+        NOTEBOOK,
+        Path("notebooks/Track_identification_non_radar_rf.ipynb"),
+    ):
+        notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
+        source = "\n".join(
+            "".join(cell.get("source", []))
+            for cell in notebook["cells"]
+            if cell.get("cell_type") == "code"
+        )
+        assert "scoring_chunksize = 1" in source
+        assert 'os.getenv("GRAPH_SCORING_CHUNKSIZE"' not in source
+        assert "math.ceil(task_count / max(worker_count * 4, 1))" not in source
+        assert "chunksize=scoring_chunksize" in source
+
+
 def test_candidate_recall_at_k_is_vectorised_and_visualised():
     source = _code_source()
     assert "def load_track_dataset" in source
