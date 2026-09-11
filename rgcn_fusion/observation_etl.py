@@ -150,7 +150,10 @@ def _measurement_interval(measurement: dict[str, Any]) -> tuple[float, float] | 
 def _mode_feature_scores(
     observation: dict[str, Any], mode_props: dict[str, Any]
 ) -> tuple[float, int, int, dict[str, float]]:
-    esm = observation.get("esm_radar_parameters", {})
+    # Some observations explicitly encode unavailable sensor data as JSON null.
+    # Treat that the same as an omitted parameter block: absence of evidence
+    # should produce zero feature scores rather than abort candidate scoring.
+    esm = observation.get("esm_radar_parameters") or {}
     scores: list[float] = []
     residuals: dict[str, float] = {}
     matched_fields = 0

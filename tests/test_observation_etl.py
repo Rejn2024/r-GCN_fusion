@@ -106,6 +106,33 @@ def test_score_candidates_prefers_overlapping_radar_mode():
     assert candidates[0].total_score > candidates[1].total_score
 
 
+def test_score_candidates_treats_null_radar_parameters_as_missing_evidence():
+    observation = {
+        **_observation(),
+        "esm_radar_parameters": None,
+    }
+    row = {
+        "mode_id": "radar_mode:possible",
+        "mode_props": {
+            "waveform": "pulse_doppler",
+            "scan_type": "sector",
+            "centre_frequency_min_ghz": 9.4,
+            "centre_frequency_max_ghz": 9.8,
+        },
+        "radar_id": "radar:possible",
+        "aircraft_id": "aircraft:possible",
+        "aircraft_props": {"max_speed_mach": 2.0, "service_ceiling_m": 15000},
+        "operator": "Testland",
+    }
+
+    candidate = score_candidates(observation, [row], max_candidates=1)[0]
+
+    assert candidate.mode_score == 0.0
+    assert candidate.matched_fields == 0
+    assert candidate.compared_fields == 0
+    assert candidate.feature_scores["missing_feature_count"] == 9.0
+
+
 def test_score_candidates_fuses_intelligence_before_shortlisting():
     rows = [
         {
