@@ -26,6 +26,15 @@ def test_evidential_only_notebook_code_cells_parse_and_outputs_are_clean():
             assert cell.get("outputs") == []
 
 
+def test_training_has_a_user_configurable_two_hour_hard_finish():
+    source = _code_source()
+    assert 'HARD_FINISH_HOURS = float(os.getenv("HARD_FINISH_HOURS", "2"))' in source
+    assert "training_deadline = time.monotonic() + HARD_FINISH_HOURS * 60 * 60" in source
+    assert "def hard_finish_reached():" in source
+    assert "if hard_finish_reached():" in source
+    assert '"hard_finish_hours": HARD_FINISH_HOURS' in source
+
+
 def test_evidential_only_notebook_has_no_parallel_logit_heads():
     source = _code_source()
     assert "self.rao_evidential_head = head(hidden_dim, num_rao_classes)" in source
