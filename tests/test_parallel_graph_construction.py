@@ -237,3 +237,27 @@ def test_intelligence_reranks_broad_retrieval_pool_before_final_limit():
     assert len(candidates) == 1
     assert candidates[0][4]["radar_id"] == "radar:intel"
     assert candidates[0][1] == 2
+
+
+def test_fragment_scoring_preserves_canonical_operator_prior_weight():
+    context = _context()
+    template = context["candidate_templates"][0]
+    variant = context["candidate_variants"][
+        next(iter(context["candidate_variants"]))
+    ][0]
+    favoured = {**variant, "operator": "Favoured"}
+    disfavoured = {**variant, "operator": "Disfavoured"}
+    key = (template["mode_id"], template["radar_id"], template["aircraft_id"])
+    context["candidate_variants"][key] = [disfavoured, favoured]
+    task_position, series = _task()
+    series["observations"][0]["external_context"] = {
+        "operator_priors": {"Favoured": 1.0, "Disfavoured": 0.0}
+    }
+
+    candidates = score_series_observations((task_position, series), context)[1]["obs-1"]
+
+    assert [candidate[4]["operator"] for candidate in candidates] == [
+        "Favoured",
+        "Disfavoured",
+    ]
+    assert candidates[0][4]["sensor_score"] - candidates[1][4]["sensor_score"] == 0.25

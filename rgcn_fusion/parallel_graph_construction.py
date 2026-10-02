@@ -13,7 +13,12 @@ from .intelligence_reports import (
     report_observation_proximity,
     report_recency_score,
 )
-from .observation_etl import ds_masses_from_score, score_candidates
+from .observation_etl import (
+    _external_prior_score,
+    candidate_sensor_score,
+    ds_masses_from_score,
+    score_candidates,
+)
 
 _WORKER_CONTEXT: dict[str, Any] | None = None
 
@@ -520,43 +525,20 @@ def _candidate_scores(
     template_scores = score_candidates(
         observation, templates, max_candidates=len(templates)
     )
-    external = observation.get("external_context") or {}
-    priors = external.get("priors") if isinstance(external.get("priors"), dict) else {}
-    operator_priors = (
-        external.get("operator_priors", priors.get("operator", {}))
-        if isinstance(external, dict)
-        else {}
-    )
-    contextual_operator = (
-        external.get("operator") if isinstance(external, dict) else None
-    )
-
     def expanded():
         for score in template_scores:
             for row in variants[(score.mode_id, score.radar_id, score.aircraft_id)]:
                 operator = row["operator"]
-                if isinstance(operator_priors, dict) and operator in operator_priors:
-                    operator_score = max(
-                        0.0, min(1.0, float(operator_priors[operator]))
-                    )
-                elif isinstance(contextual_operator, (list, tuple, set)):
-                    operator_score = 1.0 if operator in contextual_operator else 0.0
-                elif contextual_operator is None:
-                    operator_score = 0.5
-                else:
-                    operator_score = 1.0 if operator == contextual_operator else 0.0
+                operator_score = _external_prior_score(
+                    observation, "operator", operator
+                )
                 final_score = round(
-                    (
-                        0.60 * score.mode_score
-                        + 0.20 * score.rf_score
-                        + 0.12 * score.aircraft_score
-                        + 0.08 * operator_score
-                    )
-                    if score.rf_observed_fields
-                    else (
-                        0.75 * score.mode_score
-                        + 0.15 * score.aircraft_score
-                        + 0.10 * operator_score
+                    candidate_sensor_score(
+                        score.mode_score,
+                        score.rf_score,
+                        score.aircraft_score,
+                        operator_score,
+                        rf_observed_fields=score.rf_observed_fields,
                     ),
                     6,
                 )
