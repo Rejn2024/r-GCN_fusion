@@ -12,6 +12,7 @@ from rgcn_fusion.intelligence_reports import (
     claim_candidate_contribution,
     final_signed_compatibility,
     flatten_reports_from_series,
+    _merge_operator_priors,
     report_claim_score,
     report_observation_proximity,
 )
@@ -116,6 +117,80 @@ def test_report_enrichment_preserves_existing_external_context():
         assert context["operator_priors"]["Observation operator"] == 0.55
         assert context["operator_priors"][known_operator] == 0.45
         assert len(context["operator_priors"]) > 1
+
+
+def test_generated_operator_priors_are_replaced_without_removing_caller_values():
+    target = {
+        "external_context": {
+            "operator_priors": {"Caller": 0.6, "Same score": 0.9}
+        }
+    }
+
+    _merge_operator_priors(target, {"Old generated": 0.9, "Same score": 0.9})
+    context = target["external_context"]
+    assert context["_intelligence_report_generated_operator_priors"] == {
+        "Old generated": 0.9
+    }
+
+    _merge_operator_priors(target, {"New generated": 0.9})
+
+    assert context["operator_priors"] == {
+        "Caller": 0.6,
+        "Same score": 0.9,
+        "New generated": 0.9,
+    }
+    assert context["_intelligence_report_generated_operator_priors"] == {
+        "New generated": 0.9
+    }
+
+
+def test_modified_generated_operator_prior_becomes_caller_owned():
+    target: dict[str, object] = {}
+    _merge_operator_priors(target, {"Operator": 0.9})
+    target["external_context"]["operator_priors"]["Operator"] = 0.4
+
+    _merge_operator_priors(target, {"Replacement": 0.9})
+
+    assert target["external_context"]["operator_priors"] == {
+        "Operator": 0.4,
+        "Replacement": 0.9,
+    }
+
+
+def test_reenrichment_removes_operators_absent_from_new_theatre_report():
+    data = generate_observation_series_with_intelligence_reports(
+        count=1,
+        seed=103,
+        intelligence_seed=204,
+        workers=1,
+    )
+    series = data["observation_series"][0]
+    old_generated = set(
+        series["external_context"][
+            "_intelligence_report_generated_operator_priors"
+        ]
+    )
+    series["external_context"]["operator_priors"]["Caller"] = 0.6
+    for observation in series["observations"]:
+        observation["external_context"]["operator_priors"]["Caller"] = 0.55
+
+    enriched = add_intelligence_reports_to_series(data, seed=305, copy_data=False)
+    series = enriched["observation_series"][0]
+    theatre_report = next(
+        report
+        for report in series["intelligence_reports"]
+        if report["report_type"] == "theatre_aircraft_report"
+    )
+    current_generated = set(theatre_report["external_context"]["operator_priors"])
+
+    assert old_generated - current_generated
+    assert set(series["external_context"]["operator_priors"]) == (
+        current_generated | {"Caller"}
+    )
+    for observation in series["observations"]:
+        assert set(observation["external_context"]["operator_priors"]) == (
+            current_generated | {"Caller"}
+        )
 
 
 def test_combined_generation_is_deterministic_across_worker_counts():

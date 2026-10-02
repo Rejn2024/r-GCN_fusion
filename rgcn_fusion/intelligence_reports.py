@@ -813,6 +813,7 @@ def add_intelligence_reports_to_series_entry(
     for observation in observations:
         observation.pop("intelligence_reports", None)
     if not observations:
+        _merge_operator_priors(series, {})
         series["intelligence_reports"] = []
         return series
 
@@ -848,21 +849,43 @@ def add_intelligence_reports_to_series_entry(
     return series
 
 
+_GENERATED_OPERATOR_PRIORS_KEY = "_intelligence_report_generated_operator_priors"
+
+
 def _merge_operator_priors(
     target: dict[str, Any], operator_priors: dict[str, float]
 ) -> None:
-    """Add generated priors without discarding caller-supplied context."""
+    """Replace generated priors without discarding caller-supplied context.
+
+    The provenance map contains only values this function actually inserted.
+    Consequently, a caller-supplied value that happens to use the same operator
+    (or even the same score) is never mistaken for generated context.  If a
+    caller changes a previously generated value between enrichments, that value
+    is likewise retained and becomes caller-owned.
+    """
     context = target.get("external_context")
     if not isinstance(context, dict):
         context = {}
         target["external_context"] = context
 
     existing_priors = context.get("operator_priors")
-    if isinstance(existing_priors, dict):
-        for operator, prior in operator_priors.items():
-            existing_priors.setdefault(operator, prior)
-    else:
-        context["operator_priors"] = dict(operator_priors)
+    if not isinstance(existing_priors, dict):
+        existing_priors = {}
+        context["operator_priors"] = existing_priors
+
+    previous_generated = context.pop(_GENERATED_OPERATOR_PRIORS_KEY, {})
+    if isinstance(previous_generated, dict):
+        for operator, prior in previous_generated.items():
+            if existing_priors.get(operator) == prior:
+                existing_priors.pop(operator)
+
+    generated: dict[str, float] = {}
+    for operator, prior in operator_priors.items():
+        if operator not in existing_priors:
+            existing_priors[operator] = prior
+            generated[operator] = prior
+    if generated:
+        context[_GENERATED_OPERATOR_PRIORS_KEY] = generated
 
 
 def flatten_reports_from_series(data: dict[str, Any]) -> list[dict[str, Any]]:
