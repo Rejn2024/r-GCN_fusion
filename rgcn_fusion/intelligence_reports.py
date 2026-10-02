@@ -830,9 +830,9 @@ def add_intelligence_reports_to_series_entry(
     )
     observation_ids = [observation["observation_id"] for observation in observations]
     operator_priors = dict(theatre_report["external_context"]["operator_priors"])
-    series["external_context"] = {"operator_priors": operator_priors}
+    _merge_operator_priors(series, operator_priors)
     for observation in observations:
-        observation["external_context"] = {"operator_priors": dict(operator_priors)}
+        _merge_operator_priors(observation, operator_priors)
     series_id = series["series_id"]
     for report_index, report in enumerate(reports, start=1):
         report["report_id"] = f"intel_report:{series_id}:{report_index:02d}"
@@ -846,6 +846,23 @@ def add_intelligence_reports_to_series_entry(
             claim["subject_id"] = series_id
     series["intelligence_reports"] = reports
     return series
+
+
+def _merge_operator_priors(
+    target: dict[str, Any], operator_priors: dict[str, float]
+) -> None:
+    """Add generated priors without discarding caller-supplied context."""
+    context = target.get("external_context")
+    if not isinstance(context, dict):
+        context = {}
+        target["external_context"] = context
+
+    existing_priors = context.get("operator_priors")
+    if isinstance(existing_priors, dict):
+        for operator, prior in operator_priors.items():
+            existing_priors.setdefault(operator, prior)
+    else:
+        context["operator_priors"] = dict(operator_priors)
 
 
 def flatten_reports_from_series(data: dict[str, Any]) -> list[dict[str, Any]]:
