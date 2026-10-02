@@ -292,6 +292,26 @@ def _recency_score(observation: dict[str, Any], *, now: datetime | None = None, 
     return math.exp(-math.log(2.0) * age_days / half_life_days)
 
 
+def candidate_sensor_score(
+    mode_score: float,
+    rf_score: float,
+    aircraft_score: float,
+    operator_score: float,
+    *,
+    rf_observed_fields: int,
+) -> float:
+    """Combine candidate evidence using the canonical sensor-score weights."""
+    if rf_observed_fields:
+        return (
+            0.43 * mode_score
+            + 0.20 * rf_score
+            + 0.12 * aircraft_score
+            + 0.25 * operator_score
+        )
+    # Missing RF detections are absence of evidence, not contradiction.
+    return 0.60 * mode_score + 0.15 * aircraft_score + 0.25 * operator_score
+
+
 def score_candidates(
     observation: dict[str, Any],
     kg_rows: Iterable[dict[str, Any]],
@@ -315,11 +335,13 @@ def score_candidates(
         rf_score, rf_observed_fields, rf_features = score_non_radar_rf(
             observation, row.get("rf_equipment") or ()
         )
-        if rf_observed_fields:
-            sensor_score = 0.43 * mode_score + 0.20 * rf_score + 0.12 * aircraft_score + 0.25 * operator_score
-        else:
-            # Missing RF detections are absence of evidence, not contradiction.
-            sensor_score = 0.60 * mode_score + 0.15 * aircraft_score + 0.25 * operator_score
+        sensor_score = candidate_sensor_score(
+            mode_score,
+            rf_score,
+            aircraft_score,
+            operator_score,
+            rf_observed_fields=rf_observed_fields,
+        )
         candidate_context = {
             "id": f"candidate-context:{row['mode_id']}:{row.get('aircraft_id')}",
             "series_id": observation.get("series_id"),
