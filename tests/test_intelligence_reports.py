@@ -73,6 +73,51 @@ def test_series_generator_keeps_measurements_per_observation_and_reports_per_ser
     assert data["metadata"]["intelligence_claim_types"] == list(CLAIM_TYPES)
 
 
+def test_report_enrichment_preserves_existing_external_context():
+    data = generate_observation_series_with_intelligence_reports(
+        count=1,
+        seed=103,
+        intelligence_seed=204,
+        workers=1,
+    )
+    series = data["observation_series"][0]
+    known_operator = series["ground_truth_track_label"]["operator"]
+    series["external_context"] = {
+        "radar_type_priors": {"radar:caller-supplied": 0.75},
+        "operator_priors": {"Caller operator": 0.6, known_operator: 0.65},
+        "priors": {"aircraft_family": {"family:caller-supplied": 0.8}},
+    }
+    for observation in series["observations"]:
+        observation["external_context"] = {
+            "aircraft_family_priors": {"family:observation-context": 0.7},
+            "operator_priors": {"Observation operator": 0.55, known_operator: 0.45},
+            "priors": {"radar_type": {"radar:nested-context": 0.9}},
+        }
+
+    enriched = add_intelligence_reports_to_series(data, seed=305, copy_data=False)
+
+    series_context = enriched["observation_series"][0]["external_context"]
+    assert series_context["radar_type_priors"] == {"radar:caller-supplied": 0.75}
+    assert series_context["priors"] == {
+        "aircraft_family": {"family:caller-supplied": 0.8}
+    }
+    assert series_context["operator_priors"]["Caller operator"] == 0.6
+    assert series_context["operator_priors"][known_operator] == 0.65
+    assert len(series_context["operator_priors"]) > 1
+
+    for observation in enriched["observation_series"][0]["observations"]:
+        context = observation["external_context"]
+        assert context["aircraft_family_priors"] == {
+            "family:observation-context": 0.7
+        }
+        assert context["priors"] == {
+            "radar_type": {"radar:nested-context": 0.9}
+        }
+        assert context["operator_priors"]["Observation operator"] == 0.55
+        assert context["operator_priors"][known_operator] == 0.45
+        assert len(context["operator_priors"]) > 1
+
+
 def test_combined_generation_is_deterministic_across_worker_counts():
     options = {
         "count": 4,
