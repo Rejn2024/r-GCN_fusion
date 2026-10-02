@@ -101,9 +101,32 @@ RADAR_ALTIMETERS = (
     RFEquipment("Radar Altimeter B", "RadarAltimeter", {"frequency_band": "C", "frequency_min_ghz": 4.25, "frequency_max_ghz": 4.35, "waveform": "FMCW", "measurement_min_m": 0, "measurement_max_m": 2500, "accuracy_m": 1.0, "output_power_w": 0.8}),
 )
 
+# Conceptual equipment signatures used only by the three out-of-vocabulary
+# evaluation aircraft.  These are synthetic research assumptions, not claims
+# about operational systems.
+UFO_RF_EQUIPMENT = {
+    "J-40": (
+        RFEquipment("Triad Directional Link", "DataLink", {"frequency_band": "Ku", "frequency_min_mhz": 15000, "frequency_max_mhz": 17000, "data_rate_kbps": 2400, "access_method": "directional_lpi", "encryption": True}),
+        RFEquipment("J-40 Integrated Radio", "Radio", {"frequency_band": "VHF/UHF", "frequency_min_mhz": 30, "frequency_max_mhz": 520, "channel_spacing_khz": 8.33, "modulation": "AM/FM", "frequency_hopping": True, "output_power_w": 25}),
+        RFEquipment("J-40 Low-Power Altimeter", "RadarAltimeter", {"frequency_band": "C", "frequency_min_ghz": 4.25, "frequency_max_ghz": 4.35, "waveform": "FMCW", "measurement_min_m": 0, "measurement_max_m": 3000, "accuracy_m": 0.5, "output_power_w": 0.5}),
+    ),
+    "J-35": (
+        RFEquipment("J-35 Cooperative Data Link", "DataLink", {"frequency_band": "L/Ku", "frequency_min_mhz": 960, "frequency_max_mhz": 16500, "data_rate_kbps": 1800, "access_method": "directional_frequency_hopping", "encryption": True}),
+        RFEquipment("J-35 Secure Radio", "Radio", {"frequency_band": "VHF/UHF", "frequency_min_mhz": 30, "frequency_max_mhz": 512, "channel_spacing_khz": 8.33, "modulation": "AM/FM", "frequency_hopping": True, "output_power_w": 20}),
+        RFEquipment("J-35 Radar Altimeter", "RadarAltimeter", {"frequency_band": "C", "frequency_min_ghz": 4.2, "frequency_max_ghz": 4.4, "waveform": "FMCW", "measurement_min_m": 0, "measurement_max_m": 2500, "accuracy_m": 0.6, "output_power_w": 0.6}),
+    ),
+    "Su-75": (
+        RFEquipment("Su-75 Tactical Data Link", "DataLink", {"frequency_band": "L", "frequency_min_mhz": 960, "frequency_max_mhz": 1215, "data_rate_kbps": 1200, "access_method": "frequency_hopping", "encryption": True}),
+        RFEquipment("Su-75 Multiband Radio", "Radio", {"frequency_band": "VHF/UHF", "frequency_min_mhz": 30, "frequency_max_mhz": 512, "channel_spacing_khz": 8.33, "modulation": "AM/FM", "frequency_hopping": True, "output_power_w": 30}),
+        RFEquipment("Su-75 Radar Altimeter", "RadarAltimeter", {"frequency_band": "C", "frequency_min_ghz": 4.2, "frequency_max_ghz": 4.4, "waveform": "FMCW", "measurement_min_m": 0, "measurement_max_m": 2500, "accuracy_m": 0.8, "output_power_w": 0.7}),
+    ),
+}
+
 
 def equipment_for_aircraft(aircraft: AircraftVariant) -> tuple[RFEquipment, RFEquipment, RFEquipment]:
     """Deterministically assign a data link, radio and altimeter to a variant."""
+    if aircraft.variant in UFO_RF_EQUIPMENT:
+        return UFO_RF_EQUIPMENT[aircraft.variant]
     index = sum(ord(char) for char in aircraft.variant)
     return (DATA_LINKS[index % len(DATA_LINKS)], RADIOS[index % len(RADIOS)], RADAR_ALTIMETERS[index % len(RADAR_ALTIMETERS)])
 
@@ -255,6 +278,9 @@ RADARS: dict[str, Radar] = {
     "ECR-90": Radar("ECR-90", "X", "mechanically scanned array", radar_modes(9.6, 150, 10)),
     "Cyrano IV": Radar("Cyrano IV", "I/J", "monopulse radar", radar_modes(9.2, 70, 2)),
     "Anemone": Radar("Anemone", "I/J", "pulse-doppler array", radar_modes(9.4, 100, 8)),
+    "Type 1520 Tri-Aperture AESA": Radar("Type 1520 Tri-Aperture AESA", "X", "distributed AESA", radar_modes(10.35, 320, 48)),
+    "Type 1495 AESA": Radar("Type 1495 AESA", "X", "AESA", radar_modes(10.15, 260, 36)),
+    "Sh-121M AESA": Radar("Sh-121M AESA", "X", "AESA", radar_modes(9.95, 240, 30)),
 }
 
 
@@ -262,6 +288,10 @@ RADARS = _with_distinct_mode_signatures(RADARS)
 
 
 AIRCRAFT: tuple[AircraftVariant, ...] = (
+    # Conceptual out-of-vocabulary evaluation aircraft ("UFOs").
+    AircraftVariant("J-40", "J-40", "three-engine flying-wing fighter", "6 (conceptual)", "Type 1520 Tri-Aperture AESA", 2.2, 21000, 1800, 6000, 8, ("China",), ("ufo", "conceptual", "flying_wing", "three_engine")),
+    AircraftVariant("J-35", "J-35", "carrier-capable stealth multirole fighter", "5", "Type 1495 AESA", 1.8, 18000, 1200, 3000, 8, ("China",), ("ufo", "conceptual", "stealth", "carrier_capable")),
+    AircraftVariant("Su-75", "Su-75", "light stealth multirole fighter", "5 (conceptual)", "Sh-121M AESA", 1.8, 16500, 1500, 3000, 7, ("Russia",), ("ufo", "conceptual", "stealth", "single_engine")),
     AircraftVariant("MiG-29", "MiG-29A", "multirole fighter", "4", "N019 Rubin", 2.25, 18000, 700, 2100, 6, ("Ukraine", "Poland")),
     AircraftVariant("MiG-29", "MiG-29S", "multirole fighter", "4", "N019 Rubin", 2.25, 18000, 700, 2100, 6, ("Russia", "Belarus")),
     AircraftVariant("MiG-29", "MiG-29SMT", "multirole fighter", "4+", "Zhuk-ME", 2.25, 18000, 1000, 2400, 6, ("Russia", "Algeria")),
@@ -339,7 +369,10 @@ def generate_graph() -> dict[str, Any]:
     nodes: dict[str, dict[str, Any]] = {}
     edges: list[dict[str, str]] = []
 
-    for equipment in (*DATA_LINKS, *RADIOS, *RADAR_ALTIMETERS):
+    ufo_equipment = tuple(
+        equipment for equipment_set in UFO_RF_EQUIPMENT.values() for equipment in equipment_set
+    )
+    for equipment in (*DATA_LINKS, *RADIOS, *RADAR_ALTIMETERS, *ufo_equipment):
         add_node(
             nodes,
             f"{slug(equipment.equipment_type)}:{slug(equipment.name)}",

@@ -259,10 +259,10 @@ def _external_prior_score(observation: dict[str, Any], prior_name: str, candidat
     ``external_context.{prior_name}`` value that matches the candidate.
     """
     if candidate_value is None:
-        return 0.5
+        return 0.1
     context = observation.get("external_context") or {}
     if not isinstance(context, dict):
-        return 0.5
+        return 0.1
 
     prior_maps = [
         context.get(f"{prior_name}_priors"),
@@ -276,7 +276,7 @@ def _external_prior_score(observation: dict[str, Any], prior_name: str, candidat
 
     contextual_value = context.get(prior_name)
     if contextual_value is None:
-        return 0.5
+        return 0.1
     if isinstance(contextual_value, (list, tuple, set)):
         return 1.0 if candidate_value in contextual_value else 0.0
     return 1.0 if candidate_value == contextual_value else 0.0
@@ -316,10 +316,10 @@ def score_candidates(
             observation, row.get("rf_equipment") or ()
         )
         if rf_observed_fields:
-            sensor_score = 0.60 * mode_score + 0.20 * rf_score + 0.12 * aircraft_score + 0.08 * operator_score
+            sensor_score = 0.43 * mode_score + 0.20 * rf_score + 0.12 * aircraft_score + 0.25 * operator_score
         else:
             # Missing RF detections are absence of evidence, not contradiction.
-            sensor_score = 0.75 * mode_score + 0.15 * aircraft_score + 0.10 * operator_score
+            sensor_score = 0.60 * mode_score + 0.15 * aircraft_score + 0.25 * operator_score
         candidate_context = {
             "id": f"candidate-context:{row['mode_id']}:{row.get('aircraft_id')}",
             "series_id": observation.get("series_id"),

@@ -40,6 +40,9 @@ DEFAULT_MAX_DURATION_SECONDS = 60.0
 DEFAULT_RADAR_OFF_PROBABILITY = 0.6
 DEFAULT_KINEMATIC_DROPOUT_PROBABILITY = 0.25
 DEFAULT_ALL_KINEMATIC_DROPOUT_PROBABILITY = 0.10
+DEFAULT_DISSONANCE_PROBABILITY = 0.05
+DEFAULT_UFO_TRACK_PROBABILITY = 0.10
+UFO_VARIANTS = frozenset({"J-40", "J-35", "Su-75"})
 
 
 def _json_error_context(
@@ -347,6 +350,8 @@ def _generate_single_observation_series(
         float,
         float,
         float,
+        float,
+        float,
     ],
 ) -> dict[str, Any]:
     (
@@ -362,9 +367,15 @@ def _generate_single_observation_series(
         radar_off_probability,
         kinematic_dropout_probability,
         all_kinematic_dropout_probability,
+        dissonance_probability,
+        ufo_track_probability,
     ) = args
     rng = random.Random(series_seed)
-    aircraft = rng.choice(AIRCRAFT)
+    ufo_aircraft = [item for item in AIRCRAFT if item.variant in UFO_VARIANTS]
+    known_aircraft = [item for item in AIRCRAFT if item.variant not in UFO_VARIANTS]
+    aircraft = rng.choice(
+        ufo_aircraft if rng.random() < ufo_track_probability else known_aircraft
+    )
     operator = rng.choice(aircraft.operators)
     radar = RADARS[aircraft.radar]
     modes = list(radar.modes)
@@ -408,6 +419,27 @@ def _generate_single_observation_series(
         approximate_kinematics = _degraded_kinematics(
             rng, kin, kinematic_dropout_probability, all_kinematic_dropout_probability
         )
+        # Inject occasional contradictory sensor evidence for known aircraft.
+        # UFO observations stay internally self-consistent so they represent a
+        # coherent open-set class rather than corrupt data.
+        if (
+            aircraft.variant not in UFO_VARIANTS
+            and rng.random() < dissonance_probability
+        ):
+            if approximate_kinematics and "ground_speed_max_kph" in approximate_kinematics:
+                excessive_speed = (
+                    aircraft.max_speed_mach * 1060.0 * rng.uniform(1.15, 1.45)
+                )
+                approximate_kinematics["ground_speed_kph"] = round(excessive_speed, 1)
+                approximate_kinematics["ground_speed_max_kph"] = round(excessive_speed * 1.03, 1)
+            elif radar_esm:
+                radar_esm["measured_centre_frequency_ghz"] = {
+                    "value": round(
+                        props["centre_frequency_max_ghz"] + rng.uniform(0.4, 1.0), 6
+                    ),
+                    "min": round(props["centre_frequency_max_ghz"] + 0.3, 6),
+                    "max": round(props["centre_frequency_max_ghz"] + 1.1, 6),
+                }
         if operational_state in {"radar_silent", "totally_passive"}:
             label = ObservationLabel(
                 label.aircraft_family,
@@ -527,6 +559,8 @@ def generate_observation_series(
     radar_off_probability: float = DEFAULT_RADAR_OFF_PROBABILITY,
     kinematic_dropout_probability: float = DEFAULT_KINEMATIC_DROPOUT_PROBABILITY,
     all_kinematic_dropout_probability: float = DEFAULT_ALL_KINEMATIC_DROPOUT_PROBABILITY,
+    dissonance_probability: float = DEFAULT_DISSONANCE_PROBABILITY,
+    ufo_track_probability: float = DEFAULT_UFO_TRACK_PROBABILITY,
     _intelligence_config: tuple[int, int, int] | None = None,
 ) -> dict[str, Any]:
     """Generate single-emitter ESM observation series.
@@ -561,6 +595,8 @@ def generate_observation_series(
         ("radar_off_probability", radar_off_probability),
         ("kinematic_dropout_probability", kinematic_dropout_probability),
         ("all_kinematic_dropout_probability", all_kinematic_dropout_probability),
+        ("dissonance_probability", dissonance_probability),
+        ("ufo_track_probability", ufo_track_probability),
     ):
         if not 0.0 <= value <= 1.0:
             raise ValueError(f"{name} must be between 0.0 and 1.0")
@@ -582,6 +618,8 @@ def generate_observation_series(
             radar_off_probability,
             kinematic_dropout_probability,
             all_kinematic_dropout_probability,
+            dissonance_probability,
+            ufo_track_probability,
         )
         for series_index in range(1, count + 1)
     ]
@@ -622,6 +660,8 @@ def generate_observation_series(
         "radar_off_probability": radar_off_probability,
         "kinematic_dropout_probability": kinematic_dropout_probability,
         "all_kinematic_dropout_probability": all_kinematic_dropout_probability,
+        "dissonance_probability": dissonance_probability,
+        "ufo_track_probability": ufo_track_probability,
         "workers": worker_count,
         "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
     }
