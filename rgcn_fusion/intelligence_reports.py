@@ -41,6 +41,8 @@ MAX_REPORTS_PER_OBSERVATION = 12
 DEFAULT_REPORT_RECENCY_HALF_LIFE_DAYS = 28.0
 DEFAULT_INTELLIGENCE_WEIGHT = 0.50
 ALTERNATIVE_REFUTATION_DISCOUNT = 0.15
+UFO_VARIANTS = frozenset({"J-40", "J-35", "Su-75"})
+UFO_AIRCRAFT_IDS = frozenset(f"aircraft:{slug(name)}" for name in UFO_VARIANTS)
 
 
 @dataclass(frozen=True)
@@ -339,7 +341,9 @@ def _iso(dt: datetime) -> str:
 
 def _wrong_aircraft(rng: random.Random, truth: dict[str, Any]) -> Any:
     options = [
-        a for a in AIRCRAFT if f"aircraft:{slug(a.variant)}" != truth.get("aircraft_id")
+        a for a in AIRCRAFT
+        if f"aircraft:{slug(a.variant)}" != truth.get("aircraft_id")
+        and a.variant not in UFO_VARIANTS
     ]
     return rng.choice(options)
 
@@ -442,7 +446,10 @@ def generate_intelligence_reports_for_series(
         is_sighting = idx < sighting_count
         # Sightings are mostly accurate, with a deterministic erroneous example
         # whenever there is more than one report of that kind.
-        correct = idx == 0 or (idx != 1 and rng.random() < 0.82)
+        is_ufo_track = truth.get("aircraft_id") in UFO_AIRCRAFT_IDS
+        correct = (not is_ufo_track) and (
+            idx == 0 or (idx != 1 and rng.random() < 0.82)
+        )
         aircraft, operator = _reported_identity(rng, truth, correct=correct)
         radar = RADARS[aircraft.radar]
         location = last_observation["estimated_emitter_location"]
@@ -593,12 +600,11 @@ def generate_intelligence_reports_for_series(
             ),
             "credibility_score": round(credibility, 6),
             "external_context": {
-                "operator_priors": {truth["operator"]: 0.75},
+                "operator_priors": {operator: 0.9},
                 "aircraft_family_priors": {
-                    f"aircraft_family:{slug(truth['aircraft_family'])}": 0.70
+                    f"aircraft_family:{slug(aircraft.family)}": 0.70
                 },
-                "radar_type_priors": {truth["radar_id"]: 0.70},
-                "radar_mode_priors": {truth["mode_id"]: 0.65},
+                "radar_type_priors": {radar_id: 0.70},
             },
             "claims": claims,
             "sighting" if is_sighting else "pattern_of_life": detail,
@@ -626,16 +632,21 @@ def generate_theatre_aircraft_report(
         raise ValueError("synthetic intelligence reports require ground_truth_label")
 
     catalog = list(
-        {f"aircraft:{slug(item.variant)}": item for item in AIRCRAFT}.items()
+        {
+            f"aircraft:{slug(item.variant)}": item
+            for item in AIRCRAFT
+            if item.variant not in UFO_VARIANTS
+        }.items()
     )
     maximum = min(100, len(catalog))
     minimum = min(10, maximum)
     list_size = minimum + int((rng.random() ** 2) * (maximum - minimum + 1))
     list_size = min(maximum, list_size)
     truth_id = truth["aircraft_id"]
+    ufo_track = truth_id in UFO_AIRCRAFT_IDS
     alternatives = [entry for entry in catalog if entry[0] != truth_id]
-    selected = [(truth_id, _aircraft_for_truth(truth))]
-    selected.extend(rng.sample(alternatives, list_size - 1))
+    selected = [] if ufo_track else [(truth_id, _aircraft_for_truth(truth))]
+    selected.extend(rng.sample(alternatives, list_size - len(selected)))
     rng.shuffle(selected)
 
     observed_at = _parse_utc(observations[0].get("timestamp_iso8601")) or datetime.now(
@@ -655,7 +666,13 @@ def generate_theatre_aircraft_report(
         "collected_at": _iso(collected_at),
         "ingested_at": _iso(published_at + timedelta(seconds=rng.uniform(5, 120))),
         "credibility_score": round(rng.uniform(0.75, 0.95), 6),
-        "external_context": {},
+        "external_context": {
+            "operator_priors": {
+                operator: 0.9
+                for _aircraft_id, item in selected
+                for operator in item.operators
+            }
+        },
         "theatre_aircraft": {
             "theatre_of_operations": area,
             "aircraft_types": [item.variant for _aircraft_id, item in selected],
@@ -684,7 +701,7 @@ def generate_airborne_aircraft_report(
     known_ids = list(theatre_report["theatre_aircraft"]["aircraft_ids"])
     truth_id = series["ground_truth_track_label"]["aircraft_id"]
     other_ids = [aircraft_id for aircraft_id in known_ids if aircraft_id != truth_id]
-    airborne_ids = [truth_id]
+    airborne_ids = [] if truth_id in UFO_AIRCRAFT_IDS else [truth_id]
     if other_ids:
         airborne_ids.extend(rng.sample(other_ids, rng.randint(0, min(5, len(other_ids)))))
     rng.shuffle(airborne_ids)
@@ -702,7 +719,7 @@ def generate_airborne_aircraft_report(
         "collected_at": _iso(collected_at),
         "ingested_at": _iso(published_at + timedelta(seconds=rng.uniform(5, 60))),
         "credibility_score": round(rng.uniform(0.78, 0.97), 6),
-        "external_context": {},
+        "external_context": dict(theatre_report.get("external_context") or {}),
         "airborne_aircraft": {
             "theatre_of_operations": theatre_report["theatre_aircraft"]["theatre_of_operations"],
             "aircraft_types": [aircraft_by_id[aircraft_id] for aircraft_id in airborne_ids],
@@ -812,6 +829,10 @@ def add_intelligence_reports_to_series_entry(
         )
     )
     observation_ids = [observation["observation_id"] for observation in observations]
+    operator_priors = dict(theatre_report["external_context"]["operator_priors"])
+    series["external_context"] = {"operator_priors": operator_priors}
+    for observation in observations:
+        observation["external_context"] = {"operator_priors": dict(operator_priors)}
     series_id = series["series_id"]
     for report_index, report in enumerate(reports, start=1):
         report["report_id"] = f"intel_report:{series_id}:{report_index:02d}"
