@@ -2,8 +2,10 @@ from concurrent.futures import ProcessPoolExecutor
 
 from rgcn_fusion.parallel_graph_construction import (
     build_series_fragment,
+    build_series_fragment_file_in_worker,
     build_series_fragment_in_worker,
     initialise_scoring_worker,
+    load_spooled_series_fragment,
     score_series_in_worker,
     score_series_observations,
 )
@@ -135,6 +137,31 @@ def test_process_worker_builds_deterministic_index_local_fragment():
     assert fragment["candidate_links"][0][:2] == (0, 3)
     assert fragment["report_links"] == [(1, 0)]
     assert fragment["report_kg_edges"] == []
+
+
+def test_process_worker_spools_large_result_instead_of_returning_it(tmp_path):
+    context = {
+        **_context(),
+        "include_candidate_nodes": True,
+        "include_intel_report_nodes": True,
+        "segment_frequency_shift_ghz": 0.75,
+        "fragment_spool_directory": str(tmp_path),
+    }
+    expected = build_series_fragment(_task(), context)
+
+    with ProcessPoolExecutor(
+        max_workers=1,
+        initializer=initialise_scoring_worker,
+        initargs=(context,),
+    ) as executor:
+        descriptor = list(
+            executor.map(build_series_fragment_file_in_worker, [_task()])
+        )[0]
+
+    assert descriptor[0] == 0
+    assert descriptor[1].endswith(".pickle")
+    assert load_spooled_series_fragment(descriptor) == expected
+    assert list(tmp_path.iterdir()) == []
 
 
 def test_fragment_accepts_observation_with_null_esm_parameters():

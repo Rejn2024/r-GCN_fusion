@@ -99,14 +99,14 @@ def test_track_notebook_ingests_new_reports_by_proximity_and_links_kg_entities()
     assert "report_kg_edges" in source
 
 
-def test_parallel_graph_fragments_are_serialized_one_track_at_a_time():
-    # ProcessPoolExecutor batches both calls and their returned values when chunksize
-    # is greater than one.  Each returned fragment can contain thousands of feature
-    # dictionaries, so batching hundreds of them can exhaust RAM while pickling the
-    # worker result even though the parent consumes the iterator incrementally.
+def test_parallel_graph_fragments_are_spooled_one_track_at_a_time():
+    # ProcessPoolExecutor creates an in-memory pickle of each returned value. Large
+    # fragments therefore go through files while only their paths cross the IPC queue.
     for notebook_path in (
         NOTEBOOK,
         Path("notebooks/Track_identification_non_radar_rf.ipynb"),
+        Path("notebooks/Track_identification_non_radar_rf_evidential_only.ipynb"),
+        Path("notebooks/Track_identification_open_set_ufo_evidential_only.ipynb"),
     ):
         notebook = json.loads(notebook_path.read_text(encoding="utf-8"))
         source = "\n".join(
@@ -118,6 +118,9 @@ def test_parallel_graph_fragments_are_serialized_one_track_at_a_time():
         assert 'os.getenv("GRAPH_SCORING_CHUNKSIZE"' not in source
         assert "math.ceil(task_count / max(worker_count * 4, 1))" not in source
         assert "chunksize=scoring_chunksize" in source
+        assert "build_series_fragment_file_in_worker" in source
+        assert "load_spooled_series_fragment(fragment_descriptor)" in source
+        assert 'TemporaryDirectory(prefix="graph-fragments-"' in source
 
 
 def test_candidate_recall_at_k_is_vectorised_and_visualised():

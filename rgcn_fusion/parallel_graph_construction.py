@@ -5,6 +5,10 @@ from __future__ import annotations
 from array import array
 from datetime import UTC, datetime
 import heapq
+import os
+from pathlib import Path
+import pickle
+import tempfile
 from typing import Any
 
 from .intelligence_reports import (
@@ -45,6 +49,56 @@ def build_series_fragment_in_worker(
     if _WORKER_CONTEXT is None:
         raise RuntimeError("scoring worker has not been initialised")
     return build_series_fragment(task, _WORKER_CONTEXT)
+
+
+def build_series_fragment_file_in_worker(
+    task: tuple[int, dict[str, Any]],
+) -> tuple[int, str]:
+    """Build a fragment into a spool file and return only its small descriptor.
+
+    ``ProcessPoolExecutor`` serializes every return value into an in-memory bytes
+    object before placing it on the result queue.  A track can contain enough
+    candidate feature dictionaries for that temporary copy to exhaust a Windows
+    worker.  Writing the pickle directly to a shared spool directory avoids that
+    extra full-size IPC copy; the parent still consumes fragments in input order.
+    """
+    if _WORKER_CONTEXT is None:
+        raise RuntimeError("scoring worker has not been initialised")
+    spool_directory = _WORKER_CONTEXT.get("fragment_spool_directory")
+    if not spool_directory:
+        raise RuntimeError("fragment spool directory has not been configured")
+
+    position, fragment = build_series_fragment(task, _WORKER_CONTEXT)
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f"fragment-{position:08d}-{os.getpid()}-",
+        suffix=".pickle.tmp",
+        dir=spool_directory,
+    )
+    temporary_path = Path(temporary_name)
+    final_path = temporary_path.with_suffix("")
+    try:
+        with os.fdopen(descriptor, "wb") as stream:
+            pickle.dump(fragment, stream, protocol=pickle.HIGHEST_PROTOCOL)
+        temporary_path.replace(final_path)
+    except BaseException:
+        temporary_path.unlink(missing_ok=True)
+        final_path.unlink(missing_ok=True)
+        raise
+    return position, str(final_path)
+
+
+def load_spooled_series_fragment(
+    descriptor: tuple[int, str],
+) -> tuple[int, dict[str, Any]]:
+    """Load and remove a fragment produced by a process-pool worker."""
+    position, filename = descriptor
+    path = Path(filename)
+    try:
+        with path.open("rb") as stream:
+            fragment = pickle.load(stream)
+    finally:
+        path.unlink(missing_ok=True)
+    return position, fragment
 
 
 def _flatten_numeric(prefix: str, value: Any, out: dict[str, float]) -> None:
