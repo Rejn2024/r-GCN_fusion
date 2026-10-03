@@ -347,6 +347,17 @@ def test_track_notebook_ports_vacuity_dissonance_plots_by_rao_outcome():
 
 def test_track_notebook_rao_loss_rewards_partially_correct_components():
     source = _code_source()
+    training_cell = next(
+        "".join(cell.get("source", []))
+        for cell in _notebook()["cells"]
+        if "rao_component_values = " in "".join(cell.get("source", []))
+    )
+
+    # The training cell is commonly resumed after loading prepared artifacts, so it
+    # must not depend on re-running the earlier target-construction cell for this schema.
+    assert training_cell.index("RAO_FIELDS = (") < training_cell.index(
+        "rao_component_values = "
+    )
     assert "RAO_AIRCRAFT_LOSS_WEIGHT = 1.0" in source
     assert "RAO_RADAR_LOSS_WEIGHT = 1.0" in source
     assert "RAO_OPERATOR_LOSS_WEIGHT = 1.0" in source
