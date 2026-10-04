@@ -169,6 +169,7 @@ def build_track_graph_batches_by_split(
     observation_track_index: torch.Tensor,
     selected_tracks_by_split: Mapping[str, Iterable[int]],
     tracks_per_batch: int,
+    edge_chunk_size: int = 1_000_000,
 ) -> dict[str, list[TrackGraphBatch]]:
     """Build induced mini-batches for several splits with one graph-indexing pass.
 
@@ -177,17 +178,26 @@ def build_track_graph_batches_by_split(
     shared-node self loops are intentionally omitted from mini-batches. Edge and
     observation positions are grouped by owner once and then gathered directly;
     this avoids scanning the complete graph for every batch (and every split).
+    Edge ownership is calculated in bounded chunks: indexing either complete row
+    of a very large ``edge_index`` can otherwise allocate several gigabytes for
+    each endpoint before grouping even starts.
     """
     if tracks_per_batch < 1:
         raise ValueError("tracks_per_batch must be positive")
+    if edge_chunk_size < 1:
+        raise ValueError("edge_chunk_size must be positive")
     edge_index = edge_index.cpu()
     edge_types = edge_types.cpu()
     node_track_index = node_track_index.cpu()
     observation_nodes = observation_nodes.cpu()
     observation_track_index = observation_track_index.cpu()
-    src_tracks = node_track_index[edge_index[0]]
-    dst_tracks = node_track_index[edge_index[1]]
-    edge_owners = torch.where(src_tracks >= 0, src_tracks, dst_tracks)
+    tracks_by_split = {
+        split_name: sorted({int(track) for track in selected_tracks})
+        for split_name, selected_tracks in selected_tracks_by_split.items()
+    }
+    selected_track_set = {
+        track for tracks in tracks_by_split.values() for track in tracks
+    }
     maximum_track = max(
         node_track_index.max().item() if node_track_index.numel() else -1,
         observation_track_index.max().item() if observation_track_index.numel() else -1,
@@ -203,7 +213,32 @@ def build_track_graph_batches_by_split(
         offsets = torch.cat((torch.zeros(1, dtype=torch.long), counts.cumsum(0)))
         return grouped_positions, offsets
 
-    edge_positions, edge_offsets = positions_grouped_by_track(edge_owners)
+    # Accumulate grouped position chunks while endpoint ownership is only live
+    # for one bounded chunk. Avoiding a full edge-sized owner tensor and argsort
+    # removes both of their large working allocations. Positions use int32 when
+    # possible and remain chunked until a batch actually needs them.
+    edge_position_parts: dict[int, list[torch.Tensor]] = {}
+    edge_position_dtype = (
+        torch.int32 if edge_index.size(1) <= torch.iinfo(torch.int32).max else torch.long
+    )
+    for start in range(0, edge_index.size(1), edge_chunk_size):
+        stop = min(start + edge_chunk_size, edge_index.size(1))
+        chunk = edge_index[:, start:stop]
+        src_tracks = node_track_index[chunk[0]]
+        dst_nodes = chunk[1][src_tracks < 0]
+        owners = src_tracks
+        if dst_nodes.numel():
+            # Clone before replacement so no second full-chunk endpoint lookup is
+            # needed when the source already establishes ownership.
+            owners = owners.clone()
+            owners[src_tracks < 0] = node_track_index[dst_nodes]
+        for track in torch.unique(owners[owners >= 0]).tolist():
+            if track not in selected_track_set:
+                continue
+            local_positions = torch.nonzero(owners == track, as_tuple=False).flatten()
+            edge_position_parts.setdefault(track, []).append(
+                (local_positions + start).to(edge_position_dtype)
+            )
     observation_positions, observation_offsets = positions_grouped_by_track(
         observation_track_index
     )
@@ -218,15 +253,26 @@ def build_track_graph_batches_by_split(
             )
         )
 
+    def gather_edge_groups(tracks: torch.Tensor) -> torch.Tensor:
+        parts = [
+            part
+            for track in tracks.tolist()
+            for part in edge_position_parts.get(track, ())
+        ]
+        return (
+            torch.cat(parts)
+            if parts
+            else torch.empty(0, dtype=edge_position_dtype)
+        )
+
     result: dict[str, list[TrackGraphBatch]] = {}
-    for split_name, selected_tracks in selected_tracks_by_split.items():
-        tracks = sorted({int(track) for track in selected_tracks})
+    for split_name, tracks in tracks_by_split.items():
         batches: list[TrackGraphBatch] = []
         for start in range(0, len(tracks), tracks_per_batch):
             batch_tracks = torch.tensor(
                 tracks[start : start + tracks_per_batch], dtype=torch.long
             )
-            batch_edge_positions = gather_groups(edge_positions, edge_offsets, batch_tracks)
+            batch_edge_positions = gather_edge_groups(batch_tracks)
             batch_edge_global = edge_index[:, batch_edge_positions]
             batch_edge_types = edge_types[batch_edge_positions]
             batch_observation_positions = gather_groups(
@@ -268,6 +314,7 @@ def build_track_graph_batches(
     observation_track_index: torch.Tensor,
     selected_tracks: Iterable[int],
     tracks_per_batch: int,
+    edge_chunk_size: int = 1_000_000,
 ) -> list[TrackGraphBatch]:
     """Build deterministic induced mini-batches while keeping every track intact."""
     return build_track_graph_batches_by_split(
@@ -278,4 +325,5 @@ def build_track_graph_batches(
         observation_track_index=observation_track_index,
         selected_tracks_by_split={"selected": selected_tracks},
         tracks_per_batch=tracks_per_batch,
+        edge_chunk_size=edge_chunk_size,
     )["selected"]
