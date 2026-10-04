@@ -128,6 +128,7 @@ def test_track_batches_build_multiple_splits_from_shared_owner_index():
         observation_track_index=torch.tensor([0, 1]),
         selected_tracks_by_split={"train": [1], "val": [0]},
         tracks_per_batch=1,
+        edge_chunk_size=2,
     )
 
     assert batches.keys() == {"train", "val"}
@@ -135,3 +136,37 @@ def test_track_batches_build_multiple_splits_from_shared_owner_index():
     assert batches["train"][0].observation_positions.tolist() == [1]
     assert batches["val"][0].track_indices.tolist() == [0]
     assert batches["val"][0].observation_positions.tolist() == [0]
+
+
+def test_track_batches_chunk_edge_ownership_across_chunk_boundaries():
+    # Both source-owned and destination-owned edges occur on either side of each
+    # chunk boundary, including an unowned shared-to-shared edge that is omitted.
+    edges = torch.tensor([[0, 1, 0, 2, 3], [1, 0, 2, 0, 0]])
+
+    batches = build_track_graph_batches(
+        edge_index=edges,
+        edge_types=torch.arange(5),
+        node_track_index=torch.tensor([-1, 0, 1, -1]),
+        observation_nodes=torch.tensor([1, 2]),
+        observation_track_index=torch.tensor([0, 1]),
+        selected_tracks=[0, 1],
+        tracks_per_batch=1,
+        edge_chunk_size=2,
+    )
+
+    assert batches[0].edge_types.tolist() == [0, 1]
+    assert batches[1].edge_types.tolist() == [2, 3]
+
+
+def test_track_batches_reject_invalid_edge_chunk_size():
+    with pytest.raises(ValueError, match="edge_chunk_size"):
+        build_track_graph_batches(
+            edge_index=torch.empty((2, 0), dtype=torch.long),
+            edge_types=torch.empty(0, dtype=torch.long),
+            node_track_index=torch.tensor([-1]),
+            observation_nodes=torch.empty(0, dtype=torch.long),
+            observation_track_index=torch.empty(0, dtype=torch.long),
+            selected_tracks=[],
+            tracks_per_batch=1,
+            edge_chunk_size=0,
+        )
