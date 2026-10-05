@@ -158,6 +158,31 @@ def test_track_batches_chunk_edge_ownership_across_chunk_boundaries():
     assert batches[1].edge_types.tolist() == [2, 3]
 
 
+def test_track_batches_reindex_without_edge_sized_int64_inverse(monkeypatch):
+    edges = torch.tensor([[0, 1, 0, 2], [1, 0, 2, 0]], dtype=torch.int32)
+    original_unique = torch.unique
+
+    def reject_inverse(input, *args, **kwargs):
+        assert not kwargs.get("return_inverse", False)
+        return original_unique(input, *args, **kwargs)
+
+    monkeypatch.setattr(torch, "unique", reject_inverse)
+    batch = build_track_graph_batches(
+        edge_index=edges,
+        edge_types=torch.arange(4, dtype=torch.uint8),
+        node_track_index=torch.tensor([-1, 0, 1]),
+        observation_nodes=torch.tensor([1, 2]),
+        observation_track_index=torch.tensor([0, 1]),
+        selected_tracks=[0, 1],
+        tracks_per_batch=2,
+        edge_chunk_size=2,
+    )[0]
+
+    assert batch.edge_index.dtype == torch.int32
+    assert batch.edge_index.tolist() == edges.tolist()
+    assert batch.observation_nodes.tolist() == [1, 2]
+
+
 def test_track_batches_reject_invalid_edge_chunk_size():
     with pytest.raises(ValueError, match="edge_chunk_size"):
         build_track_graph_batches(

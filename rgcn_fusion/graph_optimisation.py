@@ -279,14 +279,34 @@ def build_track_graph_batches_by_split(
                 observation_positions, observation_offsets, batch_tracks
             )
             batch_observation_global = observation_nodes[batch_observation_positions]
-            batch_nodes, inverse = torch.unique(
-                torch.cat((batch_edge_global.flatten(), batch_observation_global)),
+            # Do not ask ``unique`` for its inverse over every edge endpoint.
+            # That inverse is always int64, even when the canonical graph uses
+            # compact int32 node ids, and can consequently require several GB
+            # for a dense batch.  Discover the (normally much smaller) node set
+            # first and use a node-sized lookup table for the local reindexing.
+            # Keeping observations out of the initial concatenation also avoids
+            # promoting all int32 edge endpoints to the observations' int64
+            # dtype before they are deduplicated.
+            edge_nodes = torch.unique(batch_edge_global, sorted=True)
+            batch_nodes = torch.unique(
+                torch.cat(
+                    (edge_nodes, batch_observation_global.to(edge_nodes.dtype))
+                ),
                 sorted=True,
-                return_inverse=True,
             )
-            edge_value_count = batch_edge_global.numel()
-            local_edges = inverse[:edge_value_count].view_as(batch_edge_global)
-            local_observations = inverse[edge_value_count:]
+            local_index_dtype = (
+                torch.int32
+                if batch_nodes.numel() <= torch.iinfo(torch.int32).max
+                else torch.long
+            )
+            global_to_local = torch.empty(
+                node_track_index.numel(), dtype=local_index_dtype
+            )
+            global_to_local[batch_nodes.long()] = torch.arange(
+                batch_nodes.numel(), dtype=local_index_dtype
+            )
+            local_edges = global_to_local[batch_edge_global.long()]
+            local_observations = global_to_local[batch_observation_global.long()]
             local_observation_tracks = torch.searchsorted(
                 batch_tracks, observation_track_index[batch_observation_positions]
             )
