@@ -196,3 +196,140 @@ a frame containing only known modes cannot assign belief to an unseen one.
   open-set behaviour.
 - Fail closed when the allow-list is missing, stale, empty, or incompatible with
   checkpoint vocabularies. Never silently fall back to independent `argmax`.
+
+## Maximal safe partial identification
+
+Atomic rejection is the safest fallback for a decoder that can emit only a
+complete tuple, but it leaves useful evidence unused. A production system
+should additionally support a **set-valued, taxonomy-aware result**: retain the
+KG-valid worlds that remain credible, then publish every attribute that is
+shared by enough of those worlds. This permits, for example, `MiG-29` to be
+reported when `MiG-29K` versus `MiG-29UPG` is unresolved, or `India` to be
+reported when the aircraft type is unresolved. It must not be implemented by
+independently thresholding task-head maxima, because that can recreate an
+impossible combination.
+
+### Recommended inference flow
+
+1. **Represent useful levels explicitly.** Add stable KG identifiers and
+   taxonomy edges for variant -> type/family -> role, and preserve explicit
+   operator organisation -> nation relationships. Do not derive a family by
+   splitting a variant's display name. Keep radar family, radar model, mode,
+   platform type, platform variant, operator organisation, and operator nation
+   as separate attributes.
+2. **Score joint worlds, not isolated labels.** Construct the versioned set of
+   valid worlds for the observation time and score each world from the relevant
+   sensor, kinematic, contextual, intelligence, and negative evidence. Calibrate
+   these scores into a posterior, Dempster-Shafer mass, or conformal prediction
+   set. Evidence missing for an attribute should widen the retained world set;
+   it should not count as evidence against a value.
+3. **Retain a calibrated credible set.** Keep worlds using a conformal coverage
+   rule, cumulative posterior-mass target, or calibrated plausibility threshold,
+   with a maximum-size safety policy. Preserve the residual probability/mass as
+   `unknown` rather than renormalising it away. Hard removal should be limited
+   to reliable physical or KG-temporal impossibilities.
+4. **Project upward and across attributes.** Marginalise the retained joint
+   worlds onto each attribute and its ancestors. Publish a value only when its
+   calibrated belief/probability meets that attribute's threshold and all
+   material surviving worlds agree with it. Thus two credible variants of the
+   same type yield the type, while aircraft ambiguity can still yield an
+   operator nation if the credible aircraft worlds share that nation.
+5. **Return the most specific supported value per branch.** Walk each taxonomy
+   from specific to general and stop at the deepest accepted node. A rejected
+   variant can fall back to aircraft type, then family or role. Apply this
+   independently to operator, platform, radar, and mode branches, but always
+   compute the answers by projection from the same joint world set.
+6. **Run a consistency closure before publishing.** Intersect the KG worlds
+   compatible with all proposed assertions. If the intersection is empty,
+   remove the least-supported assertion until it is non-empty. Return the
+   remaining world identifiers or a digest of the allow-list version so an
+   analyst can reproduce the result.
+
+The agreement rule should normally operate on a calibrated credible set rather
+than literally every non-zero softmax entry. Neural softmax assigns a non-zero
+score to almost everything, while prematurely discarding low-scoring worlds can
+make a broad assertion look falsely certain. Thresholds therefore need separate
+calibration for each level: the cost of wrongly naming an operator nation may
+not equal the cost of wrongly naming an aircraft variant.
+
+### Suggested output contract
+
+Do not overload `null` to mean missing input, unresolved ambiguity, novelty,
+and contradiction. Emit explicit assertions and unresolved alternatives:
+
+```json
+{
+  "status": "partially_known",
+  "assertions": {
+    "aircraft_type": {
+      "value": "MiG-29",
+      "belief": 0.91,
+      "plausibility": 0.98,
+      "resolution": "type"
+    },
+    "aircraft_variant": {
+      "value": null,
+      "reason": "ambiguous",
+      "alternatives": ["MiG-29K", "MiG-29UPG"]
+    },
+    "operator_nation": {
+      "value": "India",
+      "belief": 0.96,
+      "plausibility": 0.99,
+      "resolution": "nation"
+    }
+  },
+  "credible_world_coverage": 0.95,
+  "unknown_mass": 0.04,
+  "kg_snapshot": "<version>"
+}
+```
+
+Include provenance and source-specific contributions behind each assertion,
+plus explicit reasons such as `insufficient_evidence`, `ambiguous`,
+`out_of_distribution`, `conflicting_evidence`, or `kg_incomplete`. Consumers
+can then distinguish a useful coarse classification from an unsupported guess.
+
+### Network and training changes that support this output
+
+- Add supervised heads at every useful hierarchy level (variant, type/family,
+  operator organisation/nation, radar/mode), while retaining a joint-world head
+  or structured decoder. Auxiliary coarse-level losses provide a learning signal
+  even when fine labels are absent.
+- Make fine heads conditional: predict variant given type, mode given radar,
+  and operator organisation given nation. Mask impossible children using the KG
+  and train a dedicated stop/abstain decision at every branch.
+- Train with partially labelled examples by marginalising over every valid world
+  consistent with the known label. An example labelled only `MiG-29` should
+  reward the sum of its variant probabilities, not be discarded or assigned a
+  fabricated variant.
+- Fuse a track over time using reliability-aware attention or Bayesian/DS
+  accumulation. Stable attributes such as operator and aircraft type can pool
+  over the track, while mode remains time varying. Discount repeated correlated
+  observations and reports so volume is not mistaken for independent support.
+- Supply missingness masks, measurement uncertainty, sensor identity/quality,
+  report provenance, and observation age as model inputs. Learn or calibrate
+  source reliability, while retaining explicit conflict and ignorance rather
+  than collapsing both into low confidence.
+- Add open-set detectors at several levels. A novel variant may still belong to
+  a known type, while a novel platform may still have a supported operator
+  nation. Include an open-world bucket at each relevant branch instead of one
+  global `unknown` class.
+
+### Evaluation and rollout
+
+Evaluate more than exact full-tuple accuracy. Report accuracy and calibration
+at every hierarchy depth, semantic distance from truth, credible-set coverage
+and size, correct-partial rate, over-specific error rate, abstention/coverage
+curves, and the rate of internally inconsistent assertions (which must remain
+zero). Stress-test held-out variants within known types, held-out types, shared
+radars across platforms, multi-nationally operated aircraft, missing modalities,
+contradictory reports, sensor degradation, and KG snapshot drift.
+
+A practical delivery sequence is: first add taxonomy and nation projections to
+the existing joint-world assessment; next introduce calibrated credible sets
+and the structured result contract; then train hierarchy-level auxiliary heads
+and abstention decisions; finally compare track-level fusion and learned source
+gating against the transparent projection baseline. This preserves a usable,
+auditable baseline while allowing the network to exploit progressively more of
+the available information.
