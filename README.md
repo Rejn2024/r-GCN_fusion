@@ -236,6 +236,10 @@ uncertainty without losing cross-attribute consistency, model KG-valid joint
 worlds as the frame of discernment and project their mass onto each attribute.
 The [KG-consistent output design](docs/kg_consistent_outputs.md#a-structured-frame-of-discernment)
 includes an India/MiG-29 variant example.
+Its [maximal safe partial identification](docs/kg_consistent_outputs.md#maximal-safe-partial-identification)
+design also describes how to return an aircraft type when its variant is
+ambiguous, or an operator nation when the aircraft is unresolved, without
+combining mutually incompatible independent predictions.
 
 If training the full observation graph exhausts GPU memory, see
 [`docs/training_memory.md`](docs/training_memory.md) for model, graph, and
