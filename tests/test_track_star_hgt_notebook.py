@@ -399,7 +399,9 @@ def test_streaming_metrics_match_global_reference_on_uneven_batches(tmp_path):
         torch.set_num_threads(threads)
 
 
-def test_compiled_initial_and_continuation_training_keep_raw_checkpoints(tmp_path):
+@pytest.mark.parametrize("compile_setting", [None, "0", "1"],
+                         ids=["default-eager", "explicit-eager", "compiled"])
+def test_initial_and_continuation_training_keep_raw_checkpoints(tmp_path, compile_setting):
     pytest.importorskip("torch_geometric")
     pytest.importorskip("tensorboard")
     original_compile = torch.compile
@@ -415,14 +417,24 @@ def test_compiled_initial_and_continuation_training_keep_raw_checkpoints(tmp_pat
 
     try:
         with patch.dict(os.environ, {
-            "COMPILE_MODEL": "1", "PREFETCH_BATCHES": "0", "METRICS_INTERVAL": "10",
+            "PREFETCH_BATCHES": "0", "METRICS_INTERVAL": "10",
             "CONTINUATION_EPOCHS": "1", "CONTINUATION_HARD_STOP_HOURS": "1",
             "HARD_FINISH_HOURS": "1",
         }), patch.object(torch, "compile", side_effect=lambda module, **options:
                          original_compile(module, backend="eager", **options)) as compiler, patch(
                              "torch.utils.tensorboard.SummaryWriter", return_value=Mock()):
+            if compile_setting is None:
+                os.environ.pop("COMPILE_MODEL", None)
+            else:
+                os.environ["COMPILE_MODEL"] = compile_setting
             namespace = _training_namespace(tmp_path)
-            compiler.assert_called_once_with(namespace["model"], dynamic=True)
+            compile_enabled = compile_setting == "1"
+            if compile_enabled:
+                compiler.assert_called_once_with(namespace["model"], dynamic=True)
+            else:
+                compiler.assert_not_called()
+                assert namespace["compiled_model"] is namespace["model"]
+            assert namespace["model_config"]["compile_model"] is compile_enabled
             before = namespace["model"].track_seed.detach().clone()
             namespace["_record_split_metric"] = record_split_metric
             sources = notebook_cells()
@@ -435,6 +447,12 @@ def test_compiled_initial_and_continuation_training_keep_raw_checkpoints(tmp_pat
             continuation = next(source for source in sources if source.startswith(
                 "# Major step: Reload the best model and continue training"))
             execute(continuation, namespace)
+            if not compile_enabled:
+                # Eager training, evaluation, and continuation must never invoke
+                # Inductor, even on hosts where no native compiler is installed.
+                compiler.assert_not_called()
+            logged_params = namespace["mlflow"].log_params.call_args_list[0].args[0]
+            assert logged_params["compile_model"] is compile_enabled
             assert [row["epoch"] for row in namespace["history"]] == [1, 2, 3]
             assert namespace["continuation_completed_epochs"] == 1
             assert metric_calls == ["train", "test", "test", "train", "test"]
