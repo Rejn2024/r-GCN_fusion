@@ -250,6 +250,24 @@ The advanced notebook's GraphSAGE/HGT classifier has a reproducible
 generator reads the live notebook configuration without executing training, so
 the SVG can be refreshed after architecture settings change.
 
+[`notebooks/track_star_hgt.ipynb`](notebooks/track_star_hgt.ipynb) is a separate
+experiment derived from `track_hgt.ipynb`. It replaces the r-GCN stack and final
+track pooling with **five HGT layers in total** and one virtual node per track.
+Bidirectional observation–track incidence edges provide whole-track context while
+preserving the original temporal, candidate, claim, and KG relations. Virtual
+nodes live in hidden-feature space, so existing input artifacts and observation
+indices are reused. The final track nodes feed the joint RAO evidential head;
+radar modes remain observation-specific and conditioned on track context.
+
+Run the source nonuniform-base-rate experiment first to create its saved inputs,
+then run the new notebook with `torch-geometric>=2.5,<3`, `scikit-learn`, and
+`tensorboard` installed alongside the project dependencies. Outputs and checkpoints
+are isolated under `artifacts/track_star_hgt`. The original evidential output
+schema, partial-identification export, and evaluation dashboards are retained.
+This is an offline complete-track experiment; online use requires causal input
+features and prefix-only track membership. Like its source, it selects checkpoints
+using test loss and reserves the validation split for independent evaluation.
+
 For leakage-safe observation-level radar-mode experiments, the example config
 filters supervised loss/metrics to `Observation` nodes, groups splits by
 `series_id` when that property is present, removes cross-split edges, and drops
