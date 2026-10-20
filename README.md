@@ -268,6 +268,10 @@ This is an offline complete-track experiment; online use requires causal input
 features and prefix-only track membership. Like its source, it selects checkpoints
 using test loss and reserves the validation split for independent evaluation.
 
+Training defaults to eight tracks per batch, dynamic `torch.compile` execution,
+and bounded CUDA batch prefetch. See [track-star training performance](docs/track_star_hgt_training_performance.md)
+for transfer/memory behavior, comparison controls and regression checks.
+
 For leakage-safe observation-level radar-mode experiments, the example config
 filters supervised loss/metrics to `Observation` nodes, groups splits by
 `series_id` when that property is present, removes cross-split edges, and drops
