@@ -369,6 +369,12 @@ def build_series_fragment(
                         "node_kind": "candidate",
                         "series_id": obs["series_id"],
                         "rank": rank,
+                        # Identity is separate from observation-specific scores.
+                        # Consumers may share this tuple within a track, never by rank.
+                        "mode_id": score.mode_id,
+                        "radar_id": score.radar_id,
+                        "aircraft_id": score.aircraft_id,
+                        "operator": _operator,
                     }
                 )
                 candidates.append((observation_offset, candidate_offset, direct_edges))
