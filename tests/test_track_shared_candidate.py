@@ -257,6 +257,114 @@ def test_ground_truth_rejected(tmp_path):
         build_shared_evidence_graph(series, kg, candidates, tmp_path)
 
 
+@pytest.mark.parametrize("routing", ["selective", "track"])
+def test_spawn_parallel_graph_is_identical_to_serial(tmp_path, routing):
+    series, kg, candidates = fixture_inputs()
+    # Make track sizes unequal and preserve arbitrary source ordering.
+    series[0]["observations"] = series[0]["observations"][:1]
+    series.reverse()
+    serial_dir, parallel_dir = tmp_path / "serial", tmp_path / "parallel"
+    expected = build_shared_evidence_graph(series, kg, candidates, serial_dir,
+        intelligence_routing=routing)
+    actual = build_shared_evidence_graph(series, kg, candidates, parallel_dir,
+        intelligence_routing=routing, num_workers=2)
+    for key in expected:
+        if isinstance(expected[key], torch.Tensor):
+            assert torch.equal(actual[key], expected[key]), key
+        else:
+            assert actual[key] == expected[key], key
+    for name in ("nodes.float32.memmap", "incidences.float32.memmap", "intelligence_routing.jsonl"):
+        assert (serial_dir / name).read_bytes() == (parallel_dir / name).read_bytes()
+    for name in ("graph_construction_outputs.pt", "relational_graph_outputs.pt"):
+        expected_artifact = torch.load(serial_dir / name, weights_only=False)
+        actual_artifact = torch.load(parallel_dir / name, weights_only=False)
+        for key, value in expected_artifact.items():
+            if isinstance(value, torch.Tensor):
+                assert torch.equal(actual_artifact[key], value)
+            else:
+                assert actual_artifact[key] == value
+    assert not list(parallel_dir.glob("shared-fragments-*"))
+
+
+def test_parallel_worker_failure_cleans_spool_and_does_not_save_manifest(tmp_path):
+    series, kg, candidates = fixture_inputs()
+    del series[1]["observations"][0]["sequence_index"]
+    with pytest.raises(KeyError, match="sequence_index"):
+        build_shared_evidence_graph(series, kg, candidates, tmp_path, num_workers=2)
+    assert not list(tmp_path.glob("shared-fragments-*"))
+    assert not (tmp_path / "graph_construction_outputs.pt").exists()
+
+
+@pytest.mark.parametrize("workers", [0, -1, 1.5, True])
+def test_invalid_graph_worker_count_rejected_before_writes(tmp_path, workers):
+    with pytest.raises(ValueError, match="num_workers"):
+        build_shared_evidence_graph(*fixture_inputs(), tmp_path, num_workers=workers)
+    assert not list(tmp_path.iterdir())
+
+
+def test_feature_spool_preserves_scalar_transform_across_chunks(tmp_path):
+    from rgcn_fusion.track_shared_graph import _FeatureSpool
+    spool = _FeatureSpool(tmp_path, "test")
+    rows = [{"tiny": -1.e-35, "wide": 1.e50, "rounding": 1.0000000596}, {},
+            {"negative": -123.456789, "zero": 0.}] * 5462
+    for row in rows:
+        spool.append(row)
+    actual, names = spool.finish()
+    expected = np.array([[np.sign(row.get(k, 0.)) * np.log1p(abs(row.get(k, 0.)))
+                          for k in names] for row in rows], dtype=np.float32)
+    assert np.array_equal(actual.numpy(), expected)
+
+
+def test_fragment_submission_is_bounded(monkeypatch, tmp_path):
+    import rgcn_fusion.track_shared_graph as module
+    submitted, loaded = [], []
+
+    class Future:
+        def __init__(self, task):
+            self.task = task
+
+        def result(self):
+            loaded.append(self.task[0])
+            return self.task
+
+        def cancel(self):
+            pass
+
+    class Pool:
+        def __init__(self, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            pass
+
+        def submit(self, function, task):
+            submitted.append(task[0])
+            assert len(submitted) - len(loaded) <= 4
+            return Future(task)
+
+    monkeypatch.setattr(module, "ProcessPoolExecutor", Pool)
+    monkeypatch.setattr(module, "load_spooled_series_fragment", lambda descriptor: descriptor)
+    assert list(module._series_fragments(list(range(20)), {}, tmp_path, 2, "spawn")) == list(enumerate(range(20)))
+
+
+def test_routing_reuses_proximity_for_report_and_claims(monkeypatch, tmp_path):
+    import rgcn_fusion.track_shared_graph as module
+    original = module.report_observation_proximity
+    calls = []
+
+    def measured(report, observation):
+        calls.append((report["report_id"], observation["observation_id"]))
+        return original(report, observation)
+
+    monkeypatch.setattr(module, "report_observation_proximity", measured)
+    build_shared_evidence_graph(*fixture_inputs(), tmp_path)
+    assert len(calls) == 2  # Two local report/observation pairs, each with a claim.
+    assert len(set(calls)) == len(calls)
+
+
 def test_mixed_precision_forward_and_backward(graph_data):
     graph = graph_data
     prepared = batches(graph)["train"][0]

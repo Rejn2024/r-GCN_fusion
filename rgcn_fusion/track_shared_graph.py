@@ -7,18 +7,26 @@ shared candidate. Disk-backed feature tables bound construction memory.
 from __future__ import annotations
 
 from array import array
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
+from concurrent.futures import ProcessPoolExecutor
+from contextlib import ExitStack, closing
 from dataclasses import dataclass
 import json
+import multiprocessing
 from pathlib import Path
+import pickle
 import tempfile
+import time
 
 import numpy as np
 import torch
 
 from .data_privacy import ground_truth_paths
 from .intelligence_reports import report_observation_proximity
-from .parallel_graph_construction import build_series_fragment, _flatten_numeric
+from .parallel_graph_construction import (
+    build_series_fragment, _flatten_numeric, initialise_scoring_worker,
+    build_series_fragment_file_in_worker, load_spooled_series_fragment,
+)
 
 NODE_TYPES = ("observation", "candidate", "intelligence_report", "report_claim", "kg_entity", "track")
 NODE_TYPE_INDEX = {name: i for i, name in enumerate(NODE_TYPES)}
@@ -53,16 +61,16 @@ class _FeatureSpool:
 
     def __init__(self, directory, name):
         self.path = Path(directory) / (name + ".float32.memmap")
-        self.spool = tempfile.TemporaryFile(mode="w+t", dir=directory)
+        self.spool = tempfile.TemporaryFile(mode="w+b", dir=directory)
         self.names = set()
         self.count = 0
 
     def append(self, row):
         values = {k: float(v) for k, v in row.items()}
-        if not all(np.isfinite(v) for v in values.values()):
+        if not np.isfinite(list(values.values())).all():
             raise ValueError("Non-finite graph feature")
         self.names.update(values)
-        self.spool.write(json.dumps(values) + "\n")
+        pickle.dump(values, self.spool, protocol=pickle.HIGHEST_PROTOCOL)
         self.count += 1
         return self.count - 1
 
@@ -73,31 +81,77 @@ class _FeatureSpool:
         dense = np.memmap(self.path, mode="w+", dtype=np.float32,
                           shape=(max(1, self.count), len(names)))
         self.spool.seek(0)
-        chunk_size = 16384
+        # Keep float64 values and their signs below ~16 MiB together even when
+        # sparse input introduces a wide feature schema.
+        chunk_size = max(1, min(16384, (8 * 1024 * 1024) // (8 * len(names))))
         for start in range(0, max(1, self.count), chunk_size):
             stop = min(start + chunk_size, max(1, self.count))
-            chunk = np.zeros((stop - start, len(names)), dtype=np.float32)
+            chunk = np.zeros((stop - start, len(names)), dtype=np.float64)
             for i in range(stop - start):
-                line = self.spool.readline()
-                if line:
-                    for key, value in json.loads(line).items():
-                        # Fixed transform: no statistics fitted on held-out tracks.
-                        chunk[i, columns[key]] = np.sign(value) * np.log1p(abs(value))
+                if start + i < self.count:
+                    for key, value in pickle.load(self.spool).items():
+                        chunk[i, columns[key]] = value
+            # Transform in float64 before storing float32, matching the original
+            # scalar calculation without rounding raw inputs to float32 first.
+            # (The scratch array is bounded by chunk_size, not the whole graph.)
+            signs = np.sign(chunk)
+            np.abs(chunk, out=chunk)
+            np.log1p(chunk, out=chunk)
+            chunk *= signs
             dense[start:stop] = chunk
+            del signs, chunk
         dense.flush()
         self.spool.close()
         return torch.from_numpy(dense), names
 
 
+def _series_fragments(series_records, context, output_dir, num_workers, start_method):
+    """Yield in input order with at most two fragments per worker in flight.
+
+    Worker results are spooled to disk to avoid large IPC copies. Only the parent
+    assigns global indices and writes final artifacts. Spawn works in notebooks
+    and avoids forking a kernel which may already have initialized CUDA.
+    """
+    tasks = iter(enumerate(series_records))
+    if num_workers == 1:
+        for task in tasks:
+            yield build_series_fragment(task, context)
+        return
+    with tempfile.TemporaryDirectory(prefix="shared-fragments-", dir=output_dir) as spool:
+        worker_context = {**context, "fragment_spool_directory": spool}
+        with ProcessPoolExecutor(
+            max_workers=num_workers, mp_context=multiprocessing.get_context(start_method),
+            initializer=initialise_scoring_worker, initargs=(worker_context,),
+        ) as pool:
+            pending = deque()
+            try:
+                for _ in range(2 * num_workers):
+                    task = next(tasks, None)
+                    if task is None:
+                        break
+                    pending.append(pool.submit(build_series_fragment_file_in_worker, task))
+                while pending:
+                    yield load_spooled_series_fragment(pending.popleft().result())
+                    task = next(tasks, None)
+                    if task is not None:
+                        pending.append(pool.submit(build_series_fragment_file_in_worker, task))
+            finally:
+                for future in pending:
+                    future.cancel()
+
+
 def build_shared_evidence_graph(series_records, kg, candidate_rows, output_dir, *,
                                 max_candidates=18, retrieval_candidates=320,
-                                min_claim_contribution=.15, intelligence_routing="selective"):
+                                min_claim_contribution=.15, intelligence_routing="selective",
+                                num_workers=1, start_method="spawn"):
     """Build new artifacts from the same label-free inputs as track_star_hgt.
 
     No candidate is shared between series. Direct claim/candidate links are
     replaced by the existing scorer's per-incidence evidence channels, augmented
     with retained positive/negative claim counts. Candidate identity connects to
     its KG components; no observation match score is stored on a candidate node.
+    ``num_workers=1`` avoids process startup for small graphs. Increase it for
+    long scoring runs; each worker holds its own candidate context and fragment.
     """
     if ground_truth_paths(series_records):
         raise ValueError("Graph construction requires a ground-truth-free inference view")
@@ -107,187 +161,208 @@ def build_shared_evidence_graph(series_records, kg, candidate_rows, output_dir, 
         raise ValueError("Candidate limits must be positive")
     if not np.isfinite(min_claim_contribution) or min_claim_contribution < 0:
         raise ValueError("Claim contribution threshold must be finite and nonnegative")
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-    features, edge_features = _FeatureSpool(output_dir, "nodes"), _FeatureSpool(output_dir, "incidences")
-    meta, observations = [], []
-    src, dst, types, feature_indices = array("i"), array("i"), array("i"), array("i")
-    relations, relation_ids = [], {}
-    kg_index = {}
-    operator_ids = {node.get("properties", {}).get("name"): node["id"]
-                    for node in kg["nodes"] if node.get("label") == "Operator"}
-
-    def node(metadata, values):
-        i = len(meta)
-        meta.append(metadata)
-        features.append(values)
-        return i
-
-    def edge(a, b, relation, attributes=-1):
-        signature = (meta[a]["node_kind"], relation, meta[b]["node_kind"])
-        if signature not in relation_ids:
-            relation_ids[signature] = len(relations)
-            relations.append(signature)
-        src.append(a); dst.append(b); types.append(relation_ids[signature]); feature_indices.append(attributes)
-
-    def pair(a, b, forward, reverse, attributes=-1):
-        edge(a, b, forward, attributes)
-        edge(b, a, reverse, attributes)
-
-    for entity in kg["nodes"]:
-        if entity.get("label") not in {"AircraftVariant", "AircraftFamily", "Radar", "Operator", "RadarMode"}:
-            continue
-        values = {"node_kind_kg_entity": 1.}
-        _flatten_numeric("kg", entity.get("properties", {}), values)
-        kg_index[entity["id"]] = node({"node_kind": "kg_entity", "kg_id": entity["id"],
-                                      "kg_label": entity["label"], "kg_index": len(kg_index)}, values)
-    for e in kg["edges"]:
-        if e["source"] in kg_index and e["target"] in kg_index:
-            pair(kg_index[e["source"]], kg_index[e["target"]],
-                 "kg_" + e["relation"], "kg_reverse_" + e["relation"])
-
-    families = {e["source"]: e["target"] for e in kg["edges"] if e["relation"] == "VARIANT_OF"}
-    variants = defaultdict(list)
-    for row in candidate_rows:
-        variants[(row["mode_id"], row["radar_id"], row["aircraft_id"])].append(row)
-    context = {"candidate_templates": [{**rows[0], "operator": None} for rows in variants.values()],
-               "candidate_variants": dict(variants), "aircraft_family_by_aircraft": families,
-               "max_kg_retrieval_candidates": retrieval_candidates, "max_kg_candidates": max_candidates,
-               "claim_candidate_min_abs_contribution": min_claim_contribution,
-               "include_candidate_nodes": True, "include_intel_report_nodes": True,
-               "segment_frequency_shift_ghz": .75}
-    audit = Counter()
-    route_audit = (output_dir / "intelligence_routing.jsonl").open("w", encoding="utf-8")
+    if isinstance(num_workers, bool) or not isinstance(num_workers, int) or num_workers < 1:
+        raise ValueError("num_workers must be a positive integer")
+    if start_method not in multiprocessing.get_all_start_methods():
+        raise ValueError("Unsupported multiprocessing start_method")
     seen_series = set()
-    for ordinal, series in enumerate(series_records):
+    for series in series_records:
         sid = series["series_id"]
         if sid in seen_series:
             raise ValueError("Duplicate series_id")
         seen_series.add(sid)
-        _, fragment = build_series_fragment((ordinal, series), context)
-        track = node({"node_kind": "track", "series_id": sid}, {"node_kind_track": 1.})
-        mapping = {}
-        # The fragment contains one copy of each report and claim, plus local candidates.
-        for offset, metadata in enumerate(fragment["node_meta"]):
-            if metadata["node_kind"] == "candidate":
-                continue
-            mapping[offset] = node(dict(metadata), fragment["feature_rows"][offset])
-        obs = [mapping[i] for i in fragment["observation_offsets"]]
-        observations.extend(obs)
-        for i in obs:
-            pair(i, track, "belongs_to", "contains")
-        for a, b in zip(obs, obs[1:]):
-            pair(a, b, "next_observation", "prev_observation")
-        for a, b in zip(obs, obs[2:]):
-            pair(a, b, "same_emitter", "same_emitter")
-        shared = {}
-        for observation_offset, candidate_offset, signed_claims in fragment["candidate_links"]:
-            m = fragment["node_meta"][candidate_offset]
-            identity = tuple(m[key] for key in ("mode_id", "radar_id", "aircraft_id", "operator"))
-            if identity not in shared:
-                c = node({"node_kind": "candidate", "series_id": sid, "candidate_key": identity},
-                         {"node_kind_candidate": 1.})
-                shared[identity] = c
-                for role, entity in zip(("mode", "radar", "aircraft", "operator"),
-                                        (*identity[:3], operator_ids.get(identity[3]))):
-                    if entity in kg_index:
-                        pair(c, kg_index[entity], "candidate_" + role, role + "_of_candidate")
-            c, o = shared[identity], mapping[observation_offset]
-            match = {k: v for k, v in fragment["feature_rows"][candidate_offset].items()
-                     if k.startswith("candidate_")}
-            rf_observed = match.get("candidate_non_radar_rf_observed_count", 0) > 0
-            rf_compatible = match.get("candidate_non_radar_rf_score", 0) >= .5
-            match["candidate_has_compatible_rf_emission"] = float(rf_observed and rf_compatible)
-            match["candidate_contradicts_rf_emission"] = float(rf_observed and not rf_compatible)
-            match["retained_supporting_claim_count"] = sum(i > 0 for i in signed_claims)
-            match["retained_refuting_claim_count"] = sum(i < 0 for i in signed_claims)
-            attributes = edge_features.append(match)
-            pair(o, c, "has_candidate", "candidate_for", attributes)
-            audit["candidate_incidences"] += 1
-        audit["shared_candidates"] += len(shared)
-        audit["original_candidate_nodes"] += len(fragment["candidate_links"])
-        raw_observations = {o["observation_id"]: o for o in series["observations"]}
-        report_by_id = {r["report_id"]: r for r in series.get("intelligence_reports") or []}
-        applicable = defaultdict(list)
-        for r, o in fragment["report_links"]:
-            applicable[r].append(o)
-        claim_types = defaultdict(list)
-        for offset, m in enumerate(fragment["node_meta"]):
-            if m["node_kind"] not in {"intelligence_report", "report_claim"}:
-                continue
-            is_claim = m["node_kind"] == "report_claim"
-            report_offset = m["report_node_offset"] if is_claim else offset
-            report = report_by_id[m["report_id"]]
-            claim = next((c for c in report.get("claims") or [] if c["claim_id"] == m.get("claim_id")), None) if is_claim else None
-            targets = applicable[report_offset]
-            scope = intelligence_scope(report, claim, len(targets), len(obs))
-            if intelligence_routing == "track" and targets:
-                scope = "track"
-            i = mapping[offset]
-            if is_claim:
-                pair(mapping[report_offset], i, "report_contains_claim", "claim_from_report")
-                meta[i]["report_node_idx"] = mapping[report_offset]
-                meta[i].pop("report_node_offset", None)
-                for o in targets:
-                    claim_types[(o, m.get("claim_type"))].append(offset)
-            coverage = len(targets) / max(1, len(obs))
-            # Persist exact applicability, not just its compressed coverage statistic.
-            route_audit.write(json.dumps({"series_id": sid, "node_index": i, "kind": m["node_kind"],
-                                "scope": scope, "coverage": coverage,
-                                "observation_ids": [fragment["node_meta"][o]["observation_id"] for o in targets]}) + "\n")
-            prefix = "claim" if is_claim else "report"
-            if scope == "track":
-                attr = edge_features.append({"coverage_fraction": coverage,
-                                             "applicable_observation_count": len(targets)})
-                pair(i, track, prefix + "_for_track", "track_has_" + prefix, attr)
-                audit[prefix + "_track_pairs"] += 1
-            elif scope == "observation":
-                for o in targets:
-                    raw = raw_observations[fragment["node_meta"][o]["observation_id"]]
-                    proximity = report_observation_proximity(report, raw)
-                    attr = edge_features.append({"coverage_fraction": coverage,
-                        "time_delta_hours": float(proximity["time_delta_s"]) / 3600,
-                        "distance_100km": float(proximity["distance_km"]) / 100})
-                    pair(i, mapping[o], prefix + "_for_observation", "observation_has_" + prefix, attr)
-                    audit[prefix + "_observation_pairs"] += 1
-            audit["original_" + prefix + "_observation_pairs"] += len(targets)
-        # Preserve local contradictory claims, but deduplicate repeated pair edges.
-        conflicts = set()
-        for claims in claim_types.values():
-            for pos, a in enumerate(claims):
-                for b in claims[pos + 1:]:
-                    if fragment["node_meta"][a].get("object_id") != fragment["node_meta"][b].get("object_id"):
-                        conflicts.add((a, b))
-        for a, b in sorted(conflicts):
-            pair(mapping[a], mapping[b], "contradicts_claim", "contradicts_claim")
-        for c, entity_id in fragment["report_kg_edges"]:
-            if entity_id in kg_index:
-                pair(mapping[c], kg_index[entity_id], "claim_asserts_kg_entity", "kg_entity_asserted_by_claim")
-        if (ordinal + 1) % 25 == 0:
-            print(f"Prepared {ordinal + 1} tracks; {audit['original_candidate_nodes']:,} candidate incidences -> {audit['shared_candidates']:,} candidates")
+    num_workers = min(num_workers, max(1, len(series_records)))
+    started = time.perf_counter()
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with ExitStack() as resources:
+        features = _FeatureSpool(output_dir, "nodes")
+        resources.callback(features.spool.close)
+        edge_features = _FeatureSpool(output_dir, "incidences")
+        resources.callback(edge_features.spool.close)
+        meta, observations = [], []
+        src, dst, types, feature_indices = array("i"), array("i"), array("i"), array("i")
+        relations, relation_ids = [], {}
+        kg_index = {}
+        operator_ids = {node.get("properties", {}).get("name"): node["id"]
+                        for node in kg["nodes"] if node.get("label") == "Operator"}
 
-    if not observations:
-        raise ValueError("At least one observation is required")
-    # Self edges ensure isolated KG/report/claim nodes remain represented in batches.
-    for i in range(len(meta)):
-        edge(i, i, "self")
-    X, feature_names = features.finish()
-    edge_X, edge_feature_names = edge_features.finish()
-    edges = torch.stack((torch.frombuffer(src, dtype=torch.int32), torch.frombuffer(dst, dtype=torch.int32)))
-    result = {"version": 1, "X": X, "feature_names": feature_names, "node_meta": meta,
-              "observation_node_indices": observations, "edge_index": edges,
-              "edge_types": torch.frombuffer(types, dtype=torch.int32),
-              "edge_feature_indices": torch.frombuffer(feature_indices, dtype=torch.int32),
-              "edge_features": edge_X, "edge_feature_names": edge_feature_names,
-              "relation_metadata": relations, "audit": {**audit, "intelligence_routing": intelligence_routing},
-              "num_kg_entities": len(kg_index)}
-    route_audit.close()
-    manifest = {k: v for k, v in result.items() if k not in {"X", "edge_features", "edge_index", "edge_types", "edge_feature_indices"}}
-    manifest["feature_matrix"] = {"path": features.path.name, "shape": list(X.shape), "dtype": "float32"}
-    manifest["edge_feature_matrix"] = {"path": edge_features.path.name, "shape": list(edge_X.shape), "dtype": "float32"}
-    torch.save(manifest, output_dir / "graph_construction_outputs.pt")
-    torch.save({k: result[k] for k in ("edge_index", "edge_types", "edge_feature_indices")}, output_dir / "relational_graph_outputs.pt")
-    return result
+        def node(metadata, values):
+            i = len(meta)
+            meta.append(metadata)
+            features.append(values)
+            return i
+
+        def edge(a, b, relation, attributes=-1):
+            signature = (meta[a]["node_kind"], relation, meta[b]["node_kind"])
+            if signature not in relation_ids:
+                relation_ids[signature] = len(relations)
+                relations.append(signature)
+            src.append(a); dst.append(b); types.append(relation_ids[signature]); feature_indices.append(attributes)
+
+        def pair(a, b, forward, reverse, attributes=-1):
+            edge(a, b, forward, attributes)
+            edge(b, a, reverse, attributes)
+
+        for entity in kg["nodes"]:
+            if entity.get("label") not in {"AircraftVariant", "AircraftFamily", "Radar", "Operator", "RadarMode"}:
+                continue
+            values = {"node_kind_kg_entity": 1.}
+            _flatten_numeric("kg", entity.get("properties", {}), values)
+            kg_index[entity["id"]] = node({"node_kind": "kg_entity", "kg_id": entity["id"],
+                                          "kg_label": entity["label"], "kg_index": len(kg_index)}, values)
+        for e in kg["edges"]:
+            if e["source"] in kg_index and e["target"] in kg_index:
+                pair(kg_index[e["source"]], kg_index[e["target"]],
+                     "kg_" + e["relation"], "kg_reverse_" + e["relation"])
+
+        families = {e["source"]: e["target"] for e in kg["edges"] if e["relation"] == "VARIANT_OF"}
+        variants = defaultdict(list)
+        for row in candidate_rows:
+            variants[(row["mode_id"], row["radar_id"], row["aircraft_id"])].append(row)
+        context = {"candidate_templates": [{**rows[0], "operator": None} for rows in variants.values()],
+                   "candidate_variants": dict(variants), "aircraft_family_by_aircraft": families,
+                   "max_kg_retrieval_candidates": retrieval_candidates, "max_kg_candidates": max_candidates,
+                   "claim_candidate_min_abs_contribution": min_claim_contribution,
+                   "include_candidate_nodes": True, "include_intel_report_nodes": True,
+                   "segment_frequency_shift_ghz": .75}
+        audit = Counter()
+        route_audit = resources.enter_context((output_dir / "intelligence_routing.jsonl").open("w", encoding="utf-8"))
+        fragments = resources.enter_context(closing(
+            _series_fragments(series_records, context, output_dir, num_workers, start_method)))
+        for ordinal, fragment in fragments:
+            series = series_records[ordinal]
+            sid = series["series_id"]
+            track = node({"node_kind": "track", "series_id": sid}, {"node_kind_track": 1.})
+            mapping = {}
+            # The fragment contains one copy of each report and claim, plus local candidates.
+            for offset, metadata in enumerate(fragment["node_meta"]):
+                if metadata["node_kind"] == "candidate":
+                    continue
+                mapping[offset] = node(dict(metadata), fragment["feature_rows"][offset])
+            obs = [mapping[i] for i in fragment["observation_offsets"]]
+            observations.extend(obs)
+            for i in obs:
+                pair(i, track, "belongs_to", "contains")
+            for a, b in zip(obs, obs[1:]):
+                pair(a, b, "next_observation", "prev_observation")
+            for a, b in zip(obs, obs[2:]):
+                pair(a, b, "same_emitter", "same_emitter")
+            shared = {}
+            for observation_offset, candidate_offset, signed_claims in fragment["candidate_links"]:
+                m = fragment["node_meta"][candidate_offset]
+                identity = tuple(m[key] for key in ("mode_id", "radar_id", "aircraft_id", "operator"))
+                if identity not in shared:
+                    c = node({"node_kind": "candidate", "series_id": sid, "candidate_key": identity},
+                             {"node_kind_candidate": 1.})
+                    shared[identity] = c
+                    for role, entity in zip(("mode", "radar", "aircraft", "operator"),
+                                            (*identity[:3], operator_ids.get(identity[3]))):
+                        if entity in kg_index:
+                            pair(c, kg_index[entity], "candidate_" + role, role + "_of_candidate")
+                c, o = shared[identity], mapping[observation_offset]
+                match = {k: v for k, v in fragment["feature_rows"][candidate_offset].items()
+                         if k.startswith("candidate_")}
+                rf_observed = match.get("candidate_non_radar_rf_observed_count", 0) > 0
+                rf_compatible = match.get("candidate_non_radar_rf_score", 0) >= .5
+                match["candidate_has_compatible_rf_emission"] = float(rf_observed and rf_compatible)
+                match["candidate_contradicts_rf_emission"] = float(rf_observed and not rf_compatible)
+                match["retained_supporting_claim_count"] = sum(i > 0 for i in signed_claims)
+                match["retained_refuting_claim_count"] = sum(i < 0 for i in signed_claims)
+                attributes = edge_features.append(match)
+                pair(o, c, "has_candidate", "candidate_for", attributes)
+                audit["candidate_incidences"] += 1
+            audit["shared_candidates"] += len(shared)
+            audit["original_candidate_nodes"] += len(fragment["candidate_links"])
+            raw_observations = {o["observation_id"]: o for o in series["observations"]}
+            report_by_id = {r["report_id"]: r for r in series.get("intelligence_reports") or []}
+            # A report and all of its claims use identical observation proximity.
+            proximity_cache = {}
+            applicable = defaultdict(list)
+            for r, o in fragment["report_links"]:
+                applicable[r].append(o)
+            claim_types = defaultdict(list)
+            for offset, m in enumerate(fragment["node_meta"]):
+                if m["node_kind"] not in {"intelligence_report", "report_claim"}:
+                    continue
+                is_claim = m["node_kind"] == "report_claim"
+                report_offset = m["report_node_offset"] if is_claim else offset
+                report = report_by_id[m["report_id"]]
+                claim = next((c for c in report.get("claims") or [] if c["claim_id"] == m.get("claim_id")), None) if is_claim else None
+                targets = applicable[report_offset]
+                scope = intelligence_scope(report, claim, len(targets), len(obs))
+                if intelligence_routing == "track" and targets:
+                    scope = "track"
+                i = mapping[offset]
+                if is_claim:
+                    pair(mapping[report_offset], i, "report_contains_claim", "claim_from_report")
+                    meta[i]["report_node_idx"] = mapping[report_offset]
+                    meta[i].pop("report_node_offset", None)
+                    for o in targets:
+                        claim_types[(o, m.get("claim_type"))].append(offset)
+                coverage = len(targets) / max(1, len(obs))
+                # Persist exact applicability, not just its compressed coverage statistic.
+                route_audit.write(json.dumps({"series_id": sid, "node_index": i, "kind": m["node_kind"],
+                                    "scope": scope, "coverage": coverage,
+                                    "observation_ids": [fragment["node_meta"][o]["observation_id"] for o in targets]}) + "\n")
+                prefix = "claim" if is_claim else "report"
+                if scope == "track":
+                    attr = edge_features.append({"coverage_fraction": coverage,
+                                                 "applicable_observation_count": len(targets)})
+                    pair(i, track, prefix + "_for_track", "track_has_" + prefix, attr)
+                    audit[prefix + "_track_pairs"] += 1
+                elif scope == "observation":
+                    for o in targets:
+                        raw = raw_observations[fragment["node_meta"][o]["observation_id"]]
+                        cache_key = (report_offset, o)
+                        if cache_key not in proximity_cache:
+                            proximity_cache[cache_key] = report_observation_proximity(report, raw)
+                        proximity = proximity_cache[cache_key]
+                        attr = edge_features.append({"coverage_fraction": coverage,
+                            "time_delta_hours": float(proximity["time_delta_s"]) / 3600,
+                            "distance_100km": float(proximity["distance_km"]) / 100})
+                        pair(i, mapping[o], prefix + "_for_observation", "observation_has_" + prefix, attr)
+                        audit[prefix + "_observation_pairs"] += 1
+                audit["original_" + prefix + "_observation_pairs"] += len(targets)
+            # Preserve local contradictory claims, but deduplicate repeated pair edges.
+            conflicts = set()
+            for claims in claim_types.values():
+                for pos, a in enumerate(claims):
+                    for b in claims[pos + 1:]:
+                        if fragment["node_meta"][a].get("object_id") != fragment["node_meta"][b].get("object_id"):
+                            conflicts.add((a, b))
+            for a, b in sorted(conflicts):
+                pair(mapping[a], mapping[b], "contradicts_claim", "contradicts_claim")
+            for c, entity_id in fragment["report_kg_edges"]:
+                if entity_id in kg_index:
+                    pair(mapping[c], kg_index[entity_id], "claim_asserts_kg_entity", "kg_entity_asserted_by_claim")
+            if (ordinal + 1) % 25 == 0:
+                print(f"Prepared {ordinal + 1} tracks; {audit['original_candidate_nodes']:,} candidate incidences -> {audit['shared_candidates']:,} candidates")
+
+        if not observations:
+            raise ValueError("At least one observation is required")
+        # Self edges ensure isolated KG/report/claim nodes remain represented in batches.
+        for i in range(len(meta)):
+            edge(i, i, "self")
+        X, feature_names = features.finish()
+        edge_X, edge_feature_names = edge_features.finish()
+        edges = torch.stack((torch.frombuffer(src, dtype=torch.int32), torch.frombuffer(dst, dtype=torch.int32)))
+        result = {"version": 1, "X": X, "feature_names": feature_names, "node_meta": meta,
+                  "observation_node_indices": observations, "edge_index": edges,
+                  "edge_types": torch.frombuffer(types, dtype=torch.int32),
+                  "edge_feature_indices": torch.frombuffer(feature_indices, dtype=torch.int32),
+                  "edge_features": edge_X, "edge_feature_names": edge_feature_names,
+                  "relation_metadata": relations, "audit": {**audit, "intelligence_routing": intelligence_routing},
+                  "num_kg_entities": len(kg_index)}
+        route_audit.close()
+        manifest = {k: v for k, v in result.items() if k not in {"X", "edge_features", "edge_index", "edge_types", "edge_feature_indices"}}
+        manifest["feature_matrix"] = {"path": features.path.name, "shape": list(X.shape), "dtype": "float32"}
+        manifest["edge_feature_matrix"] = {"path": edge_features.path.name, "shape": list(edge_X.shape), "dtype": "float32"}
+        torch.save(manifest, output_dir / "graph_construction_outputs.pt")
+        torch.save({k: result[k] for k in ("edge_index", "edge_types", "edge_feature_indices")}, output_dir / "relational_graph_outputs.pt")
+        print(f"Built shared graph in {time.perf_counter() - started:.2f}s "
+              f"({num_workers} scoring worker(s))")
+        return result
 
 
 @dataclass(frozen=True)
