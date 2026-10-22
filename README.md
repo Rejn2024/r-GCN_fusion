@@ -274,6 +274,14 @@ batch prefetch. Set `COMPILE_MODEL=1` before model configuration to opt into dyn
 [track-star training performance](docs/track_star_hgt_training_performance.md)
 for transfer/memory behavior, Windows compiler troubleshooting, and regression checks.
 
+[`notebooks/track_shared_candidate_hgt.ipynb`](notebooks/track_shared_candidate_hgt.ipynb)
+uses the same dataset and KG with selective intelligence-to-track routing and
+candidates shared only within each track. Observation-specific match scores and
+claim effects live on candidate-incidence edges and drive an edge-conditioned
+typed attention encoder. It rebuilds its own features and isolates outputs under
+`artifacts/track_shared_candidate_hgt`. See the [implementation and run notes](docs/track_shared_candidate_hgt.md)
+for routing rules, the full-track routing ablation, memory considerations and checks.
+
 For leakage-safe observation-level radar-mode experiments, the example config
 filters supervised loss/metrics to `Observation` nodes, groups splits by
 `series_id` when that property is present, removes cross-split edges, and drops
