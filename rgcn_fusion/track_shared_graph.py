@@ -384,6 +384,8 @@ class SharedEvidenceGraph:
     attributed_positions: tuple[torch.Tensor | None, ...] | None = None
     relation_feature_modes: tuple[int, ...] | None = None
     source_caches: tuple[tuple[torch.Tensor, torch.Tensor] | None, ...] | None = None
+    # Optional exact row/column partitions used by the accelerated projection.
+    feature_groups: tuple[tuple[torch.Tensor, torch.Tensor], ...] | None = None
 
     def __post_init__(self):
         # Build lookup caches on CPU once, not through CUDA nonzero/unique in
@@ -417,7 +419,8 @@ class SharedEvidenceGraph:
     def topology_bytes(self):
         attributes = self.num_feature_rows * self.edge_features.size(1) * self.edge_features.element_size()
         caches = [*self.type_indices, *(t for t in self.attributed_positions if t is not None),
-                  *(t for cache in self.source_caches if cache is not None for t in cache)]
+                  *(t for cache in self.source_caches if cache is not None for t in cache),
+                  *(t for group in (self.feature_groups or ()) for t in group)]
         return attributes + sum(t.numel() * t.element_size() for t in (
             self.edge_index, self.feature_indices, self.node_types, self.kg_indices, self.track_nodes, *caches))
 
@@ -443,7 +446,10 @@ class SharedEvidenceGraph:
             tuple(None if t is None else t.to(device, non_blocking=non_blocking) for t in self.attributed_positions),
             self.relation_feature_modes,
             tuple(None if cache is None else tuple(t.to(device, non_blocking=non_blocking) for t in cache)
-                  for cache in self.source_caches))
+                  for cache in self.source_caches),
+            None if self.feature_groups is None else tuple(
+                tuple(t.to(device, non_blocking=non_blocking) for t in group)
+                for group in self.feature_groups))
 
 
 @dataclass(frozen=True)
