@@ -282,6 +282,14 @@ typed attention encoder. It rebuilds its own features and isolates outputs under
 `artifacts/track_shared_candidate_hgt`. See the [implementation and run notes](docs/track_shared_candidate_hgt.md)
 for routing rules, the full-track routing ablation, memory considerations and checks.
 
+[`notebooks/track_shared_candidate_hgt_accelerated.ipynb`](notebooks/track_shared_candidate_hgt_accelerated.ipynb)
+reloads that notebook's saved graph without rescoring candidates. It bootstraps
+the C++ compiler environment and uses packed projections, exact attribute
+compaction, bounded CUDA prefetch, fused CUDA AdamW and less frequent train
+diagnostics. Outputs are isolated under `artifacts/track_shared_candidate_hgt_accelerated`.
+See the [cache, compiler and performance instructions](docs/track_shared_candidate_hgt_accelerated.md)
+for prerequisites, controls, memory measurements and validation.
+
 For leakage-safe observation-level radar-mode experiments, the example config
 filters supervised loss/metrics to `Observation` nodes, groups splits by
 `series_id` when that property is present, removes cross-split edges, and drops

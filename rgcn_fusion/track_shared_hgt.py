@@ -50,15 +50,19 @@ class EdgeConditionedHGTLayer(nn.Module):
             result = result.index_copy(0, indices, module(x[indices]).to(result.dtype))
         return result
 
+    def _project_qkv(self, x, graph):
+        return tuple(self._typed(modules, x, graph.type_indices)
+                     for modules in (self.q, self.k, self.v))
+
+    def _project_edges(self, graph):
+        return self.edge_key(graph.edge_features), self.edge_value(graph.edge_features)
+
     def forward(self, x, graph):
         if len(graph.relation_sizes) != len(self.relation_metadata):
             raise ValueError("Graph relation schema does not match the model")
         shape = (-1, self.num_heads, self.head_dim)
-        q = self._typed(self.q, x, graph.type_indices).view(shape)
-        k = self._typed(self.k, x, graph.type_indices).view(shape)
-        v = self._typed(self.v, x, graph.type_indices).view(shape)
-        edge_keys = self.edge_key(graph.edge_features).view(shape)
-        edge_values = self.edge_value(graph.edge_features).view(shape)
+        q, k, v = (values.view(shape) for values in self._project_qkv(x, graph))
+        edge_keys, edge_values = (values.view(shape) for values in self._project_edges(graph))
         scores, messages = [], []
         offset = 0
         for relation, size in enumerate(graph.relation_sizes):
@@ -106,6 +110,8 @@ class EdgeConditionedHGTLayer(nn.Module):
 class SharedCandidateHGTClassifier(nn.Module):
     """Five edge-conditioned HGT layers; one RAO opinion per complete track."""
 
+    attention_layer_type = EdgeConditionedHGTLayer
+
     def __init__(self, in_dim, hidden_dim, num_relations, num_rao_classes, num_mode_classes,
                  rao_mode_compatibility, *, relation_metadata, edge_dim, num_kg_entities,
                  num_hgt_layers=5, num_heads=4, dropout=.2, task_head_hidden_dim=128,
@@ -124,7 +130,7 @@ class SharedCandidateHGTClassifier(nn.Module):
         self.kg_embedding = nn.Embedding(max(1, num_kg_entities), hidden_dim)
         self.track_seed = nn.Parameter(torch.empty(1, hidden_dim))
         nn.init.normal_(self.track_seed, std=hidden_dim ** -.5)
-        self.hgt_layers = nn.ModuleList(EdgeConditionedHGTLayer(
+        self.hgt_layers = nn.ModuleList(self.attention_layer_type(
             hidden_dim, relation_metadata, edge_dim, num_heads, dropout) for _ in range(num_hgt_layers))
         self.gradient_checkpointing = gradient_checkpointing
 
